@@ -10,7 +10,7 @@ import UIKit
 class KeyboardViewController: UIInputViewController {
   
   var keyboardView: UIView!
-    
+  @IBOutlet var decryptedMsg: UILabel!
   @IBOutlet var nextKeyboardButton: UIButton!
   
   override func updateViewConstraints() {
@@ -28,6 +28,7 @@ class KeyboardViewController: UIInputViewController {
     
     // Actually make the globe button switch keyboard
     nextKeyboardButton.addTarget(self, action: #selector(advanceToNextInputMode), for: .touchUpInside)
+    decryptedMsg.text = ""
   }
   
   override func viewWillLayoutSubviews() {
@@ -52,4 +53,17 @@ class KeyboardViewController: UIInputViewController {
     self.nextKeyboardButton.setTitleColor(textColor, for: [])
   }
 
+  @IBAction func requestButtonPressed(_ sender: Any) {
+    // TODO: finish
+    decryptedMsg.text = "request pressed"
+  }
+  @IBAction func decryptButtonPressed(_ sender: Any) {
+    // TODO: finish
+    decryptedMsg.text = "decrypt pressed"
+  }
+  @IBAction func encryptButtonPressed(_ sender: Any) {
+    // TODO: finish
+    decryptedMsg.text = "encrypt pressed"
+  }
+  
 }
