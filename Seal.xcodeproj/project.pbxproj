@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -15,8 +15,6 @@
 		306589C8267554B300708E73 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 306589C6267554B300708E73 /* LaunchScreen.storyboard */; };
 		306589D62675556400708E73 /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306589D52675556400708E73 /* KeyboardViewController.swift */; };
 		306589DA2675556400708E73 /* Keyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 306589D32675556400708E73 /* Keyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		3082A84C26774F7800057489 /* CryptoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3082A84B26774F7800057489 /* CryptoSwift */; };
-		30C0D6BE2677512E002433D7 /* CryptoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 30C0D6BD2677512E002433D7 /* CryptoSwift */; };
 		30D4DF822675BAD200CF9DE5 /* KeyboardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 30D4DF812675BAD200CF9DE5 /* KeyboardView.xib */; };
 		30D4DF832676AA1F00CF9DE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 306589C4267554B300708E73 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
@@ -77,6 +75,7 @@
 		306589D32675556400708E73 /* Keyboard.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = Keyboard.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		306589D52675556400708E73 /* KeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewController.swift; sourceTree = "<group>"; };
 		306589D72675556400708E73 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		30C0D6C22678041D002433D7 /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		30D4DF812675BAD200CF9DE5 /* KeyboardView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = KeyboardView.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -85,7 +84,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				30C0D6BE2677512E002433D7 /* CryptoSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -93,7 +91,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3082A84C26774F7800057489 /* CryptoSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -129,6 +126,7 @@
 				306589C4267554B300708E73 /* Assets.xcassets */,
 				306589C6267554B300708E73 /* LaunchScreen.storyboard */,
 				306589C9267554B300708E73 /* Info.plist */,
+				30C0D6C22678041D002433D7 /* MyPlayground.playground */,
 			);
 			path = Seal;
 			sourceTree = "<group>";
@@ -170,7 +168,6 @@
 			);
 			name = Seal;
 			packageProductDependencies = (
-				30C0D6BD2677512E002433D7 /* CryptoSwift */,
 			);
 			productName = Seal;
 			productReference = 306589B8267554B200708E73 /* Seal.app */;
@@ -191,7 +188,6 @@
 			);
 			name = Keyboard;
 			packageProductDependencies = (
-				3082A84B26774F7800057489 /* CryptoSwift */,
 			);
 			productName = Keyboard;
 			productReference = 306589D32675556400708E73 /* Keyboard.appex */;
@@ -224,7 +220,6 @@
 			);
 			mainGroup = 306589AF267554B200708E73;
 			packageReferences = (
-				3082A84A26774F7800057489 /* XCRemoteSwiftPackageReference "CryptoSwift" */,
 			);
 			productRefGroup = 306589B9267554B200708E73 /* Products */;
 			projectDirPath = "";
@@ -550,30 +545,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		3082A84A26774F7800057489 /* XCRemoteSwiftPackageReference "CryptoSwift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/krzyzanowskim/CryptoSwift";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.4.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		3082A84B26774F7800057489 /* CryptoSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3082A84A26774F7800057489 /* XCRemoteSwiftPackageReference "CryptoSwift" */;
-			productName = CryptoSwift;
-		};
-		30C0D6BD2677512E002433D7 /* CryptoSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3082A84A26774F7800057489 /* XCRemoteSwiftPackageReference "CryptoSwift" */;
-			productName = CryptoSwift;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 306589B0267554B200708E73 /* Project object */;
 }

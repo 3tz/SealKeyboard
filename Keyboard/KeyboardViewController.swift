@@ -6,15 +6,19 @@
 //
 
 import UIKit
-import CryptoSwift
+import CryptoKit
 
 class KeyboardViewController: UIInputViewController {
   
   var keyboardView: UIView!
   @IBOutlet var decryptedMsg: UILabel!
   @IBOutlet var nextKeyboardButton: UIButton!
-
-  var aes = "aes_key" // TODO: eventually should be an actual aes key
+  
+  // Secret & public key pairs
+  var sk: Curve25519.Signing.PrivateKey!
+  var pk: Curve25519.Signing.PublicKey!
+  // AES-256 key
+  var aes: ContiguousBytes!
   
   override func updateViewConstraints() {
     super.updateViewConstraints()
@@ -24,7 +28,7 @@ class KeyboardViewController: UIInputViewController {
     super.viewDidLoad()
     
     // TODO: eventually, key pairs should be read from Seal instead of generating every time
-    generateRSAPairs()
+    generateAsymKeyPairs()
     
     // Use xib as view
     view = UINib(
@@ -64,15 +68,14 @@ class KeyboardViewController: UIInputViewController {
     // TODO: finish
     decryptedMsg.text = "request pressed"
 
-    let msg = "req_aes|rsa_pk"
+    let msg = "req_aes|" + pk.string
 
     clearInputText()
-    
     textDocumentProxy.insertText(msg)
     
   }
   
-  @IBAction func decryptButtonPressed(_ sender: Any) throws {
+  @IBAction func decryptButtonPressed(_ sender: Any) {
     // TODO: finish
     guard let copiedText = UIPasteboard.general.string else {
       decryptedMsg.text = "No copied text found."
@@ -88,14 +91,14 @@ class KeyboardViewController: UIInputViewController {
       if tokens.count != 2 {
         fallthrough
       }
-
+      generateNewAES()
+      
     case "enc_aes":
       break
     case "ciphertext":
       break
     default:
       decryptedMsg.text = "Unknown type of message copied."
-      break
     }
     
     
@@ -125,14 +128,38 @@ class KeyboardViewController: UIInputViewController {
     }
   }
   
-  func generateRSAPairs() {
+  func generateAsymKeyPairs() {
     // TODO: currently stores as class attributes. Might need to change later
-  }
-  
-  func generateAES() {
-//    SecKeyAlgorithm.rsaEncryptionOAEPSHA512AESGCM
+    sk = Curve25519.Signing.PrivateKey()
+    pk = sk.publicKey
     
-//    SecKeyCreateEncryptedData(
   }
   
+  func generateNewAES() {
+    // TODO: eventually need to handle multiple AES keys
+    aes = SymmetricKey(size: .bits256)
+  }
+  
+}
+
+extension Data {
+  var string: String { return String(decoding: self, as: UTF8.self) }
+}
+
+extension Curve25519.Signing.PrivateKey {
+  var string: String {
+    return self.rawRepresentation.withUnsafeBytes { Data(Array($0)).base64EncodedString() }
+  }
+}
+
+extension Curve25519.Signing.PublicKey {
+  var string: String {
+    return self.rawRepresentation.withUnsafeBytes { Data(Array($0)).base64EncodedString() }
+  }
+}
+
+extension ContiguousBytes {
+  var string: String {
+    return self.withUnsafeBytes { Data(Array($0)).base64EncodedString() }
+  }
 }
