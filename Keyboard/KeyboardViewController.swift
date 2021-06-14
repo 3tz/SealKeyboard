@@ -6,12 +6,15 @@
 //
 
 import UIKit
+import CryptoSwift
 
 class KeyboardViewController: UIInputViewController {
   
   var keyboardView: UIView!
   @IBOutlet var decryptedMsg: UILabel!
   @IBOutlet var nextKeyboardButton: UIButton!
+
+  var aes = "aes_key" // TODO: eventually should be an actual aes key
   
   override func updateViewConstraints() {
     super.updateViewConstraints()
@@ -19,6 +22,9 @@ class KeyboardViewController: UIInputViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    
+    // TODO: eventually, key pairs should be read from Seal instead of generating every time
+    generateRSAPairs()
     
     // Use xib as view
     view = UINib(
@@ -56,18 +62,44 @@ class KeyboardViewController: UIInputViewController {
 
   @IBAction func requestButtonPressed(_ sender: Any) {
     // TODO: finish
-    var msg: String!
-    msg = "req_aes|my_public_key"
-    
+    decryptedMsg.text = "request pressed"
+
+    let msg = "req_aes|rsa_pk"
+
     clearInputText()
     
     textDocumentProxy.insertText(msg)
-    decryptedMsg.text = "request pressed"
+    
   }
   
-  @IBAction func decryptButtonPressed(_ sender: Any) {
+  @IBAction func decryptButtonPressed(_ sender: Any) throws {
     // TODO: finish
-    decryptedMsg.text = "decrypt pressed"
+    guard let copiedText = UIPasteboard.general.string else {
+      decryptedMsg.text = "No copied text found."
+      return
+    }
+    
+    let tokens = copiedText.components(separatedBy: "|")
+  
+    switch tokens[0]{
+    case "req_aes":
+      // Request to generate AES key.
+      // Expected format: "req_aes|{sender's RSA public key}"
+      if tokens.count != 2 {
+        fallthrough
+      }
+
+    case "enc_aes":
+      break
+    case "ciphertext":
+      break
+    default:
+      decryptedMsg.text = "Unknown type of message copied."
+      break
+    }
+    
+    
+    
   }
   
   @IBAction func encryptButtonPressed(_ sender: Any) {
@@ -92,4 +124,15 @@ class KeyboardViewController: UIInputViewController {
       }
     }
   }
+  
+  func generateRSAPairs() {
+    // TODO: currently stores as class attributes. Might need to change later
+  }
+  
+  func generateAES() {
+//    SecKeyAlgorithm.rsaEncryptionOAEPSHA512AESGCM
+    
+//    SecKeyCreateEncryptedData(
+  }
+  
 }
