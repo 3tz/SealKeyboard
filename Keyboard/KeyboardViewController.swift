@@ -14,9 +14,9 @@ class KeyboardViewController: UIInputViewController {
   @IBOutlet var decryptedMsg: UILabel!
   @IBOutlet var nextKeyboardButton: UIButton!
   
-  // Secret & public key pairs
-  var sk: Curve25519.Signing.PrivateKey!
-  var pk: Curve25519.Signing.PublicKey!
+  // Encryption and Signing Keys
+  var keys: Keys!
+
   // AES-256 key
   var aes: ContiguousBytes!
   
@@ -26,9 +26,7 @@ class KeyboardViewController: UIInputViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    
-    // TODO: eventually, key pairs should be read from Seal instead of generating every time
-    generateAsymKeyPairs()
+    keys = Keys()
     
     // Use xib as view
     view = UINib(
@@ -64,38 +62,41 @@ class KeyboardViewController: UIInputViewController {
     self.nextKeyboardButton.setTitleColor(textColor, for: [])
   }
 
+  /// Request button pressed, so perform key exchange process by placing our encryption public key in the input text field.
   @IBAction func requestButtonPressed(_ sender: Any) {
-    // TODO: finish
-    decryptedMsg.text = "request pressed"
-
-    let msg = "req_aes|" + pk.string
-
+    decryptedMsg.text = "request pressed" // TODO: placeholder
+    let msg =
+      "\(MessageType.requestSymmetricKey.rawValue)|\(keys.encryptionPublicKey.string)"
     clearInputText()
     textDocumentProxy.insertText(msg)
-    
   }
   
   @IBAction func decryptButtonPressed(_ sender: Any) {
     // TODO: finish
     guard let copiedText = UIPasteboard.general.string else {
-      decryptedMsg.text = "No copied text found."
+      decryptedMsg.text = "No copied text found." // TODO: placeholder
       return
     }
     
     let tokens = copiedText.components(separatedBy: "|")
   
-    switch tokens[0]{
-    case "req_aes":
-      // Request to generate AES key.
-      // Expected format: "req_aes|{sender's RSA public key}"
-      if tokens.count != 2 {
-        fallthrough
-      }
-      generateNewAES()
+    switch MessageType(rawValue: tokens[0]){
+    case .requestSymmetricKey:
+      // Request to generate Symmetric key.
+      // Generate a symmetric key and send it over.
+      // Expected format: "req_aes|{sender's public key}"
+      if tokens.count != 2 { fallthrough }
       
-    case "enc_aes":
+      
+      // TODO: error handling: check if it's a valid pk
+      let senderPkData = Data(base64Encoded: tokens[1])!
+      let theirEncryptionPublicKey = try! Curve25519.KeyAgreement.PublicKey(
+        rawRepresentation: senderPkData
+      )
+      
+    case .encryptedSymmetricKey:
       break
-    case "ciphertext":
+    case .ciphertext:
       break
     default:
       decryptedMsg.text = "Unknown type of message copied."
@@ -113,46 +114,41 @@ class KeyboardViewController: UIInputViewController {
   
   /// Clear the input text field if it's not empty.
   func clearInputText() {
-    if textDocumentProxy.hasText {
-      let textBeforeInput = textDocumentProxy.documentContextBeforeInput ?? ""
-      let textAfterInput = textDocumentProxy.documentContextAfterInput ?? ""
-      let selectedText = textDocumentProxy.selectedText ?? ""
-      
-      // move cursor to the end of the text input
-      textDocumentProxy.adjustTextPosition(byCharacterOffset: textAfterInput.count)
-      
-      // delete backward n times where n is the length of the text
-      for _ in 0..<textAfterInput.count + textBeforeInput.count + selectedText.count {
-        textDocumentProxy.deleteBackward()
-      }
+    if !textDocumentProxy.hasText { return }
+    
+    let textBeforeInput = textDocumentProxy.documentContextBeforeInput ?? ""
+    let textAfterInput = textDocumentProxy.documentContextAfterInput ?? ""
+    let selectedText = textDocumentProxy.selectedText ?? ""
+    
+    // move cursor to the end of the text input
+    textDocumentProxy.adjustTextPosition(byCharacterOffset: textAfterInput.count)
+    
+    // delete backward n times where n is the length of the text
+    for _ in 0..<textAfterInput.count + textBeforeInput.count + selectedText.count {
+      textDocumentProxy.deleteBackward()
     }
   }
+
   
-  func generateAsymKeyPairs() {
-    // TODO: currently stores as class attributes. Might need to change later
-    sk = Curve25519.Signing.PrivateKey()
-    pk = sk.publicKey
-    
-  }
-  
-  func generateNewAES() {
-    // TODO: eventually need to handle multiple AES keys
-    aes = SymmetricKey(size: .bits256)
-  }
-  
+}
+
+enum MessageType: String {
+  case requestSymmetricKey = "req_sym"
+  case encryptedSymmetricKey = "enc_sym"
+  case ciphertext = "ciphertext"
 }
 
 extension Data {
   var string: String { return String(decoding: self, as: UTF8.self) }
 }
 
-extension Curve25519.Signing.PrivateKey {
+extension Curve25519.KeyAgreement.PrivateKey {
   var string: String {
     return self.rawRepresentation.withUnsafeBytes { Data(Array($0)).base64EncodedString() }
   }
 }
 
-extension Curve25519.Signing.PublicKey {
+extension Curve25519.KeyAgreement.PublicKey {
   var string: String {
     return self.rawRepresentation.withUnsafeBytes { Data(Array($0)).base64EncodedString() }
   }
