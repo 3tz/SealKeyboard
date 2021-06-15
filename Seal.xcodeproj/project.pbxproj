@@ -15,6 +15,8 @@
 		306589C8267554B300708E73 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 306589C6267554B300708E73 /* LaunchScreen.storyboard */; };
 		306589D62675556400708E73 /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306589D52675556400708E73 /* KeyboardViewController.swift */; };
 		306589DA2675556400708E73 /* Keyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 306589D32675556400708E73 /* Keyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		30C0D6C426796024002433D7 /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C0D6C326796024002433D7 /* Keys.swift */; };
+		30C0D6C526796024002433D7 /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C0D6C326796024002433D7 /* Keys.swift */; };
 		30D4DF822675BAD200CF9DE5 /* KeyboardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 30D4DF812675BAD200CF9DE5 /* KeyboardView.xib */; };
 		30D4DF832676AA1F00CF9DE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 306589C4267554B300708E73 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
@@ -75,7 +77,7 @@
 		306589D32675556400708E73 /* Keyboard.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = Keyboard.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		306589D52675556400708E73 /* KeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewController.swift; sourceTree = "<group>"; };
 		306589D72675556400708E73 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		30C0D6C22678041D002433D7 /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		30C0D6C326796024002433D7 /* Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
 		30D4DF812675BAD200CF9DE5 /* KeyboardView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = KeyboardView.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -119,6 +121,7 @@
 		306589BA267554B200708E73 /* Seal */ = {
 			isa = PBXGroup;
 			children = (
+				30C0D6C326796024002433D7 /* Keys.swift */,
 				306589BB267554B200708E73 /* AppDelegate.swift */,
 				306589BD267554B200708E73 /* SceneDelegate.swift */,
 				306589BF267554B200708E73 /* ViewController.swift */,
@@ -126,7 +129,6 @@
 				306589C4267554B300708E73 /* Assets.xcassets */,
 				306589C6267554B300708E73 /* LaunchScreen.storyboard */,
 				306589C9267554B300708E73 /* Info.plist */,
-				30C0D6C22678041D002433D7 /* MyPlayground.playground */,
 			);
 			path = Seal;
 			sourceTree = "<group>";
@@ -260,6 +262,7 @@
 			files = (
 				306589C0267554B200708E73 /* ViewController.swift in Sources */,
 				306589BC267554B200708E73 /* AppDelegate.swift in Sources */,
+				30C0D6C426796024002433D7 /* Keys.swift in Sources */,
 				306589BE267554B200708E73 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -268,6 +271,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				30C0D6C526796024002433D7 /* Keys.swift in Sources */,
 				306589D62675556400708E73 /* KeyboardViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
