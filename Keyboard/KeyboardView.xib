@@ -12,8 +12,8 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="KeyboardViewController" customModule="Keyboard">
             <connections>
-                <outlet property="decryptedMsg" destination="Zvq-uu-FjD" id="08g-h6-iXj"/>
                 <outlet property="nextKeyboardButton" destination="Dv9-cd-0ED" id="g7E-AJ-WHO"/>
+                <outlet property="textBox" destination="Zvq-uu-FjD" id="08g-h6-iXj"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>

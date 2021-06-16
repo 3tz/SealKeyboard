@@ -6,12 +6,11 @@
 //
 
 import UIKit
-import CryptoKit
 
 class KeyboardViewController: UIInputViewController {
   
   var keyboardView: UIView!
-  @IBOutlet var decryptedMsg: UILabel!
+  @IBOutlet var textBox: UILabel!
   @IBOutlet var nextKeyboardButton: UIButton!
   
   // Encryption and Signing Keys
@@ -37,7 +36,7 @@ class KeyboardViewController: UIInputViewController {
     // Actually make the globe button switch keyboard
     nextKeyboardButton.addTarget(
       self, action: #selector(handleInputModeList(from:with:)), for: .allTouchEvents)
-    decryptedMsg.text = ""
+    textBox.text = ""
   }
   
   override func viewWillLayoutSubviews() {
@@ -64,9 +63,9 @@ class KeyboardViewController: UIInputViewController {
 
   /// Request button pressed, so perform key exchange process by placing our encryption public key in the input text field.
   @IBAction func requestButtonPressed(_ sender: Any) {
-    decryptedMsg.text = "request pressed" // TODO: placeholder
-    let msg =
-      "\(MessageType.requestSymmetricKey.rawValue)|\(keys.encryptionPublicKey.string)"
+    textBox.text = "request pressed" // TODO: placeholder
+    let msg = MessageType.ECDH0.rawValue + "|" +
+      asString(keys.encryptionPublicKey.rawRepresentation)
     clearInputText()
     textDocumentProxy.insertText(msg)
   }
@@ -74,41 +73,66 @@ class KeyboardViewController: UIInputViewController {
   @IBAction func decryptButtonPressed(_ sender: Any) {
     // TODO: finish
     guard let copiedText = UIPasteboard.general.string else {
-      decryptedMsg.text = "No copied text found." // TODO: placeholder
+      textBox.text = "No copied text found." // TODO: placeholder
       return
     }
     
     let tokens = copiedText.components(separatedBy: "|")
   
     switch MessageType(rawValue: tokens[0]){
-    case .requestSymmetricKey:
-      // Request to generate Symmetric key.
+    case .ECDH0:
+      // Request to initiate ECDH, i.e., to generate a symmetric key.
       // Generate a symmetric key and send it over.
-      // Expected format: "req_aes|{sender's public key}"
+      // Expected format: "{.ECDH0}|{sender's public key}"
       if tokens.count != 2 { fallthrough }
-      
-      
+
+      let theirEncryptionPublicKeyString = tokens[1]
+
+      // Start ECDH, store the symmetric key, and send them the public key
       // TODO: error handling: check if it's a valid pk
-      let senderPkData = Data(base64Encoded: tokens[1])!
-      let theirEncryptionPublicKey = try! Curve25519.KeyAgreement.PublicKey(
-        rawRepresentation: senderPkData
+      let (ephemeralPublicKeyString, signatureString, signingPublicKeyString) =
+        try! keys.ECDHKeyExchange(with: theirEncryptionPublicKeyString)
+
+      let msg = [
+        MessageType.ECDH1.rawValue,
+        ephemeralPublicKeyString,
+        signatureString,
+        signingPublicKeyString
+      ].joined(separator: "|")
+
+      clearInputText()
+      textDocumentProxy.insertText(msg)
+
+      // TODO: placeholder
+      textBox.text = "Request to generate symmetric key received. "
+
+    case .ECDH1:
+      // Reposne to request to ECDH. Expect to receive ephemeral public key.
+      // Verify signature, compute and save symmetric key.
+      // Expected format: "{.ECDH1}|{ephemeralPublicKey}|{signature}|{signingPublicKey}"
+      if tokens.count != 4 { fallthrough }
+
+      try! keys.verifyECDHKeyExchangeResponse(
+        ephemeralPublicKeyString: tokens[1],
+        signatureString: tokens[2],
+        theirSigningPublicKeyString: tokens[3]
       )
-      
-    case .encryptedSymmetricKey:
-      break
+
+      // TODO: placeholder
+      textBox.text = "Symmetric key generated"
+
     case .ciphertext:
       break
     default:
-      decryptedMsg.text = "Unknown type of message copied."
+      textBox.text = "Unknown type of message copied."
     }
     
-    
-    
+
   }
   
   @IBAction func encryptButtonPressed(_ sender: Any) {
     // TODO: finish
-    decryptedMsg.text = "encrypt pressed"
+    textBox.text = "encrypt pressed"
   }
   
   
@@ -133,29 +157,8 @@ class KeyboardViewController: UIInputViewController {
 }
 
 enum MessageType: String {
-  case requestSymmetricKey = "req_sym"
-  case encryptedSymmetricKey = "enc_sym"
+  case ECDH0 = "ECDH0"
+  case ECDH1 = "ECDH1"
   case ciphertext = "ciphertext"
 }
 
-extension Data {
-  var string: String { return String(decoding: self, as: UTF8.self) }
-}
-
-extension Curve25519.KeyAgreement.PrivateKey {
-  var string: String {
-    return self.rawRepresentation.withUnsafeBytes { Data(Array($0)).base64EncodedString() }
-  }
-}
-
-extension Curve25519.KeyAgreement.PublicKey {
-  var string: String {
-    return self.rawRepresentation.withUnsafeBytes { Data(Array($0)).base64EncodedString() }
-  }
-}
-
-extension ContiguousBytes {
-  var string: String {
-    return self.withUnsafeBytes { Data(Array($0)).base64EncodedString() }
-  }
-}
