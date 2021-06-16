@@ -21,11 +21,18 @@ final class Keys {
   init() {
     // TODO: currently private keys are always different from each initialization.
     // Might need to  give the option to load locally.
-    signingSecretKey = Curve25519.Signing.PrivateKey()
+    // TODO: Keys are using constant placehodlers.
+    signingSecretKey = try! Curve25519.Signing.PrivateKey(
+      rawRepresentation: asData("mHx2QASPQLvKmZPJcmHgBi3PW259a1nwRMIt0i2qEnA=")
+    )
     signingPublicKey = signingSecretKey.publicKey
-    encryptionSecretKey = Curve25519.KeyAgreement.PrivateKey()
+
+    encryptionSecretKey = try! Curve25519.KeyAgreement.PrivateKey(
+      rawRepresentation: asData("qtuI5HeGBBxelfBT7aqBGKqncDIfmwGS30pbILNy7IE=")
+    )
     encryptionPublicKey = encryptionSecretKey.publicKey
     symmetricKey = SymmetricKey(size: .bits256)
+    print("Keys instance initialized.")
   }
 
   // MARK: - Asymmetric key exchange (symmetric key generation) methods
