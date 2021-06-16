@@ -9,11 +9,11 @@ import Foundation
 import CryptoKit
 
 final class Keys {
-  var signingSecretKey: Curve25519.Signing.PrivateKey!
+  private var signingSecretKey: Curve25519.Signing.PrivateKey!
   var signingPublicKey: Curve25519.Signing.PublicKey!
-  var encryptionSecretKey: Curve25519.KeyAgreement.PrivateKey!
+  private var encryptionSecretKey: Curve25519.KeyAgreement.PrivateKey!
   var encryptionPublicKey: Curve25519.KeyAgreement.PublicKey!
-  var symmetricKey: SymmetricKey!
+  private var symmetricKey: SymmetricKey!
 
   // TODO: placeholder. use random salt for each msg
   let protocolSalt = "CryptoKit Playgrounds Putting It Together".data(using: .utf8)!
@@ -83,9 +83,9 @@ final class Keys {
   ///   - theirSigningPublicKeyString: Signing public key of the sender
   /// - Throws: Error if signature unmatch or incorrect key information TODO: finish
   func verifyECDHKeyExchangeResponse(
-      _ ephemeralPublicKeyString: String,
-      _ signatureString: String,
-      _ theirSigningPublicKeyString: String
+      ephemeralPublicKeyString: String,
+      signatureString: String,
+      theirSigningPublicKeyString: String
   ) throws {
     // Convert input strings into corresponding data types
     let ephemeralPublicKeyData = asData(ephemeralPublicKeyString)
