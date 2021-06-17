@@ -12,13 +12,10 @@ class KeyboardViewController: UIInputViewController {
   var keyboardView: UIView!
   @IBOutlet var textBox: UILabel!
   @IBOutlet var nextKeyboardButton: UIButton!
-  
+
   // Encryption and Signing Keys
   var keys: Keys!
 
-  // AES-256 key
-  var aes: ContiguousBytes!
-  
   override func updateViewConstraints() {
     super.updateViewConstraints()
   }
@@ -26,7 +23,7 @@ class KeyboardViewController: UIInputViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     keys = Keys()
-    
+
     // Use xib as view
     view = UINib(
       nibName: "KeyboardView",
@@ -122,7 +119,14 @@ class KeyboardViewController: UIInputViewController {
       textBox.text = "Symmetric key generated"
 
     case .ciphertext:
-      break
+      // Ciphertext received. Verify signature and decrypt using symmetric key.
+      if tokens.count != 4 { fallthrough }
+
+      // TODO: error handling
+      let plaintext = try! keys.decrypt((tokens[1], tokens[2]), from: tokens[3])
+      // TODO: placeholder
+      textBox.text = "Decrypted Message:\n\(plaintext)"
+
     default:
       textBox.text = "Unknown type of message copied."
     }
@@ -132,7 +136,23 @@ class KeyboardViewController: UIInputViewController {
   
   @IBAction func encryptButtonPressed(_ sender: Any) {
     // TODO: finish
-    textBox.text = "encrypt pressed"
+    let textInput = (textDocumentProxy.documentContextBeforeInput ?? "") +
+      (textDocumentProxy.documentContextAfterInput ?? "")
+    
+    let (ciphertextString, signatureString, signingPublicKeyString) = try! keys.encrypt(textInput)
+
+    let msg = [
+      MessageType.ciphertext.rawValue,
+      ciphertextString,
+      signatureString,
+      signingPublicKeyString
+    ].joined(separator: "|")
+
+    clearInputText()
+    textDocumentProxy.insertText(msg)
+
+    textBox.text = "Copied text encrypted! Ready to be sent."
+
   }
   
   
