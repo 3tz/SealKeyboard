@@ -31,7 +31,9 @@ final class Keys {
       rawRepresentation: asData("qtuI5HeGBBxelfBT7aqBGKqncDIfmwGS30pbILNy7IE=")
     )
     encryptionPublicKey = encryptionSecretKey.publicKey
-    symmetricKey = SymmetricKey(size: .bits256)
+    symmetricKey = SymmetricKey(
+      data: Data(base64Encoded: "prA6/h5XuHvM3EN5NN63DjP2kuGHgHou1MU4QxoAWlc=")!
+    )
     print("Keys instance initialized.")
   }
 
@@ -56,7 +58,10 @@ final class Keys {
       rawRepresentation: asData(theirEncryptionPublicKeyString)
     )
 
-    let ephemeralSecretKey = Curve25519.KeyAgreement.PrivateKey()
+    // TODO: constant placeholder
+    let ephemeralSecretKey = try! Curve25519.KeyAgreement.PrivateKey(
+      rawRepresentation: asData("yMpWYAgBSbeJldLXT77quy6u9Kmt7DaXFMNSe8byj1g=")
+    )
     let ephemeralPublicKey = ephemeralSecretKey.publicKey
 
     let sharedSecret = try ephemeralSecretKey.sharedSecretFromKeyAgreement(with: theirEncryptionPublicKey)
