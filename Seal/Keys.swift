@@ -15,26 +15,53 @@ final class Keys {
   var encryptionPublicKey: Curve25519.KeyAgreement.PublicKey!
   private var symmetricKey: SymmetricKey!
 
+  let keyChain = GenericPasswordStore()
+
   // TODO: placeholder. use random salt for each msg
   let protocolSalt = "CryptoKit Playgrounds Putting It Together".data(using: .utf8)!
 
   init() {
-    // TODO: currently private keys are always different from each initialization.
-    // Might need to  give the option to load locally.
-    // TODO: Keys are using constant placehodlers.
-    signingSecretKey = try! Curve25519.Signing.PrivateKey(
-      rawRepresentation: asData("mHx2QASPQLvKmZPJcmHgBi3PW259a1nwRMIt0i2qEnA=")
-    )
-    signingPublicKey = signingSecretKey.publicKey
+    // Try reading keys from KeyChain. If no key exists, generate new keys and save them.
+    // Signing Secret Key
+    var account = "signingSecretKey"
+    if let storedKey: Curve25519.Signing.PrivateKey =
+        try? keyChain.readKey(account: account) {
+      signingSecretKey = storedKey
+      NSLog("\(account) restored from KeyChain.")
+    } else {
+      signingSecretKey = Curve25519.Signing.PrivateKey()
+      try! keyChain.storeKey(signingSecretKey, account: account)
+      NSLog("\(account) created and saved to KeyChain.")
+    }
+    // Encryption Secret Key
+    account = "encryptionSecretKey"
+    if let storedKey: Curve25519.KeyAgreement.PrivateKey =
+        try? keyChain.readKey(account: account) {
+      encryptionSecretKey = storedKey
+      NSLog("\(account) restored from KeyChain.")
+    } else {
+      encryptionSecretKey = Curve25519.KeyAgreement.PrivateKey()
+      try! keyChain.storeKey(encryptionSecretKey, account: account)
+      NSLog("\(account) created and saved to KeyChain.")
+    }
+    // Symmetric Key
+    account = "symmetricKey"
+    if let storedKey: SymmetricKey = try? keyChain.readKey(account: account) {
+      symmetricKey = storedKey
+      NSLog("\(account) restored from KeyChain.")
+    } else {
+      symmetricKey = SymmetricKey(size: .bits256)
+      try! keyChain.storeKey(symmetricKey, account: account)
+      NSLog("\(account) created and saved to KeyChain.")
+    }
 
-    encryptionSecretKey = try! Curve25519.KeyAgreement.PrivateKey(
-      rawRepresentation: asData("qtuI5HeGBBxelfBT7aqBGKqncDIfmwGS30pbILNy7IE=")
-    )
+    signingPublicKey = signingSecretKey.publicKey
     encryptionPublicKey = encryptionSecretKey.publicKey
-    symmetricKey = SymmetricKey(
-      data: Data(base64Encoded: "prA6/h5XuHvM3EN5NN63DjP2kuGHgHou1MU4QxoAWlc=")!
-    )
-    print("Keys instance initialized.")
+
+    NSLog("signingPublicKey: \(asString(signingPublicKey.rawRepresentation))")
+    NSLog("encryptionPublicKey: \(asString(encryptionPublicKey.rawRepresentation))")
+    NSLog("symmetricKey hash: \(SHA256.hash(data: symmetricKey.rawRepresentation).string)")
+    NSLog("Keys instance initialized.")
   }
 
   // MARK: - Asymmetric key exchange (symmetric key generation) methods
@@ -58,13 +85,12 @@ final class Keys {
       rawRepresentation: asData(theirEncryptionPublicKeyString)
     )
 
-    // TODO: constant placeholder
-    let ephemeralSecretKey = try! Curve25519.KeyAgreement.PrivateKey(
-      rawRepresentation: asData("yMpWYAgBSbeJldLXT77quy6u9Kmt7DaXFMNSe8byj1g=")
-    )
+    let ephemeralSecretKey = Curve25519.KeyAgreement.PrivateKey()
     let ephemeralPublicKey = ephemeralSecretKey.publicKey
 
-    let sharedSecret = try ephemeralSecretKey.sharedSecretFromKeyAgreement(with: theirEncryptionPublicKey)
+    let sharedSecret = try ephemeralSecretKey.sharedSecretFromKeyAgreement(
+      with: theirEncryptionPublicKey
+    )
 
     symmetricKey = sharedSecret.hkdfDerivedSymmetricKey(
       using: SHA256.self,
@@ -74,6 +100,9 @@ final class Keys {
         signingPublicKey.rawRepresentation,
       outputByteCount: 32
     )
+    try! keyChain.updateKey(newKey: symmetricKey, account: "symmetricKey")
+    let symmetricKeyHash = SHA256.hash(data: symmetricKey.rawRepresentation).string
+    NSLog("New symmetricKey saved to KeyChain. Digest: \(symmetricKeyHash)")
 
     let signature = try signingSecretKey.signature(
       for: ephemeralPublicKey.rawRepresentation + theirEncryptionPublicKey.rawRepresentation
@@ -184,6 +213,12 @@ final class Keys {
 
 enum DecryptionErrors: Error {
     case authenticationError
+}
+
+extension SHA256.Digest {
+  var string: String {
+    return self.compactMap { String(format: "%02x", $0) }.joined()
+  }
 }
 
 func asData(_ str: String) -> Data {

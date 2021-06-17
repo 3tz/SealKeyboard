@@ -19,6 +19,18 @@
 		30C0D6C526796024002433D7 /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C0D6C326796024002433D7 /* Keys.swift */; };
 		30D4DF822675BAD200CF9DE5 /* KeyboardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 30D4DF812675BAD200CF9DE5 /* KeyboardView.xib */; };
 		30D4DF832676AA1F00CF9DE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 306589C4267554B300708E73 /* Assets.xcassets */; };
+		30EFC19B267B278F00EF65E8 /* KeyStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC196267B278F00EF65E8 /* KeyStoreError.swift */; };
+		30EFC19C267B278F00EF65E8 /* KeyStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC196267B278F00EF65E8 /* KeyStoreError.swift */; };
+		30EFC19D267B278F00EF65E8 /* GenericPasswordStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC197267B278F00EF65E8 /* GenericPasswordStore.swift */; };
+		30EFC19E267B278F00EF65E8 /* GenericPasswordStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC197267B278F00EF65E8 /* GenericPasswordStore.swift */; };
+		30EFC19F267B278F00EF65E8 /* GenericPasswordConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC198267B278F00EF65E8 /* GenericPasswordConvertible.swift */; };
+		30EFC1A0267B278F00EF65E8 /* GenericPasswordConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC198267B278F00EF65E8 /* GenericPasswordConvertible.swift */; };
+		30EFC1A1267B278F00EF65E8 /* SecKeyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC199267B278F00EF65E8 /* SecKeyConvertible.swift */; };
+		30EFC1A2267B278F00EF65E8 /* SecKeyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC199267B278F00EF65E8 /* SecKeyConvertible.swift */; };
+		30EFC1A3267B278F00EF65E8 /* SecKeyStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC19A267B278F00EF65E8 /* SecKeyStore.swift */; };
+		30EFC1A4267B278F00EF65E8 /* SecKeyStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC19A267B278F00EF65E8 /* SecKeyStore.swift */; };
+		30EFC1A7267B27A100EF65E8 /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 30EFC1A6267B27A100EF65E8 /* LICENSE.txt */; };
+		30EFC1A8267B27A100EF65E8 /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 30EFC1A6267B27A100EF65E8 /* LICENSE.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,6 +91,12 @@
 		306589D72675556400708E73 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		30C0D6C326796024002433D7 /* Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
 		30D4DF812675BAD200CF9DE5 /* KeyboardView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = KeyboardView.xib; sourceTree = "<group>"; };
+		30EFC196267B278F00EF65E8 /* KeyStoreError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyStoreError.swift; sourceTree = "<group>"; };
+		30EFC197267B278F00EF65E8 /* GenericPasswordStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericPasswordStore.swift; sourceTree = "<group>"; };
+		30EFC198267B278F00EF65E8 /* GenericPasswordConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericPasswordConvertible.swift; sourceTree = "<group>"; };
+		30EFC199267B278F00EF65E8 /* SecKeyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecKeyConvertible.swift; sourceTree = "<group>"; };
+		30EFC19A267B278F00EF65E8 /* SecKeyStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecKeyStore.swift; sourceTree = "<group>"; };
+		30EFC1A6267B27A100EF65E8 /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +123,8 @@
 				306589BA267554B200708E73 /* Seal */,
 				306589D42675556400708E73 /* Keyboard */,
 				306589B9267554B200708E73 /* Products */,
+				30EFC195267B278F00EF65E8 /* Storage */,
+				30EFC1A5267B27A100EF65E8 /* LICENSE */,
 				30C0D6BC2677512E002433D7 /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -148,6 +168,26 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		30EFC195267B278F00EF65E8 /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				30EFC196267B278F00EF65E8 /* KeyStoreError.swift */,
+				30EFC197267B278F00EF65E8 /* GenericPasswordStore.swift */,
+				30EFC198267B278F00EF65E8 /* GenericPasswordConvertible.swift */,
+				30EFC199267B278F00EF65E8 /* SecKeyConvertible.swift */,
+				30EFC19A267B278F00EF65E8 /* SecKeyStore.swift */,
+			);
+			path = Storage;
+			sourceTree = "<group>";
+		};
+		30EFC1A5267B27A100EF65E8 /* LICENSE */ = {
+			isa = PBXGroup;
+			children = (
+				30EFC1A6267B27A100EF65E8 /* LICENSE.txt */,
+			);
+			path = LICENSE;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -238,6 +278,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				30EFC1A7267B27A100EF65E8 /* LICENSE.txt in Resources */,
 				306589C8267554B300708E73 /* LaunchScreen.storyboard in Resources */,
 				306589C5267554B300708E73 /* Assets.xcassets in Resources */,
 				306589C3267554B200708E73 /* Main.storyboard in Resources */,
@@ -248,6 +289,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				30EFC1A8267B27A100EF65E8 /* LICENSE.txt in Resources */,
 				30D4DF832676AA1F00CF9DE5 /* Assets.xcassets in Resources */,
 				30D4DF822675BAD200CF9DE5 /* KeyboardView.xib in Resources */,
 			);
@@ -263,7 +305,12 @@
 				306589C0267554B200708E73 /* ViewController.swift in Sources */,
 				306589BC267554B200708E73 /* AppDelegate.swift in Sources */,
 				30C0D6C426796024002433D7 /* Keys.swift in Sources */,
+				30EFC1A1267B278F00EF65E8 /* SecKeyConvertible.swift in Sources */,
 				306589BE267554B200708E73 /* SceneDelegate.swift in Sources */,
+				30EFC19D267B278F00EF65E8 /* GenericPasswordStore.swift in Sources */,
+				30EFC19F267B278F00EF65E8 /* GenericPasswordConvertible.swift in Sources */,
+				30EFC1A3267B278F00EF65E8 /* SecKeyStore.swift in Sources */,
+				30EFC19B267B278F00EF65E8 /* KeyStoreError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -272,7 +319,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				30C0D6C526796024002433D7 /* Keys.swift in Sources */,
+				30EFC19C267B278F00EF65E8 /* KeyStoreError.swift in Sources */,
+				30EFC1A0267B278F00EF65E8 /* GenericPasswordConvertible.swift in Sources */,
+				30EFC19E267B278F00EF65E8 /* GenericPasswordStore.swift in Sources */,
 				306589D62675556400708E73 /* KeyboardViewController.swift in Sources */,
+				30EFC1A4267B278F00EF65E8 /* SecKeyStore.swift in Sources */,
+				30EFC1A2267B278F00EF65E8 /* SecKeyConvertible.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
