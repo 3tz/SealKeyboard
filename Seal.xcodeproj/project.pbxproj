@@ -122,9 +122,10 @@
 			children = (
 				306589BA267554B200708E73 /* Seal */,
 				306589D42675556400708E73 /* Keyboard */,
-				306589B9267554B200708E73 /* Products */,
+				30EFC1A9267C023300EF65E8 /* Cryptography */,
 				30EFC195267B278F00EF65E8 /* Storage */,
 				30EFC1A5267B27A100EF65E8 /* LICENSE */,
+				306589B9267554B200708E73 /* Products */,
 				30C0D6BC2677512E002433D7 /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -141,7 +142,6 @@
 		306589BA267554B200708E73 /* Seal */ = {
 			isa = PBXGroup;
 			children = (
-				30C0D6C326796024002433D7 /* Keys.swift */,
 				306589BB267554B200708E73 /* AppDelegate.swift */,
 				306589BD267554B200708E73 /* SceneDelegate.swift */,
 				306589BF267554B200708E73 /* ViewController.swift */,
@@ -188,6 +188,14 @@
 				30EFC1A6267B27A100EF65E8 /* LICENSE.txt */,
 			);
 			path = LICENSE;
+			sourceTree = "<group>";
+		};
+		30EFC1A9267C023300EF65E8 /* Cryptography */ = {
+			isa = PBXGroup;
+			children = (
+				30C0D6C326796024002433D7 /* Keys.swift */,
+			);
+			path = Cryptography;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
