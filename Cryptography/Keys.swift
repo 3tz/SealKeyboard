@@ -84,8 +84,9 @@ final class Keys {
     signingPublicKeyString: String
   ) {
     // Convert string back to public key type
-    guard let theirEncryptionPublicKey = try? Curve25519.KeyAgreement.PublicKey(
-      rawRepresentation: asData(theirEncryptionPublicKeyString)
+    guard let theirEncryptionPublicKeyData = asData(theirEncryptionPublicKeyString),
+          let theirEncryptionPublicKey = try? Curve25519.KeyAgreement.PublicKey(
+            rawRepresentation: theirEncryptionPublicKeyData
     ) else {
       throw DecryptionErrors.parsingError
     }
@@ -139,10 +140,11 @@ final class Keys {
       theirSigningPublicKeyString: String
   ) throws {
     // Convert input strings into corresponding data types
-    let ephemeralPublicKeyData = asData(ephemeralPublicKeyString)
-    let signature = asData(signatureString)
-    guard let theirSigningPublicKey = try? Curve25519.Signing.PublicKey(
-      rawRepresentation: asData(theirSigningPublicKeyString)
+    guard let ephemeralPublicKeyData = asData(ephemeralPublicKeyString),
+          let signature = asData(signatureString),
+          let theirSigningPublicKeyData = asData(theirSigningPublicKeyString),
+          let theirSigningPublicKey = try? Curve25519.Signing.PublicKey(
+            rawRepresentation: theirSigningPublicKeyData
     ) else {
       throw DecryptionErrors.parsingError
     }
@@ -218,10 +220,13 @@ final class Keys {
     from theirSigningPublicKeyString: String
   ) throws -> String {
 
-    let ciphertext = asData(sealedMessage.ciphertextString)
-    let signature = asData(sealedMessage.signatureString)
-    guard let theirSigningPublicKey = try? Curve25519.Signing.PublicKey(
-      rawRepresentation: asData(theirSigningPublicKeyString)
+
+
+    guard let ciphertext = asData(sealedMessage.ciphertextString),
+          let signature = asData(sealedMessage.signatureString),
+          let theirSigningPublicKeyData = asData(theirSigningPublicKeyString),
+          let theirSigningPublicKey = try? Curve25519.Signing.PublicKey(
+            rawRepresentation: theirSigningPublicKeyData
     ) else {
       throw DecryptionErrors.parsingError
     }
@@ -254,8 +259,8 @@ extension SHA256.Digest {
   }
 }
 
-func asData(_ str: String) -> Data {
-  return Data(base64Encoded: str)!
+func asData(_ str: String) -> Data? {
+  return Data(base64Encoded: str)
 }
 
 func asString(_ data: Data) -> String {

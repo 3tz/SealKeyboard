@@ -75,7 +75,8 @@ class KeyboardViewController: UIInputViewController {
     }
     
     let tokens = copiedText.components(separatedBy: "|")
-  
+    NSLog("Tokens read: \(tokens)")
+
     switch MessageType(rawValue: tokens[0]){
     case .ECDH0:
       // Request to initiate ECDH, i.e., to generate a symmetric key.
@@ -85,10 +86,15 @@ class KeyboardViewController: UIInputViewController {
 
       let theirEncryptionPublicKeyString = tokens[1]
 
+      var ephemeralPublicKeyString, signatureString, signingPublicKeyString: String!
       // Start ECDH, store the symmetric key, and send them the public key
-      // TODO: error handling: check if it's a valid pk
-      let (ephemeralPublicKeyString, signatureString, signingPublicKeyString) =
-        try! keys.ECDHKeyExchange(with: theirEncryptionPublicKeyString)
+      do {
+        (ephemeralPublicKeyString, signatureString, signingPublicKeyString) =
+                try keys.ECDHKeyExchange(with: theirEncryptionPublicKeyString)
+      } catch {
+        NSLog(".ECDH0 error caught:\n\(error)")
+        fallthrough
+      }
 
       let msg = [
         MessageType.ECDH1.rawValue,
@@ -101,7 +107,7 @@ class KeyboardViewController: UIInputViewController {
       textDocumentProxy.insertText(msg)
 
       // TODO: placeholder
-      textBox.text = "Request to generate symmetric key received. "
+      textBox.text = "Request to generate symmetric key received."
 
     case .ECDH1:
       // Reposne to request to ECDH. Expect to receive ephemeral public key.
@@ -109,11 +115,17 @@ class KeyboardViewController: UIInputViewController {
       // Expected format: "{.ECDH1}|{ephemeralPublicKey}|{signature}|{signingPublicKey}"
       if tokens.count != 4 { fallthrough }
 
-      try! keys.verifyECDHKeyExchangeResponse(
-        ephemeralPublicKeyString: tokens[1],
-        signatureString: tokens[2],
-        theirSigningPublicKeyString: tokens[3]
-      )
+      do {
+        try keys.verifyECDHKeyExchangeResponse(
+          ephemeralPublicKeyString: tokens[1],
+          signatureString: tokens[2],
+          theirSigningPublicKeyString: tokens[3]
+        )
+      } catch {
+        NSLog(".ECDH1 error caught:\n\(error)")
+        fallthrough
+      }
+
 
       // TODO: placeholder
       textBox.text = "Symmetric key generated"
@@ -121,9 +133,15 @@ class KeyboardViewController: UIInputViewController {
     case .ciphertext:
       // Ciphertext received. Verify signature and decrypt using symmetric key.
       if tokens.count != 4 { fallthrough }
+      var plaintext: String
 
-      // TODO: error handling
-      let plaintext = try! keys.decrypt((tokens[1], tokens[2]), from: tokens[3])
+      do {
+        plaintext = try keys.decrypt((tokens[1], tokens[2]), from: tokens[3])
+      } catch {
+          NSLog(".ciphertext error caught:\n\(error)")
+          fallthrough
+      }
+
       // TODO: placeholder
       textBox.text = "Decrypted Message:\n\(plaintext)"
 
@@ -138,8 +156,17 @@ class KeyboardViewController: UIInputViewController {
     // TODO: finish
     let textInput = (textDocumentProxy.documentContextBeforeInput ?? "") +
       (textDocumentProxy.documentContextAfterInput ?? "")
-    
-    let (ciphertextString, signatureString, signingPublicKeyString) = try! keys.encrypt(textInput)
+
+    var ciphertextString, signatureString, signingPublicKeyString: String!
+
+    do {
+      (ciphertextString, signatureString, signingPublicKeyString) = try keys.encrypt(textInput)
+    } catch {
+      NSLog("encryptButtonPressed error caught:\n\(error)")
+      textBox.text = "Something went wrong. Unable to encrypt. Try again later."
+      return
+    }
+
 
     let msg = [
       MessageType.ciphertext.rawValue,
@@ -151,7 +178,7 @@ class KeyboardViewController: UIInputViewController {
     clearInputText()
     textDocumentProxy.insertText(msg)
 
-    textBox.text = "Copied text encrypted! Ready to be sent."
+    textBox.text = "Text encrypted! Ready to be sent."
 
   }
   
@@ -177,8 +204,8 @@ class KeyboardViewController: UIInputViewController {
 }
 
 enum MessageType: String {
-  case ECDH0 = "ECDH0"
-  case ECDH1 = "ECDH1"
-  case ciphertext = "ciphertext"
+  case ECDH0
+  case ECDH1
+  case ciphertext
 }
 
