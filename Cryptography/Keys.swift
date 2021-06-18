@@ -23,7 +23,7 @@ final class Keys {
   init() {
     // Try reading keys from KeyChain. If no key exists, generate new keys and save them.
     // Signing Secret Key
-    var account = "signingSecretKey"
+    var account = KeyChainAccount.signingSecretKey.rawValue
     if let storedKey: Curve25519.Signing.PrivateKey =
         try? keyChain.readKey(account: account) {
       signingSecretKey = storedKey
@@ -34,7 +34,7 @@ final class Keys {
       NSLog("\(account) created and saved to KeyChain.")
     }
     // Encryption Secret Key
-    account = "encryptionSecretKey"
+    account = KeyChainAccount.encryptionSecretKey.rawValue
     if let storedKey: Curve25519.KeyAgreement.PrivateKey =
         try? keyChain.readKey(account: account) {
       encryptionSecretKey = storedKey
@@ -45,7 +45,7 @@ final class Keys {
       NSLog("\(account) created and saved to KeyChain.")
     }
     // Symmetric Key
-    account = "symmetricKey"
+    account = KeyChainAccount.symmetricKey.rawValue
     if let storedKey: SymmetricKey = try? keyChain.readKey(account: account) {
       symmetricKey = storedKey
       NSLog("\(account) restored from KeyChain.")
@@ -70,7 +70,10 @@ final class Keys {
   /// Modified from: developer.apple.com/documentation/cryptokit/performing_common_cryptographic_operations
   /// - Parameters:
   ///   - theirEncryptionPublicKeyString: Encryption public key of the recipient.
-  /// - Throws: TODO:
+  /// - Throws:
+  ///   - parsingError if input public key string cannot be converted into a PublicKey object
+  ///   - Errors from cryptokit operation failures.
+  ///   - Errors from GenericPasswordStore.update operation failures.
   /// - Returns:
   ///   - Public key of the ephemeral secret key used for generating the symmetric key.
   ///   - Signature signed by signing secret key.
@@ -81,9 +84,11 @@ final class Keys {
     signingPublicKeyString: String
   ) {
     // Convert string back to public key type
-    let theirEncryptionPublicKey = try Curve25519.KeyAgreement.PublicKey(
+    guard let theirEncryptionPublicKey = try? Curve25519.KeyAgreement.PublicKey(
       rawRepresentation: asData(theirEncryptionPublicKeyString)
-    )
+    ) else {
+      throw DecryptionErrors.parsingError
+    }
 
     let ephemeralSecretKey = Curve25519.KeyAgreement.PrivateKey()
     let ephemeralPublicKey = ephemeralSecretKey.publicKey
@@ -100,7 +105,9 @@ final class Keys {
         signingPublicKey.rawRepresentation,
       outputByteCount: 32
     )
-    try! keyChain.updateKey(newKey: symmetricKey, account: "symmetricKey")
+    try keyChain.updateKey(
+      newKey: symmetricKey, account: KeyChainAccount.symmetricKey.rawValue
+    )
     let symmetricKeyHash = SHA256.hash(data: symmetricKey.rawRepresentation).string
     NSLog("New symmetricKey saved to KeyChain. Digest: \(symmetricKeyHash)")
 
@@ -122,7 +129,10 @@ final class Keys {
   ///   - ephemeralPublicKeyString: The public key of the key pair used for generating the symmetric key.
   ///   - signatureString: Signature of the sender on the ephermeral public key + our encryption public key
   ///   - theirSigningPublicKeyString: Signing public key of the sender
-  /// - Throws: Error if signature unmatch or incorrect key information TODO: finish
+  /// - Throws:
+  ///   - .parsingError fi unable to convert input key strings  into  PublicKey objects
+  ///   - authenticationError if signature unmatch
+  ///   - Other errors from CryptoKit operation failures.
   func verifyECDHKeyExchangeResponse(
       ephemeralPublicKeyString: String,
       signatureString: String,
@@ -131,9 +141,11 @@ final class Keys {
     // Convert input strings into corresponding data types
     let ephemeralPublicKeyData = asData(ephemeralPublicKeyString)
     let signature = asData(signatureString)
-    let theirSigningPublicKey = try Curve25519.Signing.PublicKey(
+    guard let theirSigningPublicKey = try? Curve25519.Signing.PublicKey(
       rawRepresentation: asData(theirSigningPublicKeyString)
-    )
+    ) else {
+      throw DecryptionErrors.parsingError
+    }
 
     // Verify signature
     let data = ephemeralPublicKeyData + encryptionPublicKey.rawRepresentation
@@ -141,9 +153,12 @@ final class Keys {
       throw DecryptionErrors.authenticationError
     }
 
-    let ephemeralPublicKey = try Curve25519.KeyAgreement.PublicKey(
+    guard let ephemeralPublicKey = try? Curve25519.KeyAgreement.PublicKey(
       rawRepresentation: ephemeralPublicKeyData
-    )
+    ) else {
+      throw DecryptionErrors.parsingError
+    }
+
     let sharedSecret = try encryptionSecretKey.sharedSecretFromKeyAgreement(
       with: ephemeralPublicKey
     )
@@ -155,13 +170,19 @@ final class Keys {
         theirSigningPublicKey.rawRepresentation,
       outputByteCount: 32
     )
+    try keyChain.updateKey(
+      newKey: symmetricKey, account: KeyChainAccount.symmetricKey.rawValue
+    )
+    let symmetricKeyHash = SHA256.hash(data: symmetricKey.rawRepresentation).string
+    NSLog("New symmetricKey saved to KeyChain. Digest: \(symmetricKeyHash)")
   }
 
   // MARK: - Symmetric encryption and decryption methods
 
   /// Encrypt via symmetric encryption with current symmetric key.
   /// - Parameter msg: Message to encrypt with current symmetric key
-  /// - Throws: TODO
+  /// - Throws:
+  ///   - Errors from CryptoKit operation failures.
   /// - Returns:
   ///   - ciphertextString: Ciphertext of the encrypted message.
   ///   - signatureString: Signature signed with signing secret key.
@@ -187,7 +208,10 @@ final class Keys {
   ///       - ciphertextString: The ciphertext received.
   ///       - signatureString: Signature along the message.
   ///   - theirSigningPublicKeyString: Public key of the secret key used for signing the signature.
-  /// - Throws: TODO
+  /// - Throws:
+  ///   - .parsingError if unable to convert input key strings into PublicKey objects
+  ///   - authenticationError if unable to parse or match signature.
+  ///   - Other errors from CryptoKit operation failures.
   /// - Returns: Decrypted message.
   func decrypt(
     _ sealedMessage: (ciphertextString: String, signatureString: String),
@@ -196,15 +220,17 @@ final class Keys {
 
     let ciphertext = asData(sealedMessage.ciphertextString)
     let signature = asData(sealedMessage.signatureString)
-    let theirSigningPublicKey = try Curve25519.Signing.PublicKey(
+    guard let theirSigningPublicKey = try? Curve25519.Signing.PublicKey(
       rawRepresentation: asData(theirSigningPublicKeyString)
-    )
+    ) else {
+      throw DecryptionErrors.parsingError
+    }
 
     guard theirSigningPublicKey.isValidSignature(signature, for: ciphertext) else {
       throw DecryptionErrors.authenticationError
     }
 
-    let sealedBox = try! ChaChaPoly.SealedBox(combined: ciphertext)
+    let sealedBox = try ChaChaPoly.SealedBox(combined: ciphertext)
     let msg = try ChaChaPoly.open(sealedBox, using: symmetricKey)
 
     return String(decoding: msg, as: UTF8.self)
@@ -212,7 +238,14 @@ final class Keys {
 }
 
 enum DecryptionErrors: Error {
-    case authenticationError
+  case authenticationError
+  case parsingError
+}
+
+enum KeyChainAccount: String {
+  case encryptionSecretKey
+  case signingSecretKey
+  case symmetricKey
 }
 
 extension SHA256.Digest {
