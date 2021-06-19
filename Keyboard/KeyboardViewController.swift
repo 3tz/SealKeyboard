@@ -67,7 +67,7 @@ class KeyboardViewController: UIInputViewController {
     textDocumentProxy.insertText(msg)
   }
   
-  @IBAction func decryptButtonPressed(_ sender: Any) {
+  @IBAction func unsealButtonPressed(_ sender: Any) {
     // TODO: finish
     guard let copiedText = UIPasteboard.general.string else {
       textBox.text = "No copied text found." // TODO: placeholder
@@ -152,10 +152,16 @@ class KeyboardViewController: UIInputViewController {
 
   }
   
-  @IBAction func encryptButtonPressed(_ sender: Any) {
+  @IBAction func sealButtonPressed(_ sender: Any) {
     // TODO: finish
     let textInput = (textDocumentProxy.documentContextBeforeInput ?? "") +
+      (textDocumentProxy.selectedText ?? "") +
       (textDocumentProxy.documentContextAfterInput ?? "")
+
+    if textInput.isEmpty {
+      textBox.text = "Unable to seal message because input text field is empty."
+      return
+    }
 
     var ciphertextString, signatureString, signingPublicKeyString: String!
 
