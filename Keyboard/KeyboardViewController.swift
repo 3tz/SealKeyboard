@@ -24,12 +24,6 @@ class KeyboardViewController: UIInputViewController {
     super.viewDidLoad()
     keys = Keys()
 
-    // Use xib as view
-    view = UINib(
-      nibName: "KeyboardView",
-      bundle: nil
-    ).instantiate(withOwner: self, options: nil)[0] as? UIView
-    
     // Actually make the globe button switch keyboard
     nextKeyboardButton.addTarget(
       self, action: #selector(handleInputModeList(from:with:)), for: .allTouchEvents)
@@ -39,10 +33,6 @@ class KeyboardViewController: UIInputViewController {
   override func viewWillLayoutSubviews() {
     self.nextKeyboardButton.isHidden = !self.needsInputModeSwitchKey
     super.viewWillLayoutSubviews()
-  }
-  
-  override func textWillChange(_ textInput: UITextInput?) {
-    // The app is about to change the document's contents. Perform any preparation here.
   }
   
   override func textDidChange(_ textInput: UITextInput?) {
@@ -55,7 +45,7 @@ class KeyboardViewController: UIInputViewController {
     } else {
       textColor = UIColor.black
     }
-    self.nextKeyboardButton.setTitleColor(textColor, for: [])
+    nextKeyboardButton.setTitleColor(textColor, for: [])
   }
 
   /// Request button pressed, so perform key exchange process by placing our encryption public key in the input text field.

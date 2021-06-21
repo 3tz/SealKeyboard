@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -15,9 +15,10 @@
 		306589C8267554B300708E73 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 306589C6267554B300708E73 /* LaunchScreen.storyboard */; };
 		306589D62675556400708E73 /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306589D52675556400708E73 /* KeyboardViewController.swift */; };
 		306589DA2675556400708E73 /* Keyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 306589D32675556400708E73 /* Keyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		30B1075F267DAB13002868E3 /* MessageKit in Frameworks */ = {isa = PBXBuildFile; productRef = 30B1075E267DAB13002868E3 /* MessageKit */; };
+		30B10761267DB25F002868E3 /* Keyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 30B10760267DB25F002868E3 /* Keyboard.storyboard */; };
 		30C0D6C426796024002433D7 /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C0D6C326796024002433D7 /* Keys.swift */; };
 		30C0D6C526796024002433D7 /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C0D6C326796024002433D7 /* Keys.swift */; };
-		30D4DF822675BAD200CF9DE5 /* KeyboardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 30D4DF812675BAD200CF9DE5 /* KeyboardView.xib */; };
 		30D4DF832676AA1F00CF9DE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 306589C4267554B300708E73 /* Assets.xcassets */; };
 		30EFC19B267B278F00EF65E8 /* KeyStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC196267B278F00EF65E8 /* KeyStoreError.swift */; };
 		30EFC19C267B278F00EF65E8 /* KeyStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC196267B278F00EF65E8 /* KeyStoreError.swift */; };
@@ -89,8 +90,8 @@
 		306589D32675556400708E73 /* Keyboard.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = Keyboard.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		306589D52675556400708E73 /* KeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewController.swift; sourceTree = "<group>"; };
 		306589D72675556400708E73 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		30B10760267DB25F002868E3 /* Keyboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Keyboard.storyboard; sourceTree = "<group>"; };
 		30C0D6C326796024002433D7 /* Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
-		30D4DF812675BAD200CF9DE5 /* KeyboardView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = KeyboardView.xib; sourceTree = "<group>"; };
 		30EFC196267B278F00EF65E8 /* KeyStoreError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyStoreError.swift; sourceTree = "<group>"; };
 		30EFC197267B278F00EF65E8 /* GenericPasswordStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericPasswordStore.swift; sourceTree = "<group>"; };
 		30EFC198267B278F00EF65E8 /* GenericPasswordConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericPasswordConvertible.swift; sourceTree = "<group>"; };
@@ -111,6 +112,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				30B1075F267DAB13002868E3 /* MessageKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -158,7 +160,7 @@
 			children = (
 				306589D52675556400708E73 /* KeyboardViewController.swift */,
 				306589D72675556400708E73 /* Info.plist */,
-				30D4DF812675BAD200CF9DE5 /* KeyboardView.xib */,
+				30B10760267DB25F002868E3 /* Keyboard.storyboard */,
 			);
 			path = Keyboard;
 			sourceTree = "<group>";
@@ -238,6 +240,7 @@
 			);
 			name = Keyboard;
 			packageProductDependencies = (
+				30B1075E267DAB13002868E3 /* MessageKit */,
 			);
 			productName = Keyboard;
 			productReference = 306589D32675556400708E73 /* Keyboard.appex */;
@@ -270,6 +273,7 @@
 			);
 			mainGroup = 306589AF267554B200708E73;
 			packageReferences = (
+				30B1075D267DAB13002868E3 /* XCRemoteSwiftPackageReference "MessageKit" */,
 			);
 			productRefGroup = 306589B9267554B200708E73 /* Products */;
 			projectDirPath = "";
@@ -298,8 +302,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				30EFC1A8267B27A100EF65E8 /* LICENSE.txt in Resources */,
+				30B10761267DB25F002868E3 /* Keyboard.storyboard in Resources */,
 				30D4DF832676AA1F00CF9DE5 /* Assets.xcassets in Resources */,
-				30D4DF822675BAD200CF9DE5 /* KeyboardView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -609,6 +613,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		30B1075D267DAB13002868E3 /* XCRemoteSwiftPackageReference "MessageKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/MessageKit/MessageKit";
+			requirement = {
+				kind = exactVersion;
+				version = 3.6.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		30B1075E267DAB13002868E3 /* MessageKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 30B1075D267DAB13002868E3 /* XCRemoteSwiftPackageReference "MessageKit" */;
+			productName = MessageKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 306589B0267554B200708E73 /* Project object */;
 }
