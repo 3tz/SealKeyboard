@@ -12,9 +12,17 @@ class KeyboardViewController: UIInputViewController {
   var keyboardView: UIView!
   @IBOutlet var textBox: UILabel!
   @IBOutlet var nextKeyboardButton: UIButton!
+  var keyboard: Keyboard!
 
   // Encryption and Signing Keys
   var keys: Keys!
+
+  override func loadView() {
+    super.loadView()
+
+
+
+  }
 
   override func updateViewConstraints() {
     super.updateViewConstraints()
@@ -23,15 +31,29 @@ class KeyboardViewController: UIInputViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     keys = Keys()
+    keyboard = Keyboard()
+    keyboard.addButtonsTo(view: view)
 
-    // Actually make the globe button switch keyboard
-    nextKeyboardButton.addTarget(
-      self, action: #selector(handleInputModeList(from:with:)), for: .allTouchEvents)
-    textBox.text = ""
+
+    // Perform custom UI setup here
+    self.nextKeyboardButton = UIButton(type: .system)
+
+    self.nextKeyboardButton.setTitle(NSLocalizedString("Next Keyboard", comment: "Title for 'Next Keyboard' button"), for: [])
+    self.nextKeyboardButton.sizeToFit()
+    self.nextKeyboardButton.translatesAutoresizingMaskIntoConstraints = false
+
+    self.nextKeyboardButton.addTarget(self, action: #selector(handleInputModeList(from:with:)), for: .allTouchEvents)
+
+    self.view.addSubview(self.nextKeyboardButton)
+
+    self.nextKeyboardButton.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
+    self.nextKeyboardButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+
+    
   }
-  
+
   override func viewWillLayoutSubviews() {
-    self.nextKeyboardButton.isHidden = !self.needsInputModeSwitchKey
+//    self.nextKeyboardButton.isHidden = !self.needsInputModeSwitchKey
     super.viewWillLayoutSubviews()
   }
   
@@ -45,11 +67,11 @@ class KeyboardViewController: UIInputViewController {
     } else {
       textColor = UIColor.black
     }
-    nextKeyboardButton.setTitleColor(textColor, for: [])
+//    nextKeyboardButton.setTitleColor(textColor, for: [])
   }
 
   /// Request button pressed, so perform key exchange process by placing our encryption public key in the input text field.
-  @IBAction func requestButtonPressed(_ sender: Any) {
+  func requestButtonPressed(_ sender: Any) {
     textBox.text = "request pressed" // TODO: placeholder
     let msg = MessageType.ECDH0.rawValue + "|" +
       asString(keys.encryptionPublicKey.rawRepresentation)
@@ -57,7 +79,7 @@ class KeyboardViewController: UIInputViewController {
     textDocumentProxy.insertText(msg)
   }
   
-  @IBAction func unsealButtonPressed(_ sender: Any) {
+  func unsealButtonPressed(_ sender: Any) {
     // TODO: finish
     guard let copiedText = UIPasteboard.general.string else {
       textBox.text = "No copied text found." // TODO: placeholder
@@ -142,7 +164,7 @@ class KeyboardViewController: UIInputViewController {
 
   }
   
-  @IBAction func sealButtonPressed(_ sender: Any) {
+  func sealButtonPressed(_ sender: Any) {
     // TODO: finish
     let textInput = (textDocumentProxy.documentContextBeforeInput ?? "") +
       (textDocumentProxy.selectedText ?? "") +
@@ -205,3 +227,6 @@ enum MessageType: String {
   case ciphertext
 }
 
+enum viewTag: Int {
+  case KeyboardButtons
+}
