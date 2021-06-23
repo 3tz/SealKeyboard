@@ -13,6 +13,8 @@ class KeyboardViewController: UIInputViewController {
   @IBOutlet var textBox: UILabel!
   @IBOutlet var nextKeyboardButton: UIButton!
   var keyboard: Keyboard!
+  var cryptoButtonsView: UIView!
+  var keyboardButtonsView: UIView!
 
   // Encryption and Signing Keys
   var keys: Keys!
@@ -27,12 +29,43 @@ class KeyboardViewController: UIInputViewController {
   override func updateViewConstraints() {
     super.updateViewConstraints()
   }
-  
+
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+
+    let heightConstraint = NSLayoutConstraint(
+        item:self.view as Any,
+        attribute:NSLayoutConstraint.Attribute.height,
+        relatedBy:NSLayoutConstraint.Relation.equal,
+        toItem:nil,
+        attribute:NSLayoutConstraint.Attribute.notAnAttribute,
+        multiplier:0,
+        constant: keyboardViewHeight)
+    heightConstraint.priority = UILayoutPriority(rawValue: 1000)
+
+    view.addConstraint(heightConstraint) // TODO: what if view already has constraint added?
+  }
+
+
   override func viewDidLoad() {
     super.viewDidLoad()
     keys = Keys()
+//    if let view = superView.viewWithTag(ViewTag.KeyboardButtons.rawValue) {
+//      view.removeFromSuperview()
+//    }
+
+//    cryptoButtonsView = getCryptoButtonsView()
+//    view.addSubview(cryptoButtonsView)
+
     keyboard = Keyboard()
-    keyboard.addButtonsTo(view: view)
+    keyboardButtonsView = keyboard.getButtonsView()
+
+    view.addSubview(keyboardButtonsView)
+
+//    NSLayoutConstraint.activate([
+//      cryptoButtonsView.topAnchor.constraint(equalTo: view.topAnchor),
+//      keyboardButtonsView.topAnchor.constraint(equalTo: cryptoButtonsView.bottomAnchor),
+//    ])
 
 
     // Perform custom UI setup here
@@ -48,8 +81,6 @@ class KeyboardViewController: UIInputViewController {
 
     self.nextKeyboardButton.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
     self.nextKeyboardButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
-
-    
   }
 
   override func viewWillLayoutSubviews() {
@@ -219,14 +250,4 @@ class KeyboardViewController: UIInputViewController {
   }
 
   
-}
-
-enum MessageType: String {
-  case ECDH0
-  case ECDH1
-  case ciphertext
-}
-
-enum viewTag: Int {
-  case KeyboardButtons
 }
