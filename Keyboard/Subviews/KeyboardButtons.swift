@@ -12,7 +12,7 @@ let buttonLayout: [String: [[String]]] = [
   Keyboard.State.alphabets.rawValue: [
     ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
     ["spacer", "a", "s", "d", "f", "g","h", "j", "k", "l", "spacer"],
-    ["shift", "spacer", "z", "x", "c", "v", "b", "n", "m", "spacer", "backspace"],
+    ["shift", "spacer2", "z", "x", "c", "v", "b", "n", "m", "spacer2", "backspace"],
     ["123", "switch", "space", "return"]
   ],
   Keyboard.State.numbers.rawValue:[
@@ -72,20 +72,35 @@ class Keyboard {
     // All normal buttons have the same size, so choose one of them and set constraints of
     //  other normal buttons based on that.
     let buttonWithStandardSize = buttonsStackViews[0].arrangedSubviews[0]
-    // Same idea for spacers.
+
+    // Same idea for spacers: spacers of the same row have the same width
     var spacerView: UIView? = nil
+    var spacer2View: UIView? = nil
 
     // Add constraints to buttons
     for rowStackView in buttonsStackViews {
       for subView in rowStackView.arrangedSubviews {
+        let keyname = subView.accessibilityIdentifier!
+
         guard let button = subView as? UIButton else {
           // It's a spacer UIView
+          // spacers of the same row have the same width
+          switch keyname {
+            case "spacer":
+              if spacerView == nil {
+                spacerView = subView
+              }
+              subView.widthAnchor.constraint(equalTo: spacerView!.widthAnchor).isActive = true
+            case "spacer2":
+              if spacer2View == nil {
+                spacer2View = subView
+              }
+              subView.widthAnchor.constraint(equalTo: spacer2View!.widthAnchor).isActive = true
+            default:
+              fatalError()
+          }
           subView.heightAnchor.constraint(
             equalTo: buttonWithStandardSize.heightAnchor).isActive = true
-          if spacerView == nil {
-            spacerView = subView
-          }
-          subView.widthAnchor.constraint(equalTo: spacerView!.widthAnchor).isActive = true
           continue
         }
         // all buttons have the same height
@@ -93,33 +108,32 @@ class Keyboard {
           equalTo: buttonWithStandardSize.heightAnchor).isActive = true
 
         // Calculate width of keys
-        // Letters = Shift = Backspace = Numbers = Symbols \ {.,?!'} = #+=
-        // Spacers = Spacers
+        // Letters = Symbols \ {.,?!'}
+        // Spacers_of_row_i = Spacers_of_row_i
         // Space = 5 * Letter + 4 * HorizonalSpacing
-        // 123 = ABC = switch = (2.5 * Letter + HorizontalSpacing) / 2
-        //     = 1.25 * Letter + 0.5 HorizontalSpacing
-        let keyname = button.accessibilityIdentifier!
+        // 123 = ABC = switch = Shift = Backspace = Numbers = #+=
+        //     = [(10-5) * Letter + (9-6-2) * HorizontalSpacing] / 4
+        //     = 1.25 * Letter + 0.25 * horizontal Spacing
 
         switch keyname {
-          case keyname where keyname.count == 1, "shift", "backspace":
-              button.widthAnchor.constraint(
-                equalTo: buttonWithStandardSize.widthAnchor).isActive = true
+          case keyname where keyname.count == 1:
+            button.widthAnchor.constraint(
+              equalTo: buttonWithStandardSize.widthAnchor).isActive = true
           case "space":
             button.widthAnchor.constraint(
               equalTo: buttonWithStandardSize.widthAnchor,
               multiplier: 5,
               constant: 4 * KeyboardSpecs.horizontalSpacing
             ).isActive = true
-          case "123", "ABC", "switch":
+          case "123", "ABC", "switch", "shift", "backspace", "#+=":
               button.widthAnchor.constraint(
                 equalTo: buttonWithStandardSize.widthAnchor,
                 multiplier: 1.25,
-                constant: 0.5 * KeyboardSpecs.horizontalSpacing
+                constant: 0.25 * KeyboardSpecs.horizontalSpacing
               ).isActive = true
           default:
             break
         }
-
       }
     }
 
@@ -159,9 +173,10 @@ class Keyboard {
     for row in buttonLayout[mode.rawValue]! {
       var rowOfButtons: [UIView] = []
       for keyname in row {
-        if keyname == "spacer" {
+        if keyname == "spacer" || keyname == "spacer2" {
           let spacer = UIView()
           spacer.translatesAutoresizingMaskIntoConstraints = false
+          spacer.accessibilityIdentifier = keyname
           rowOfButtons.append(spacer)
           continue
         }
