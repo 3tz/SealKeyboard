@@ -11,7 +11,7 @@ class KeyboardViewController: UIInputViewController {
   
   var keyboardView: UIView!
   @IBOutlet var textBox: UILabel!
-  @IBOutlet var nextKeyboardButton: UIButton!
+
   var keyboard: Keyboard!
   var cryptoButtonsView: UIView!
   var keyboardButtonsView: UIView!
@@ -25,29 +25,19 @@ class KeyboardViewController: UIInputViewController {
     let mainStackView = UIStackView()
 
     mainStackView.axis = .vertical
-    mainStackView.spacing = 0
+    mainStackView.spacing = KeyboardSpecs.superViewSpacing
     mainStackView.alignment = .fill
     mainStackView.translatesAutoresizingMaskIntoConstraints = false
 
     view = mainStackView
 
-    // Initialize keyboard buttons view
+    // Initialize crypto buttons and keyboard buttons views
+    cryptoButtonsView = getCryptoButtonsView()
+    mainStackView.addArrangedSubview(cryptoButtonsView)
+
     keyboard = Keyboard()
     keyboardButtonsView = keyboard.getButtonsView()
     mainStackView.addArrangedSubview(keyboardButtonsView)
-
-
-    self.nextKeyboardButton = UIButton(type: .system)
-
-    self.nextKeyboardButton.setTitle(NSLocalizedString("Next Keyboard", comment: "Title for 'Next Keyboard' button"), for: [])
-    self.nextKeyboardButton.sizeToFit()
-    nextKeyboardButton.backgroundColor = .red
-    self.nextKeyboardButton.translatesAutoresizingMaskIntoConstraints = false
-
-    self.nextKeyboardButton.addTarget(self, action: #selector(handleInputModeList(from:with:)), for: .allTouchEvents)
-
-    mainStackView.addArrangedSubview(self.nextKeyboardButton)
-
 
   }
 
@@ -62,8 +52,8 @@ class KeyboardViewController: UIInputViewController {
 //      cryptoButtonsView.topAnchor.constraint(equalTo: view.topAnchor),
 //      keyboardButtonsView.topAnchor.constraint(equalTo: cryptoButtonsView.bottomAnchor),
       mainStackView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.size.width),
-      mainStackView.heightAnchor.constraint(equalToConstant: keyboardViewHeight),
-      keyboardButtonsView.heightAnchor.constraint(equalToConstant: keyboardButtonsViewHeight),
+      mainStackView.heightAnchor.constraint(equalToConstant: KeyboardSpecs.superViewHeight),
+      keyboardButtonsView.heightAnchor.constraint(equalToConstant:  KeyboardSpecs.keyboardButtonsViewHeight),
     ])
 
   }

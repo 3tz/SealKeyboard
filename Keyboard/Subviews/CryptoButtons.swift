@@ -12,7 +12,7 @@ func getCryptoButtonsView() -> UIView {
   // Add request and decrypt keys to view
   let view = UIView(
     frame: CGRect(
-      x: 0, y:0, width: UIScreen.main.bounds.size.width, height: cryptoButtonsViewHeight
+      x: 0, y:0, width: UIScreen.main.bounds.size.width, height: KeyboardSpecs.cryptoButtonsViewHeight
     )
   )
 

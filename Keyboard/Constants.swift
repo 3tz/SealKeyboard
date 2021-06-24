@@ -8,9 +8,7 @@
 import Foundation
 import UIKit
 
-let keyboardViewHeight: CGFloat = 270 as CGFloat
-let cryptoButtonsViewHeight: CGFloat = 30 as CGFloat
-let keyboardButtonsViewHeight: CGFloat = keyboardViewHeight - cryptoButtonsViewHeight
+
 
 
 enum MessageType: String {
@@ -19,6 +17,12 @@ enum MessageType: String {
   case ciphertext
 }
 
-enum ViewTag: Int {
-  case KeyboardButtons
+struct KeyboardSpecs {
+  static let superViewSpacing = 5 as CGFloat
+  static let verticalSpacing = 10 as CGFloat
+  static let horizontalSpacing = 4 as CGFloat
+
+  static let superViewHeight = 270 as CGFloat
+  static let cryptoButtonsViewHeight = 30 as CGFloat
+  static let keyboardButtonsViewHeight = superViewHeight - cryptoButtonsViewHeight
 }

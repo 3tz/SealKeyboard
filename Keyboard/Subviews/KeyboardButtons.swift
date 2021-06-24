@@ -58,7 +58,7 @@ class Keyboard {
     let view = UIStackView()
 
     view.axis = .vertical
-    view.spacing = 10
+    view.spacing = KeyboardSpecs.verticalSpacing
 
     for stackView in buttonsStackViews {
       view.addArrangedSubview(stackView)
@@ -84,15 +84,38 @@ class Keyboard {
           subView.widthAnchor.constraint(equalTo: spacerView!.widthAnchor).isActive = true
           continue
         }
-        // Make all characters have the same width
-        if button.titleLabel?.text?.count == 1 {
-          button.widthAnchor.constraint(
-            equalTo: buttonWithStandardSize.widthAnchor).isActive = true
-        }
-
         // all buttons have the same height
         button.heightAnchor.constraint(
           equalTo: buttonWithStandardSize.heightAnchor).isActive = true
+
+        // Calculate width of keys
+        // Letters = Shift = Backspace = Numbers = Symbols \ {.,?!'} = #+=
+        // Spacers = Spacers
+        // Space = 5 * Letter + 4 * HorizonalSpacing
+        // 123 = ABC = switch = (2.5 * Letter + HorizontalSpacing) / 2
+        //     = 1.25 * Letter + 0.5 HorizontalSpacing
+        let keyname = button.titleLabel!.text!
+
+        switch keyname {
+          case keyname where keyname.count == 1, "shift", "backspace":
+              button.widthAnchor.constraint(
+                equalTo: buttonWithStandardSize.widthAnchor).isActive = true
+          case "space":
+            button.widthAnchor.constraint(
+              equalTo: buttonWithStandardSize.widthAnchor,
+              multiplier: 5,
+              constant: 4 * KeyboardSpecs.horizontalSpacing
+            ).isActive = true
+          case "123", "ABC", "switch":
+              button.widthAnchor.constraint(
+                equalTo: buttonWithStandardSize.widthAnchor,
+                multiplier: 1.25,
+                constant: 0.5 * KeyboardSpecs.horizontalSpacing
+              ).isActive = true
+          default:
+            break
+        }
+
       }
     }
 
@@ -123,7 +146,7 @@ class Keyboard {
       }
       let rowStackView = UIStackView(arrangedSubviews: rowOfButtons)
       rowStackView.axis = .horizontal
-      rowStackView.spacing = 5
+      rowStackView.spacing = KeyboardSpecs.horizontalSpacing
       rowStackView.alignment = .fill
 
       buttonsStackViews.append(rowStackView)
