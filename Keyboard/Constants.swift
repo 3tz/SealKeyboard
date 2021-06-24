@@ -25,10 +25,25 @@ struct KeyboardSpecs {
     superViewSpacing = 5 as CGFloat,
 
     verticalSpacing = 14 as CGFloat,
-    horizontalSpacing = 6 as CGFloat,
+    horizontalSpacing = 7 as CGFloat,
     buttonCornerRadius = 8 as CGFloat,
 
     standardFontSize = 25 as CGFloat,
     specialFontSize = 16 as CGFloat
+
+  static private let _specialFontSize: [String: CGFloat] = [
+    "123": specialFontSize,
+    "ABC": specialFontSize,
+    "space": specialFontSize,
+    "return": specialFontSize,
+    "switch": specialFontSize,
+    "#+=": specialFontSize,
+    "shift": 25,
+    "backspace": 25,
+  ]
+
+  static func fontSize(_ keyname: String) -> CGFloat {
+    return _specialFontSize[keyname, default: standardFontSize]
+  }
 
 }

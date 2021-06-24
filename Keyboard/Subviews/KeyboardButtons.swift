@@ -98,7 +98,7 @@ class Keyboard {
         // Space = 5 * Letter + 4 * HorizonalSpacing
         // 123 = ABC = switch = (2.5 * Letter + HorizontalSpacing) / 2
         //     = 1.25 * Letter + 0.5 HorizontalSpacing
-        let keyname = button.titleLabel!.text!
+        let keyname = button.accessibilityIdentifier!
 
         switch keyname {
           case keyname where keyname.count == 1, "shift", "backspace":
@@ -135,10 +135,16 @@ class Keyboard {
           // It's a spacer UIView
           continue
         }
-        let keyname = button.titleLabel!.text!
+        let keyname = button.accessibilityIdentifier!
+
         if specialKeyNames.contains(keyname) && keyname != "space" {
           button.backgroundColor = darkMode ? .darkGray : .lightGray
-          button.setTitleColor(darkMode ? .white : .black, for: [])
+          if keyname == "switch" {
+            button.tintColor = darkMode ? .white : .black
+          } else {
+            button.setTitleColor(darkMode ? .white : .black, for: [])
+          }
+
         } else {
           button.backgroundColor = darkMode ? .gray : .white
           button.setTitleColor(darkMode ? .white : .black, for: [])
@@ -161,15 +167,25 @@ class Keyboard {
         }
 
         let button = UIButton(type: .system)
-        button.setTitle(keyname, for: .normal)
+        button.accessibilityIdentifier = keyname
 
-        if specialKeyNames.contains(keyname) {
-          button.titleLabel!.font =
-            button.titleLabel!.font.withSize(KeyboardSpecs.specialFontSize)
-        } else {
-          button.titleLabel!.font =
-            button.titleLabel!.font.withSize(KeyboardSpecs.standardFontSize)
+        // Assign display char
+        // Special symbols: ⇧ ⇪  ⌫
+        switch keyname {
+          case "shift":
+            button.setTitle("⇧", for: .normal)
+          case "backspace":
+            button.setTitle("⌫", for: .normal)
+          case "switch":
+            button.setImage(UIImage(systemName: "globe"), for: .normal)
+          default:
+            button.setTitle(keyname, for: .normal)
         }
+
+        button.titleLabel!.font = button.titleLabel!.font.withSize(
+          KeyboardSpecs.fontSize(keyname)
+        )
+
         button.sizeToFit()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
