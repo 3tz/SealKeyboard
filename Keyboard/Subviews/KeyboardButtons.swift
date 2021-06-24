@@ -11,8 +11,8 @@ import UIKit
 let buttonLayout: [String: [[String]]] = [
   Keyboard.State.alphabets.rawValue: [
     ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
-    ["a", "s", "d", "f", "g","h", "j", "k", "l"],
-    ["shift", "z", "x", "c", "v", "b", "n", "m", "backspace"],
+    ["spacer", "a", "s", "d", "f", "g","h", "j", "k", "l", "spacer"],
+    ["shift", "spacer", "z", "x", "c", "v", "b", "n", "m", "spacer", "backspace"],
     ["123", "switch", "space", "return"]
   ],
   Keyboard.State.numbers.rawValue:[
@@ -42,10 +42,7 @@ class Keyboard {
     case locked
   }
 
-//  var currentView: UIView!
-//  var buttons: [[UIButton]] = []
-  var buttons: [[UIStackView]] = []
-
+  var buttonsStackViews: [UIStackView] = []
 
   var mode: State!
   var shiftState: ShiftState!
@@ -58,77 +55,78 @@ class Keyboard {
   }
 
   func getButtonsView() -> UIView{
-    let view = UIView(
-      frame: CGRect(x: 0, y:0, width: UIScreen.main.bounds.size.width, height: keyboardButtonsViewHeight)
-    )
-    NSLog("height: \(view.bounds.height)")
-    view.tag = ViewTag.KeyboardButtons.rawValue
+    let view = UIStackView()
 
-    for row in buttons {
-      for button in row {
-        view.addSubview(button)
-      }
+    view.axis = .vertical
+    view.spacing = 10
+
+    for stackView in buttonsStackViews {
+      view.addArrangedSubview(stackView)
     }
 
-    let buttonCharQ = buttons[0][0]
+
+    // All normal buttons have the same size, so choose one of them and set constraints of
+    //  other normal buttons based on that.
+    let buttonWithStandardSize = buttonsStackViews[0].arrangedSubviews[0]
+    // Same idea for spacers.
+    var spacerView: UIView? = nil
 
     // Add constraints to buttons
-    for (rowIdx, row) in buttons.enumerated() {
-      for (colIdx, button) in row.enumerated() {
-
-        // Set left anchors
-        if colIdx == 0 { // Left most buttons anchor to view
-          button.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        } else { // Non-left most buttons anchor to buttons on their left
-          let buttonOnLeft = row[colIdx-1]
-          button.leftAnchor.constraint(equalTo: buttonOnLeft.rightAnchor).isActive = true
+    for rowStackView in buttonsStackViews {
+      for subView in rowStackView.arrangedSubviews {
+        guard let button = subView as? UIButton else {
+          // It's a spacer UIView
+          subView.heightAnchor.constraint(
+            equalTo: buttonWithStandardSize.heightAnchor).isActive = true
+          if spacerView == nil {
+            spacerView = subView
+          }
+          subView.widthAnchor.constraint(equalTo: spacerView!.widthAnchor).isActive = true
+          continue
         }
-        // Set top anchors
-        if rowIdx == 0 { // Top most buttons anchor to view
-          button.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        } else { // Non-top buttons anchors to row on their top
-          let buttonOnTop = buttons[rowIdx-1][0]
-          button.topAnchor.constraint(equalTo: buttonOnTop.bottomAnchor).isActive = true
-        }
-        // Set right anchors
-        if colIdx == row.count - 1 { // Right most buttons anchor to view
-          button.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        }
-        // Set bottom anchors
-        if rowIdx == buttons.count - 1 { // Bottom most buttons anchor to view
-          button.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        }
-
         // Make all characters have the same width
         if button.titleLabel?.text?.count == 1 {
-          button.widthAnchor.constraint(equalTo: buttonCharQ.widthAnchor).isActive = true
+          button.widthAnchor.constraint(
+            equalTo: buttonWithStandardSize.widthAnchor).isActive = true
         }
 
         // all buttons have the same height
-        button.heightAnchor.constraint(equalTo: buttonCharQ.heightAnchor).isActive = true
-
-
+        button.heightAnchor.constraint(
+          equalTo: buttonWithStandardSize.heightAnchor).isActive = true
       }
     }
-//    view.translatesAutoresizingMaskIntoConstraints = false
+
 
     return view
   }
 
   func reloadButtons() {
-    buttons.removeAll()
+    buttonsStackViews.removeAll()
     // Create the buttons
-    for (rowIdx, row) in buttonLayout[mode.rawValue]!.enumerated() {
-      buttons.append([])
+    for row in buttonLayout[mode.rawValue]! {
+      var rowOfButtons: [UIView] = []
       for keyname in row {
+        if keyname == "spacer" {
+          let spacer = UIView()
+          spacer.translatesAutoresizingMaskIntoConstraints = false
+          rowOfButtons.append(spacer)
+          continue
+        }
+
         let button = UIButton(type: .system)
         button.setTitle(keyname, for: .normal)
         button.sizeToFit()
         button.backgroundColor = .blue
         button.titleLabel!.textColor = .white
         button.translatesAutoresizingMaskIntoConstraints = false
-        buttons[rowIdx].append(button)
+        rowOfButtons.append(button)
       }
+      let rowStackView = UIStackView(arrangedSubviews: rowOfButtons)
+      rowStackView.axis = .horizontal
+      rowStackView.spacing = 5
+      rowStackView.alignment = .fill
+
+      buttonsStackViews.append(rowStackView)
     }
 
   }

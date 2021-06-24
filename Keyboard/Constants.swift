@@ -22,6 +22,3 @@ enum MessageType: String {
 enum ViewTag: Int {
   case KeyboardButtons
 }
-
-
-

@@ -20,67 +20,63 @@ class KeyboardViewController: UIInputViewController {
   var keys: Keys!
 
   override func loadView() {
-    super.loadView()
 
+    // Use stackview as the main view
+    let mainStackView = UIStackView()
+
+    mainStackView.axis = .vertical
+    mainStackView.spacing = 0
+    mainStackView.alignment = .fill
+    mainStackView.translatesAutoresizingMaskIntoConstraints = false
+
+    view = mainStackView
+
+    // Initialize keyboard buttons view
+    keyboard = Keyboard()
+    keyboardButtonsView = keyboard.getButtonsView()
+    mainStackView.addArrangedSubview(keyboardButtonsView)
+
+
+    self.nextKeyboardButton = UIButton(type: .system)
+
+    self.nextKeyboardButton.setTitle(NSLocalizedString("Next Keyboard", comment: "Title for 'Next Keyboard' button"), for: [])
+    self.nextKeyboardButton.sizeToFit()
+    nextKeyboardButton.backgroundColor = .red
+    self.nextKeyboardButton.translatesAutoresizingMaskIntoConstraints = false
+
+    self.nextKeyboardButton.addTarget(self, action: #selector(handleInputModeList(from:with:)), for: .allTouchEvents)
+
+    mainStackView.addArrangedSubview(self.nextKeyboardButton)
 
 
   }
 
   override func updateViewConstraints() {
     super.updateViewConstraints()
+
+    guard let mainStackView = view as? UIStackView else {
+      fatalError()
+    }
+
+    NSLayoutConstraint.activate([
+//      cryptoButtonsView.topAnchor.constraint(equalTo: view.topAnchor),
+//      keyboardButtonsView.topAnchor.constraint(equalTo: cryptoButtonsView.bottomAnchor),
+      mainStackView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.size.width),
+      mainStackView.heightAnchor.constraint(equalToConstant: keyboardViewHeight),
+      keyboardButtonsView.heightAnchor.constraint(equalToConstant: keyboardButtonsViewHeight),
+    ])
+
   }
 
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
 
-    let heightConstraint = NSLayoutConstraint(
-        item:self.view as Any,
-        attribute:NSLayoutConstraint.Attribute.height,
-        relatedBy:NSLayoutConstraint.Relation.equal,
-        toItem:nil,
-        attribute:NSLayoutConstraint.Attribute.notAnAttribute,
-        multiplier:0,
-        constant: keyboardViewHeight)
-    heightConstraint.priority = UILayoutPriority(rawValue: 1000)
-
-    view.addConstraint(heightConstraint) // TODO: what if view already has constraint added?
   }
 
 
   override func viewDidLoad() {
     super.viewDidLoad()
     keys = Keys()
-//    if let view = superView.viewWithTag(ViewTag.KeyboardButtons.rawValue) {
-//      view.removeFromSuperview()
-//    }
-
-//    cryptoButtonsView = getCryptoButtonsView()
-//    view.addSubview(cryptoButtonsView)
-
-    keyboard = Keyboard()
-    keyboardButtonsView = keyboard.getButtonsView()
-
-    view.addSubview(keyboardButtonsView)
-
-//    NSLayoutConstraint.activate([
-//      cryptoButtonsView.topAnchor.constraint(equalTo: view.topAnchor),
-//      keyboardButtonsView.topAnchor.constraint(equalTo: cryptoButtonsView.bottomAnchor),
-//    ])
-
-
-    // Perform custom UI setup here
-    self.nextKeyboardButton = UIButton(type: .system)
-
-    self.nextKeyboardButton.setTitle(NSLocalizedString("Next Keyboard", comment: "Title for 'Next Keyboard' button"), for: [])
-    self.nextKeyboardButton.sizeToFit()
-    self.nextKeyboardButton.translatesAutoresizingMaskIntoConstraints = false
-
-    self.nextKeyboardButton.addTarget(self, action: #selector(handleInputModeList(from:with:)), for: .allTouchEvents)
-
-    self.view.addSubview(self.nextKeyboardButton)
-
-    self.nextKeyboardButton.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
-    self.nextKeyboardButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
   }
 
   override func viewWillLayoutSubviews() {
