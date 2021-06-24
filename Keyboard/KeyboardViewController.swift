@@ -39,7 +39,7 @@ class KeyboardViewController: UIInputViewController {
     cryptoButtonsView = getCryptoButtonsView()
     mainStackView.addArrangedSubview(cryptoButtonsView)
 
-    keyboard = Keyboard(darkMode: darkMode)
+    keyboard = Keyboard(controller: self, darkMode: darkMode)
     keyboardButtonsView = keyboard.getButtonsView()
     mainStackView.addArrangedSubview(keyboardButtonsView)
 
@@ -73,7 +73,7 @@ class KeyboardViewController: UIInputViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    keys = Keys()
+//    keys = Keys()
   }
 
   override func viewWillLayoutSubviews() {

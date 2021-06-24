@@ -31,7 +31,7 @@ let buttonLayout: [String: [[String]]] = [
 
 let specialKeyNames = ["123", "ABC", "space", "return", "backspace", "switch", "#+=", "shift"]
 
-class Keyboard {
+class Keyboard{
   enum State: String {
     case alphabets
     case numbers
@@ -49,11 +49,14 @@ class Keyboard {
   var mode: State!
   var shiftState: ShiftState!
   var darkMode: Bool!
+  var controller: KeyboardViewController!
 
-  init(darkMode: Bool) {
+
+  init(controller: KeyboardViewController, darkMode: Bool) {
     mode = .alphabets
     shiftState = .off
     self.darkMode = darkMode
+    self.controller = controller
 
     reloadButtons()
   }
@@ -204,6 +207,17 @@ class Keyboard {
         button.sizeToFit()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
+
+        if keyname == "switch" {
+          button.addTarget(
+            controller,
+            action: #selector(controller.handleInputModeList(from:with:)),
+            for: .allTouchEvents
+          )
+        } else {
+          button.addTarget(self, action: #selector(keyTouchUpInside), for: .touchUpInside)
+        }
+
         rowOfButtons.append(button)
       }
 
@@ -218,6 +232,27 @@ class Keyboard {
       buttonsStackViews.append(rowStackView)
     }
 
+  }
+
+  @objc func keyTouchUpInside(_ sender:UIButton) {
+    let keyname = sender.accessibilityIdentifier!
+
+    switch keyname {
+      case "space":
+        controller.textDocumentProxy.insertText(" ")
+      case "backspace":
+        controller.textDocumentProxy.deleteBackward()
+      case "shift":
+        break
+      case "123":
+        break
+      case "return":
+        break
+      case "#+=":
+        break
+      default:
+        controller.textDocumentProxy.insertText(keyname)
+    }
   }
 
 
