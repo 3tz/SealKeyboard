@@ -16,17 +16,21 @@ class KeyboardViewController: UIInputViewController {
   var cryptoButtonsView: UIView!
   var keyboardButtonsView: UIView!
 
+  var darkMode: Bool!
+
   // Encryption and Signing Keys
   var keys: Keys!
 
   override func loadView() {
+    // Determine dark mode
+    darkMode = textDocumentProxy.keyboardAppearance == UIKeyboardAppearance.dark
 
     // Use stackview as the main view
     let mainStackView = UIStackView()
 
     mainStackView.axis = .vertical
     mainStackView.spacing = KeyboardSpecs.superViewSpacing
-    mainStackView.alignment = .fill
+    mainStackView.alignment = .center
     mainStackView.translatesAutoresizingMaskIntoConstraints = false
 
     view = mainStackView
@@ -35,7 +39,7 @@ class KeyboardViewController: UIInputViewController {
     cryptoButtonsView = getCryptoButtonsView()
     mainStackView.addArrangedSubview(cryptoButtonsView)
 
-    keyboard = Keyboard()
+    keyboard = Keyboard(darkMode: darkMode)
     keyboardButtonsView = keyboard.getButtonsView()
     mainStackView.addArrangedSubview(keyboardButtonsView)
 
@@ -53,7 +57,10 @@ class KeyboardViewController: UIInputViewController {
 //      keyboardButtonsView.topAnchor.constraint(equalTo: cryptoButtonsView.bottomAnchor),
       mainStackView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.size.width),
       mainStackView.heightAnchor.constraint(equalToConstant: KeyboardSpecs.superViewHeight),
-      keyboardButtonsView.heightAnchor.constraint(equalToConstant:  KeyboardSpecs.keyboardButtonsViewHeight),
+      keyboardButtonsView.heightAnchor.constraint(
+        equalToConstant:  KeyboardSpecs.keyboardButtonsViewHeight),
+      keyboardButtonsView.widthAnchor.constraint(
+        equalToConstant:  UIScreen.main.bounds.size.width * 0.98),
     ])
 
   }
@@ -75,16 +82,10 @@ class KeyboardViewController: UIInputViewController {
   }
   
   override func textDidChange(_ textInput: UITextInput?) {
-    // The app has just changed the document's contents, the document context has been updated.
-
-    var textColor: UIColor
-    let proxy = self.textDocumentProxy
-    if proxy.keyboardAppearance == UIKeyboardAppearance.dark {
-      textColor = UIColor.white
-    } else {
-      textColor = UIColor.black
-    }
-//    nextKeyboardButton.setTitleColor(textColor, for: [])
+    super.textDidChange(textInput)
+    keyboard.turnOnDarkMode(
+      textDocumentProxy.keyboardAppearance == UIKeyboardAppearance.dark
+    )
   }
 
   /// Request button pressed, so perform key exchange process by placing our encryption public key in the input text field.

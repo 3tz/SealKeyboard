@@ -29,6 +29,8 @@ let buttonLayout: [String: [[String]]] = [
   ]
 ]
 
+let specialKeyNames = ["123", "ABC", "space", "return", "backspace", "switch", "#+=", "shift"]
+
 class Keyboard {
   enum State: String {
     case alphabets
@@ -46,10 +48,12 @@ class Keyboard {
 
   var mode: State!
   var shiftState: ShiftState!
+  var darkMode: Bool!
 
-  init() {
+  init(darkMode: Bool) {
     mode = .alphabets
     shiftState = .off
+    self.darkMode = darkMode
 
     reloadButtons()
   }
@@ -123,6 +127,26 @@ class Keyboard {
     return view
   }
 
+  func turnOnDarkMode(_ state: Bool) {
+    darkMode = state
+    for rowStackView in buttonsStackViews {
+      for subView in rowStackView.arrangedSubviews {
+        guard let button = subView as? UIButton else {
+          // It's a spacer UIView
+          continue
+        }
+        let keyname = button.titleLabel!.text!
+        if specialKeyNames.contains(keyname) && keyname != "space" {
+          button.backgroundColor = darkMode ? .darkGray : .lightGray
+          button.setTitleColor(darkMode ? .white : .black, for: [])
+        } else {
+          button.backgroundColor = darkMode ? .gray : .white
+          button.setTitleColor(darkMode ? .white : .black, for: [])
+        }
+      }
+    }
+  }
+
   func reloadButtons() {
     buttonsStackViews.removeAll()
     // Create the buttons
@@ -138,12 +162,23 @@ class Keyboard {
 
         let button = UIButton(type: .system)
         button.setTitle(keyname, for: .normal)
+
+        if specialKeyNames.contains(keyname) {
+          button.titleLabel!.font =
+            button.titleLabel!.font.withSize(KeyboardSpecs.specialFontSize)
+        } else {
+          button.titleLabel!.font =
+            button.titleLabel!.font.withSize(KeyboardSpecs.standardFontSize)
+        }
         button.sizeToFit()
-        button.backgroundColor = .blue
-        button.titleLabel!.textColor = .white
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
         rowOfButtons.append(button)
       }
+
+      // Modify button colors based on darkmode or not
+      turnOnDarkMode(darkMode)
+
       let rowStackView = UIStackView(arrangedSubviews: rowOfButtons)
       rowStackView.axis = .horizontal
       rowStackView.spacing = KeyboardSpecs.horizontalSpacing

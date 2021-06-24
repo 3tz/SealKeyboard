@@ -18,11 +18,17 @@ enum MessageType: String {
 }
 
 struct KeyboardSpecs {
-  static let superViewSpacing = 5 as CGFloat
-  static let verticalSpacing = 10 as CGFloat
-  static let horizontalSpacing = 4 as CGFloat
+  static let superViewHeight = 270 as CGFloat,
+    cryptoButtonsViewHeight = 50 as CGFloat,
+    keyboardButtonsViewHeight = superViewHeight - cryptoButtonsViewHeight,
 
-  static let superViewHeight = 270 as CGFloat
-  static let cryptoButtonsViewHeight = 30 as CGFloat
-  static let keyboardButtonsViewHeight = superViewHeight - cryptoButtonsViewHeight
+    superViewSpacing = 5 as CGFloat,
+
+    verticalSpacing = 14 as CGFloat,
+    horizontalSpacing = 6 as CGFloat,
+    buttonCornerRadius = 8 as CGFloat,
+
+    standardFontSize = 25 as CGFloat,
+    specialFontSize = 16 as CGFloat
+
 }
