@@ -53,8 +53,6 @@ class KeyboardViewController: UIInputViewController {
     }
 
     NSLayoutConstraint.activate([
-//      cryptoButtonsView.topAnchor.constraint(equalTo: view.topAnchor),
-//      keyboardButtonsView.topAnchor.constraint(equalTo: cryptoButtonsView.bottomAnchor),
       mainStackView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.size.width),
       mainStackView.heightAnchor.constraint(equalToConstant: KeyboardSpecs.superViewHeight),
       keyboardButtonsView.heightAnchor.constraint(
@@ -83,8 +81,8 @@ class KeyboardViewController: UIInputViewController {
   
   override func textDidChange(_ textInput: UITextInput?) {
     super.textDidChange(textInput)
-    keyboard.turnOnDarkMode(
-      textDocumentProxy.keyboardAppearance == UIKeyboardAppearance.dark
+    keyboard.updateColors(
+      darkModeOn: textDocumentProxy.keyboardAppearance == UIKeyboardAppearance.dark
     )
   }
 

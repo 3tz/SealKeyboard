@@ -8,23 +8,39 @@
 import Foundation
 import UIKit
 
+extension String {
+  var isSingleAlphabet: Bool {
+    return self.rangeOfCharacter(from: CharacterSet.letters.inverted) == nil &&
+      !self.isEmpty &&
+      self.count == 1
+  }
+  var isLowercasedAlphabet: Bool {
+    return self.rangeOfCharacter(from: CharacterSet.lowercaseLetters.inverted) == nil &&
+      !self.isEmpty
+  }
+  var isUppercasedAlphabet: Bool {
+    return self.rangeOfCharacter(from: CharacterSet.uppercaseLetters.inverted) == nil &&
+      !self.isEmpty
+  }
+}
+
 let buttonLayout: [String: [[String]]] = [
   Keyboard.State.alphabets.rawValue: [
     ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
-    ["spacer", "a", "s", "d", "f", "g","h", "j", "k", "l", "spacer"],
-    ["shift", "spacer2", "z", "x", "c", "v", "b", "n", "m", "spacer2", "backspace"],
+    ["spacer_1", "a", "s", "d", "f", "g","h", "j", "k", "l", "spacer_1"],
+    ["shift", "spacer_2", "z", "x", "c", "v", "b", "n", "m", "spacer_2", "backspace"],
     ["123", "switch", "space", "return"]
   ],
   Keyboard.State.numbers.rawValue:[
     ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0",],
     ["-", "/", ":", ";", "(", ")", "$", "&", "@", "\""],
-    ["#+=", ".", ",", "?", "!", "'", "⌫"],
+    ["#+=", "spacer_2", ".", ",", "?", "!", "'", "spacer_2", "backspace"],
     ["ABC", "switch", "space", "return"]
   ],
   Keyboard.State.symbols.rawValue:[
     ["[", "]", "{", "}", "#", "%", "^", "*", "+", "="],
     ["_", "\\", "|", "~", "<", ">", "€", "£", "¥", "·"],
-    ["123",".", ",", "?", "!", "'", "⌫"],
+    ["123", "spacer_2", ".", ",", "?", "!", "'", "spacer_2", "backspace"],
     ["ABC", "switch", "space", "return"]
   ]
 ]
@@ -44,57 +60,67 @@ class Keyboard{
     case locked
   }
 
-  var buttonsStackViews: [UIStackView] = []
+//  var buttonsStackViews: [UIStackView] = []
 
   var mode: State!
   var shiftState: ShiftState!
   var darkMode: Bool!
   var controller: KeyboardViewController!
+  var view: UIStackView! = nil
 
 
   init(controller: KeyboardViewController, darkMode: Bool) {
-    mode = .alphabets
-    shiftState = .off
     self.darkMode = darkMode
     self.controller = controller
 
-    reloadButtons()
+    mode = .alphabets
+    shiftState = .off
+    view = getButtonsView()
   }
 
-  func getButtonsView() -> UIView{
-    let view = UIStackView()
-
-    view.axis = .vertical
-    view.spacing = KeyboardSpecs.verticalSpacing
-
-    for stackView in buttonsStackViews {
-      view.addArrangedSubview(stackView)
+  func getButtonsView() -> UIStackView{
+    if view != nil {
+      return view
     }
 
+    view = UIStackView()
+    view.axis = .vertical
+    view.spacing = KeyboardSpecs.verticalSpacing
+    reloadButtonsAndLooks()
+    return view
+  }
 
+  func reloadButtonsAndLooks() {
+    reloadButtonsToView()
+    updateConstraints()
+    updateColors()
+  }
+
+  func updateConstraints() {
     // All normal buttons have the same size, so choose one of them and set constraints of
     //  other normal buttons based on that.
-    let buttonWithStandardSize = buttonsStackViews[0].arrangedSubviews[0]
+    let firstRow = view.arrangedSubviews[0] as! UIStackView
+    let buttonWithStandardSize = firstRow.arrangedSubviews[0]
 
     // Same idea for spacers: spacers of the same row have the same width
     var spacerView: UIView? = nil
     var spacer2View: UIView? = nil
 
     // Add constraints to buttons
-    for rowStackView in buttonsStackViews {
-      for subView in rowStackView.arrangedSubviews {
+    for rowStackView in view.arrangedSubviews {
+      for subView in (rowStackView as! UIStackView).arrangedSubviews {
         let keyname = subView.accessibilityIdentifier!
 
         guard let button = subView as? UIButton else {
           // It's a spacer UIView
           // spacers of the same row have the same width
           switch keyname {
-            case "spacer":
+            case "spacer_1":
               if spacerView == nil {
                 spacerView = subView
               }
               subView.widthAnchor.constraint(equalTo: spacerView!.widthAnchor).isActive = true
-            case "spacer2":
+            case "spacer_2":
               if spacer2View == nil {
                 spacer2View = subView
               }
@@ -119,6 +145,12 @@ class Keyboard{
         //     = 1.25 * Letter + 0.25 * horizontal Spacing
 
         switch keyname {
+          case "123", "ABC", "switch", "shift", "backspace", "#+=", ".", ",", "?", "!", "'":
+              button.widthAnchor.constraint(
+                equalTo: buttonWithStandardSize.widthAnchor,
+                multiplier: 1.25,
+                constant: 0.25 * KeyboardSpecs.horizontalSpacing
+              ).isActive = true
           case keyname where keyname.count == 1:
             button.widthAnchor.constraint(
               equalTo: buttonWithStandardSize.widthAnchor).isActive = true
@@ -128,26 +160,21 @@ class Keyboard{
               multiplier: 5,
               constant: 4 * KeyboardSpecs.horizontalSpacing
             ).isActive = true
-          case "123", "ABC", "switch", "shift", "backspace", "#+=":
-              button.widthAnchor.constraint(
-                equalTo: buttonWithStandardSize.widthAnchor,
-                multiplier: 1.25,
-                constant: 0.25 * KeyboardSpecs.horizontalSpacing
-              ).isActive = true
           default:
             break
         }
       }
     }
-
-
-    return view
   }
 
-  func turnOnDarkMode(_ state: Bool) {
-    darkMode = state
-    for rowStackView in buttonsStackViews {
-      for subView in rowStackView.arrangedSubviews {
+  func updateColors() {
+    updateColors(darkModeOn: darkMode)
+  }
+
+  func updateColors(darkModeOn: Bool) {
+    darkMode = darkModeOn
+    for rowStackView in view.arrangedSubviews {
+      for subView in (rowStackView as! UIStackView).arrangedSubviews {
         guard let button = subView as? UIButton else {
           // It's a spacer UIView
           continue
@@ -170,13 +197,15 @@ class Keyboard{
     }
   }
 
-  func reloadButtons() {
-    buttonsStackViews.removeAll()
+  func reloadButtonsToView() {
+    for subview in view.subviews {
+      subview.removeFromSuperview()
+    }
     // Create the buttons
     for row in buttonLayout[mode.rawValue]! {
       var rowOfButtons: [UIView] = []
       for keyname in row {
-        if keyname == "spacer" || keyname == "spacer2" {
+        if keyname == "spacer_1" || keyname == "spacer_2" {
           let spacer = UIView()
           spacer.translatesAutoresizingMaskIntoConstraints = false
           spacer.accessibilityIdentifier = keyname
@@ -184,7 +213,7 @@ class Keyboard{
           continue
         }
 
-        let button = UIButton(type: .system)
+        let button = UIButton(type: .custom)
         button.accessibilityIdentifier = keyname
 
         // Assign display char
@@ -221,21 +250,43 @@ class Keyboard{
         rowOfButtons.append(button)
       }
 
-      // Modify button colors based on darkmode or not
-      turnOnDarkMode(darkMode)
-
       let rowStackView = UIStackView(arrangedSubviews: rowOfButtons)
       rowStackView.axis = .horizontal
       rowStackView.spacing = KeyboardSpecs.horizontalSpacing
       rowStackView.alignment = .fill
 
-      buttonsStackViews.append(rowStackView)
+      view.addArrangedSubview(rowStackView)
     }
+
+  }
+
+  func toggleLettersCases(to newState: ShiftState) {
+    if shiftState == newState { return }
+    NSLog("Letter cases toggled.")
+    shiftState = newState
+
+    for rowStackView in view.arrangedSubviews {
+      for subView in (rowStackView as! UIStackView).arrangedSubviews {
+        guard let button = subView as? UIButton else { continue }
+        var keyname = button.accessibilityIdentifier!
+        if !keyname.isSingleAlphabet { continue }
+
+        keyname = shiftState == .on ? keyname.uppercased() : keyname.lowercased()
+        button.accessibilityIdentifier = keyname
+        button.setTitle(keyname, for: .normal)
+
+      }
+    }
+
+
 
   }
 
   @objc func keyTouchUpInside(_ sender:UIButton) {
     let keyname = sender.accessibilityIdentifier!
+    if shiftState == .on && keyname != "shift"{
+      toggleLettersCases(to: .off)
+    }
 
     switch keyname {
       case "space":
@@ -243,13 +294,28 @@ class Keyboard{
       case "backspace":
         controller.textDocumentProxy.deleteBackward()
       case "shift":
-        break
+        switch shiftState {
+          case .on:
+            toggleLettersCases(to: .off)
+          case .off:
+            toggleLettersCases(to: .on)
+          case .locked:
+            toggleLettersCases(to: .off)
+          default:
+            fatalError()
+        }
       case "123":
-        break
+        mode = .numbers
+        reloadButtonsAndLooks()
+      case "ABC":
+        mode = .alphabets
+        reloadButtonsAndLooks()
+        toggleLettersCases(to: .off)
       case "return":
         break
       case "#+=":
-        break
+        mode = .symbols
+        reloadButtonsAndLooks()
       default:
         controller.textDocumentProxy.insertText(keyname)
     }
