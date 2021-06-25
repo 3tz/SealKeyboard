@@ -347,8 +347,7 @@ class Keyboard{
         switch returnKeyType {
           case .send:
             if !controller.textDocumentProxy.hasText { break }
-            // TODO: Seal and return
-            controller.textDocumentProxy.insertText("\n")
+            controller.cryptoBar.sealAndSend()
           default:
             controller.textDocumentProxy.insertText("\n")
         }

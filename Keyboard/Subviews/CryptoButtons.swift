@@ -194,6 +194,21 @@ class CryptoBar {
 
   @objc func sealButtonPressed(_ sender: Any) {
     // TODO: finish
+    sealMessageBox()
+    textView.text = "Text encrypted! Ready to be sent."
+
+  }
+
+  func sealAndSend() {
+    sealMessageBox()
+    textView.text = "Text encrypted and sent."
+    // Apps with ReturnType of .send look for a single "\n" upon text change.
+    // Thus change the text to ciphertext first, and insert one "\n" under textDidChange.
+    controller.stageToSendText = true
+
+  }
+
+  func sealMessageBox() {
     let textInput = (controller.textDocumentProxy.documentContextBeforeInput ?? "") +
       (controller.textDocumentProxy.selectedText ?? "") +
       (controller.textDocumentProxy.documentContextAfterInput ?? "")
@@ -221,9 +236,6 @@ class CryptoBar {
 
     controller.clearInputText()
     controller.textDocumentProxy.insertText(msg)
-
-    textView.text = "Text encrypted! Ready to be sent."
-
   }
 
 }

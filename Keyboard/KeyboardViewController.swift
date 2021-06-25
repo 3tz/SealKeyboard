@@ -15,16 +15,13 @@ class KeyboardViewController: UIInputViewController {
   var cryptoBar: CryptoBar!
   var keyboard: Keyboard!
 
-  
   var spacerView: UIView = UIView()
 
   var cryptoBarView: UIStackView!
   var keyboardButtonsView: UIStackView!
 
   var darkMode: Bool!
-
-  // Encryption and Signing Keys
-  var keys: Keys!
+  var stageToSendText = false
 
   override func loadView() {
     // Use stackview as the main view
@@ -69,7 +66,6 @@ class KeyboardViewController: UIInputViewController {
     let mainStackView = view as! UIStackView
     // Determine dark mode
     darkMode = textDocumentProxy.keyboardAppearance == UIKeyboardAppearance.dark
-    keys = Keys()
     // Add a spacer on top
     mainStackView.addArrangedSubview(spacerView)
     // Initialize crypto buttons and keyboard buttons views
@@ -94,6 +90,12 @@ class KeyboardViewController: UIInputViewController {
       darkModeOn: textDocumentProxy.keyboardAppearance == UIKeyboardAppearance.dark
     )
     keyboard.updateReturnKeyType()
+    
+    if stageToSendText == true {
+      textDocumentProxy.insertText("\n")
+      stageToSendText = false
+    }
+
   }
 
   /// Clear the input text field if it's not empty.
