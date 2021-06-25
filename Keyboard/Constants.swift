@@ -25,8 +25,8 @@ struct KeyboardSpecs {
     superViewSpacing = 5 as CGFloat,
 
     verticalSpacing = 14 as CGFloat,
-    horizontalSpacing = 7 as CGFloat,
-    buttonCornerRadius = 8 as CGFloat,
+    horizontalSpacing = 6 as CGFloat,
+    buttonCornerRadius = 7 as CGFloat,
 
     standardFontSize = 25 as CGFloat,
     specialFontSize = 16 as CGFloat
@@ -47,3 +47,18 @@ struct KeyboardSpecs {
   }
 
 }
+
+let returnKeyTypeToString: [UIReturnKeyType: String] = [
+  .default: "default",
+  .go: "go",
+  .google: "google",
+  .join: "join",
+  .next: "next",
+  .route: "route",
+  .search: "search",
+  .send: "send",
+  .yahoo: "yahoo",
+  .done: "done",
+  .emergencyCall: "emergencyCall",
+  .continue: "continue",
+]

@@ -70,6 +70,7 @@ class Keyboard{
   var controller: KeyboardViewController!
   var view: UIStackView! = nil
 
+  var returnButton: UIButton!
 
   init(controller: KeyboardViewController, darkMode: Bool) {
     self.darkMode = darkMode
@@ -227,6 +228,8 @@ class Keyboard{
             button.setTitle("⌫", for: .normal)
           case "switch":
             button.setImage(UIImage(systemName: "globe"), for: .normal)
+          case "return":
+            returnButton = button
           default:
             button.setTitle(keyname, for: .normal)
         }
@@ -310,6 +313,21 @@ class Keyboard{
     }
   }
 
+  func updateReturnKeyType() {
+    let returnType = controller.textDocumentProxy.returnKeyType ?? .default
+    switch returnType {
+      case .send:
+        returnButton.setTitle("Seal & Send", for: .normal)
+      case .default:
+        returnButton.setTitle("return", for: .normal)
+      default:
+        returnButton.setTitle(
+          returnKeyTypeToString[returnType, default: "return"],
+          for: .normal)
+
+    }
+  }
+
   @objc func keyTouchUpInside(_ sender:UIButton) {
     let keyname = sender.accessibilityIdentifier!
 
@@ -346,7 +364,16 @@ class Keyboard{
         reloadButtonsAndLooks()
         toggleLettersCases(to: .off)
       case "return":
-        controller.textDocumentProxy.insertText("\n")
+        let returnKeyType = controller.textDocumentProxy.returnKeyType ?? .default
+
+        switch returnKeyType {
+          case .send:
+            if !controller.textDocumentProxy.hasText { break }
+            // TODO: Seal and return
+            controller.textDocumentProxy.insertText("\n")
+          default:
+            controller.textDocumentProxy.insertText("\n")
+        }
       case "#+=":
         mode = .symbols
         reloadButtonsAndLooks()

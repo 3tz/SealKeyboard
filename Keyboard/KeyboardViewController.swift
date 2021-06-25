@@ -22,9 +22,6 @@ class KeyboardViewController: UIInputViewController {
   var keys: Keys!
 
   override func loadView() {
-    // Determine dark mode
-    darkMode = textDocumentProxy.keyboardAppearance == UIKeyboardAppearance.dark
-
     // Use stackview as the main view
     let mainStackView = UIStackView()
 
@@ -34,15 +31,6 @@ class KeyboardViewController: UIInputViewController {
     mainStackView.translatesAutoresizingMaskIntoConstraints = false
 
     view = mainStackView
-
-    // Initialize crypto buttons and keyboard buttons views
-    cryptoButtonsView = getCryptoButtonsView()
-    mainStackView.addArrangedSubview(cryptoButtonsView)
-
-    keyboard = Keyboard(controller: self, darkMode: darkMode)
-    keyboardButtonsView = keyboard.getButtonsView()
-    mainStackView.addArrangedSubview(keyboardButtonsView)
-
   }
 
   override func updateViewConstraints() {
@@ -65,13 +53,23 @@ class KeyboardViewController: UIInputViewController {
 
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-
   }
 
 
   override func viewDidLoad() {
     super.viewDidLoad()
+    let mainStackView = view as! UIStackView
+    // Determine dark mode
+    darkMode = textDocumentProxy.keyboardAppearance == UIKeyboardAppearance.dark
 //    keys = Keys()
+    // Initialize crypto buttons and keyboard buttons views
+    cryptoButtonsView = getCryptoButtonsView()
+    mainStackView.addArrangedSubview(cryptoButtonsView)
+
+    keyboard = Keyboard(controller: self, darkMode: darkMode)
+    keyboardButtonsView = keyboard.getButtonsView()
+    mainStackView.addArrangedSubview(keyboardButtonsView)
+
   }
 
   override func viewWillLayoutSubviews() {
@@ -84,6 +82,7 @@ class KeyboardViewController: UIInputViewController {
     keyboard.updateColors(
       darkModeOn: textDocumentProxy.keyboardAppearance == UIKeyboardAppearance.dark
     )
+    keyboard.updateReturnKeyType()
   }
 
   /// Request button pressed, so perform key exchange process by placing our encryption public key in the input text field.
