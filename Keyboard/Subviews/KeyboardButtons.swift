@@ -64,6 +64,8 @@ class Keyboard{
 
   var mode: State!
   var shiftState: ShiftState!
+  var shiftDoubleTapped: Bool = false
+
   var darkMode: Bool!
   var controller: KeyboardViewController!
   var view: UIStackView! = nil
@@ -237,14 +239,22 @@ class Keyboard{
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
 
-        if keyname == "switch" {
-          button.addTarget(
-            controller,
-            action: #selector(controller.handleInputModeList(from:with:)),
-            for: .allTouchEvents
-          )
-        } else {
-          button.addTarget(self, action: #selector(keyTouchUpInside), for: .touchUpInside)
+        switch keyname {
+          case "switch":
+            button.addTarget(
+              controller,
+              action: #selector(controller.handleInputModeList(from:with:)),
+              for: .allTouchEvents
+            )
+          case "shift":
+            button.addTarget(
+              self,
+              action: #selector(shiftMutipleTouch(_:event:)),
+              for: .touchDownRepeat
+            )
+            fallthrough
+          default:
+            button.addTarget(self, action: #selector(keyTouchUpInside), for: .touchUpInside)
         }
 
         rowOfButtons.append(button)
@@ -262,7 +272,7 @@ class Keyboard{
 
   func toggleLettersCases(to newState: ShiftState) {
     if shiftState == newState { return }
-    NSLog("Letter cases toggled.")
+    NSLog("Letter cases toggled from \(shiftState!) to \(newState)")
     shiftState = newState
 
     for rowStackView in view.arrangedSubviews {
@@ -271,21 +281,22 @@ class Keyboard{
         var keyname = button.accessibilityIdentifier!
         if !keyname.isSingleAlphabet { continue }
 
-        keyname = shiftState == .on ? keyname.uppercased() : keyname.lowercased()
+        keyname = shiftState == .on || shiftState == .locked
+          ? keyname.uppercased() : keyname.lowercased()
         button.accessibilityIdentifier = keyname
         button.setTitle(keyname, for: .normal)
 
       }
     }
-
-
-
   }
 
   @objc func keyTouchUpInside(_ sender:UIButton) {
     let keyname = sender.accessibilityIdentifier!
+
+    // Clicking any key key while shift is on but not locked toggles shift back to off
     if shiftState == .on && keyname != "shift"{
       toggleLettersCases(to: .off)
+      shiftDoubleTapped = false
     }
 
     switch keyname {
@@ -294,16 +305,19 @@ class Keyboard{
       case "backspace":
         controller.textDocumentProxy.deleteBackward()
       case "shift":
-        switch shiftState {
-          case .on:
-            toggleLettersCases(to: .off)
-          case .off:
-            toggleLettersCases(to: .on)
-          case .locked:
-            toggleLettersCases(to: .off)
-          default:
-            fatalError()
+        if !shiftDoubleTapped {
+          switch shiftState {
+            case .on:
+              toggleLettersCases(to: .off)
+            case .off:
+              toggleLettersCases(to: .on)
+            case .locked:
+              toggleLettersCases(to: .off)
+            default:
+              fatalError()
+          }
         }
+        shiftDoubleTapped = false
       case "123":
         mode = .numbers
         reloadButtonsAndLooks()
@@ -321,5 +335,12 @@ class Keyboard{
     }
   }
 
+  @objc func shiftMutipleTouch(_ sender: UIButton, event: UIEvent) {
+    if event.allTouches!.first!.tapCount != 2 { return }
+    // Let touchUpInside know that the touch up action this time is from doubletaps
+    shiftDoubleTapped = true
+    
+    toggleLettersCases(to: .locked)
+  }
 
 }
