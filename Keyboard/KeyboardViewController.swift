@@ -12,9 +12,13 @@ class KeyboardViewController: UIInputViewController {
   var keyboardView: UIView!
   @IBOutlet var textBox: UILabel!
 
+  var cryptoBar: CryptoBar!
   var keyboard: Keyboard!
+
+  
   var spacerView: UIView = UIView()
-  var cryptoButtonsView: UIStackView!
+
+  var cryptoBarView: UIStackView!
   var keyboardButtonsView: UIStackView!
 
   var darkMode: Bool!
@@ -45,7 +49,7 @@ class KeyboardViewController: UIInputViewController {
       mainStackView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.size.width),
       mainStackView.heightAnchor.constraint(equalToConstant: KeyboardSpecs.superViewHeight),
       spacerView.heightAnchor.constraint(equalToConstant:  0),
-      cryptoButtonsView.widthAnchor.constraint(
+      cryptoBarView.widthAnchor.constraint(
         equalToConstant:  UIScreen.main.bounds.size.width * 0.98),
       keyboardButtonsView.heightAnchor.constraint(
         equalToConstant:  KeyboardSpecs.keyboardButtonsViewHeight),
@@ -65,12 +69,13 @@ class KeyboardViewController: UIInputViewController {
     let mainStackView = view as! UIStackView
     // Determine dark mode
     darkMode = textDocumentProxy.keyboardAppearance == UIKeyboardAppearance.dark
-//    keys = Keys()
+    keys = Keys()
     // Add a spacer on top
     mainStackView.addArrangedSubview(spacerView)
     // Initialize crypto buttons and keyboard buttons views
-    cryptoButtonsView = getCryptoButtonsView()
-    mainStackView.addArrangedSubview(cryptoButtonsView)
+    cryptoBar = CryptoBar(controller: self)
+    cryptoBarView = cryptoBar.getView()
+    mainStackView.addArrangedSubview(cryptoBarView)
 
     keyboard = Keyboard(controller: self, darkMode: darkMode)
     keyboardButtonsView = keyboard.getButtonsView()
@@ -91,137 +96,6 @@ class KeyboardViewController: UIInputViewController {
     keyboard.updateReturnKeyType()
   }
 
-  /// Request button pressed, so perform key exchange process by placing our encryption public key in the input text field.
-  func requestButtonPressed(_ sender: Any) {
-    textBox.text = "request pressed" // TODO: placeholder
-    let msg = MessageType.ECDH0.rawValue + "|" +
-      asString(keys.encryptionPublicKey.rawRepresentation)
-    clearInputText()
-    textDocumentProxy.insertText(msg)
-  }
-  
-  func unsealButtonPressed(_ sender: Any) {
-    // TODO: finish
-    guard let copiedText = UIPasteboard.general.string else {
-      textBox.text = "No copied text found." // TODO: placeholder
-      return
-    }
-    
-    let tokens = copiedText.components(separatedBy: "|")
-    NSLog("Tokens read: \(tokens)")
-
-    switch MessageType(rawValue: tokens[0]){
-    case .ECDH0:
-      // Request to initiate ECDH, i.e., to generate a symmetric key.
-      // Generate a symmetric key and send it over.
-      // Expected format: "{.ECDH0}|{sender's public key}"
-      if tokens.count != 2 { fallthrough }
-
-      let theirEncryptionPublicKeyString = tokens[1]
-
-      var ephemeralPublicKeyString, signatureString, signingPublicKeyString: String!
-      // Start ECDH, store the symmetric key, and send them the public key
-      do {
-        (ephemeralPublicKeyString, signatureString, signingPublicKeyString) =
-                try keys.ECDHKeyExchange(with: theirEncryptionPublicKeyString)
-      } catch {
-        NSLog(".ECDH0 error caught:\n\(error)")
-        fallthrough
-      }
-
-      let msg = [
-        MessageType.ECDH1.rawValue,
-        ephemeralPublicKeyString,
-        signatureString,
-        signingPublicKeyString
-      ].joined(separator: "|")
-
-      clearInputText()
-      textDocumentProxy.insertText(msg)
-
-      // TODO: placeholder
-      textBox.text = "Request to generate symmetric key received."
-
-    case .ECDH1:
-      // Reposne to request to ECDH. Expect to receive ephemeral public key.
-      // Verify signature, compute and save symmetric key.
-      // Expected format: "{.ECDH1}|{ephemeralPublicKey}|{signature}|{signingPublicKey}"
-      if tokens.count != 4 { fallthrough }
-
-      do {
-        try keys.verifyECDHKeyExchangeResponse(
-          ephemeralPublicKeyString: tokens[1],
-          signatureString: tokens[2],
-          theirSigningPublicKeyString: tokens[3]
-        )
-      } catch {
-        NSLog(".ECDH1 error caught:\n\(error)")
-        fallthrough
-      }
-
-
-      // TODO: placeholder
-      textBox.text = "Symmetric key generated"
-
-    case .ciphertext:
-      // Ciphertext received. Verify signature and decrypt using symmetric key.
-      if tokens.count != 4 { fallthrough }
-      var plaintext: String
-
-      do {
-        plaintext = try keys.decrypt((tokens[1], tokens[2]), from: tokens[3])
-      } catch {
-          NSLog(".ciphertext error caught:\n\(error)")
-          fallthrough
-      }
-
-      // TODO: placeholder
-      textBox.text = "Decrypted Message:\n\(plaintext)"
-
-    default:
-      textBox.text = "Unknown type of message copied."
-    }
-    
-
-  }
-  
-  func sealButtonPressed(_ sender: Any) {
-    // TODO: finish
-    let textInput = (textDocumentProxy.documentContextBeforeInput ?? "") +
-      (textDocumentProxy.selectedText ?? "") +
-      (textDocumentProxy.documentContextAfterInput ?? "")
-
-    if textInput.isEmpty {
-      textBox.text = "Unable to seal message because input text field is empty."
-      return
-    }
-
-    var ciphertextString, signatureString, signingPublicKeyString: String!
-
-    do {
-      (ciphertextString, signatureString, signingPublicKeyString) = try keys.encrypt(textInput)
-    } catch {
-      NSLog("encryptButtonPressed error caught:\n\(error)")
-      textBox.text = "Something went wrong. Unable to encrypt. Try again later."
-      return
-    }
-
-
-    let msg = [
-      MessageType.ciphertext.rawValue,
-      ciphertextString,
-      signatureString,
-      signingPublicKeyString
-    ].joined(separator: "|")
-
-    clearInputText()
-    textDocumentProxy.insertText(msg)
-
-    textBox.text = "Text encrypted! Ready to be sent."
-
-  }
-  
-  
   /// Clear the input text field if it's not empty.
   func clearInputText() {
     if !textDocumentProxy.hasText { return }

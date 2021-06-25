@@ -16,7 +16,7 @@ enum MessageType: String {
 }
 
 struct KeyboardSpecs {
-  static let superViewHeight = 290 as CGFloat,
+  static let superViewHeight = 330 as CGFloat,
     keyboardButtonsViewHeight = 220 as CGFloat,
     cryptoButtonsViewHeight = superViewHeight - keyboardButtonsViewHeight,
 
