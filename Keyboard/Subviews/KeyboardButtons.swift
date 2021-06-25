@@ -279,13 +279,33 @@ class Keyboard{
       for subView in (rowStackView as! UIStackView).arrangedSubviews {
         guard let button = subView as? UIButton else { continue }
         var keyname = button.accessibilityIdentifier!
-        if !keyname.isSingleAlphabet { continue }
 
-        keyname = shiftState == .on || shiftState == .locked
-          ? keyname.uppercased() : keyname.lowercased()
-        button.accessibilityIdentifier = keyname
-        button.setTitle(keyname, for: .normal)
-
+        switch keyname {
+          case "shift":
+            switch shiftState {
+              case .off:
+                button.backgroundColor = darkMode ? .darkGray : .lightGray
+                button.setTitleColor(darkMode ? .white : .black, for: [])
+                button.setTitle("⇧", for: .normal)
+              case .on:
+                button.backgroundColor = .white
+                button.setTitleColor(.black, for: [])
+                button.setTitle("⇧", for: .normal)
+              case .locked:
+                button.backgroundColor = .white
+                button.setTitleColor(.black, for: [])
+                button.setTitle("⇪", for: .normal)
+              default:
+                fatalError()
+            }
+          case keyname where keyname.isSingleAlphabet:
+            keyname = shiftState == .on || shiftState == .locked
+              ? keyname.uppercased() : keyname.lowercased()
+            button.accessibilityIdentifier = keyname
+            button.setTitle(keyname, for: .normal)
+          default:
+            break
+        }
       }
     }
   }
@@ -326,7 +346,7 @@ class Keyboard{
         reloadButtonsAndLooks()
         toggleLettersCases(to: .off)
       case "return":
-        break
+        controller.textDocumentProxy.insertText("\n")
       case "#+=":
         mode = .symbols
         reloadButtonsAndLooks()
@@ -339,7 +359,6 @@ class Keyboard{
     if event.allTouches!.first!.tapCount != 2 { return }
     // Let touchUpInside know that the touch up action this time is from doubletaps
     shiftDoubleTapped = true
-    
     toggleLettersCases(to: .locked)
   }
 
