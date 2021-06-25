@@ -9,8 +9,6 @@ import Foundation
 import UIKit
 
 
-
-
 enum MessageType: String {
   case ECDH0
   case ECDH1
@@ -18,11 +16,11 @@ enum MessageType: String {
 }
 
 struct KeyboardSpecs {
-  static let superViewHeight = 270 as CGFloat,
-    cryptoButtonsViewHeight = 50 as CGFloat,
-    keyboardButtonsViewHeight = superViewHeight - cryptoButtonsViewHeight,
+  static let superViewHeight = 290 as CGFloat,
+    keyboardButtonsViewHeight = 220 as CGFloat,
+    cryptoButtonsViewHeight = superViewHeight - keyboardButtonsViewHeight,
 
-    superViewSpacing = 5 as CGFloat,
+    superViewSpacing = 14 as CGFloat,
 
     verticalSpacing = 14 as CGFloat,
     horizontalSpacing = 6 as CGFloat,
@@ -47,6 +45,32 @@ struct KeyboardSpecs {
   }
 
 }
+
+let buttonLayout: [String: [[String]]] = [
+  Keyboard.State.alphabets.rawValue: [
+    ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
+    ["spacer_1", "a", "s", "d", "f", "g","h", "j", "k", "l", "spacer_1"],
+    ["shift", "spacer_2", "z", "x", "c", "v", "b", "n", "m", "spacer_2", "backspace"],
+    ["123", "switch", "space", "return"]
+  ],
+  Keyboard.State.numbers.rawValue:[
+    ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0",],
+    ["-", "/", ":", ";", "(", ")", "$", "&", "@", "\""],
+    ["#+=", "spacer_2", ".", ",", "?", "!", "'", "spacer_2", "backspace"],
+    ["ABC", "switch", "space", "return"]
+  ],
+  Keyboard.State.symbols.rawValue:[
+    ["[", "]", "{", "}", "#", "%", "^", "*", "+", "="],
+    ["_", "\\", "|", "~", "<", ">", "€", "£", "¥", "·"],
+    ["123", "spacer_2", ".", ",", "?", "!", "'", "spacer_2", "backspace"],
+    ["ABC", "switch", "space", "return"]
+  ]
+]
+
+let specialKeyNames = [
+  "123", "ABC", "space", "return", "backspace", "switch", "#+=", "shift"
+]
+
 
 let returnKeyTypeToString: [UIReturnKeyType: String] = [
   .default: "default",

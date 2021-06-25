@@ -8,42 +8,36 @@
 import Foundation
 import UIKit
 
-func getCryptoButtonsView() -> UIView {
-  // Add request and decrypt keys to view
-  let view = UIView(
-    frame: CGRect(
-      x: 0, y:0, width: UIScreen.main.bounds.size.width, height: KeyboardSpecs.cryptoButtonsViewHeight
-    )
-  )
-
+func getCryptoButtonsView() -> UIStackView {
   let requestButton = UIButton(type: .system)
   requestButton.setTitle("Request", for: .normal)
   requestButton.sizeToFit()
-  requestButton.backgroundColor = .red
-  requestButton.titleLabel!.textColor = .white
+  requestButton.backgroundColor = .systemBlue
+  requestButton.setTitleColor(.white, for: [])
   requestButton.translatesAutoresizingMaskIntoConstraints = false
+  requestButton.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
 
   let unsealButton = UIButton(type: .system)
   unsealButton.setTitle("Unseal Copied Text", for: .normal)
   unsealButton.sizeToFit()
-  unsealButton.backgroundColor = .red
-  unsealButton.titleLabel!.textColor = .white
+  unsealButton.backgroundColor = .systemBlue
+  unsealButton.setTitleColor(.white, for: [])
   unsealButton.translatesAutoresizingMaskIntoConstraints = false
+  unsealButton.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
 
-  view.addSubview(requestButton)
-  view.addSubview(unsealButton)
+  let sealButton = UIButton(type: .system)
+  sealButton.setTitle("Seal Message Field Text", for: .normal)
+  sealButton.sizeToFit()
+  sealButton.backgroundColor = .systemBlue
+  sealButton.setTitleColor(.white, for: [])
+  sealButton.translatesAutoresizingMaskIntoConstraints = false
+  sealButton.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
 
-  NSLayoutConstraint.activate([
-    requestButton.leftAnchor.constraint(equalTo: view.leftAnchor),
-    requestButton.topAnchor.constraint(equalTo: view.topAnchor),
-    requestButton.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-    unsealButton.leftAnchor.constraint(equalTo: requestButton.rightAnchor),
-    unsealButton.topAnchor.constraint(equalTo: view.topAnchor),
-    unsealButton.rightAnchor.constraint(equalTo: view.rightAnchor),
-    unsealButton.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-  ])
+  let view = UIStackView(arrangedSubviews: [requestButton, unsealButton, sealButton])
+  view.axis = .horizontal
+  view.spacing = KeyboardSpecs.horizontalSpacing
+  view.distribution = .fillProportionally
 
-  view.translatesAutoresizingMaskIntoConstraints = false
   return view
 
 }

@@ -13,8 +13,9 @@ class KeyboardViewController: UIInputViewController {
   @IBOutlet var textBox: UILabel!
 
   var keyboard: Keyboard!
-  var cryptoButtonsView: UIView!
-  var keyboardButtonsView: UIView!
+  var spacerView: UIView = UIView()
+  var cryptoButtonsView: UIStackView!
+  var keyboardButtonsView: UIStackView!
 
   var darkMode: Bool!
 
@@ -43,6 +44,9 @@ class KeyboardViewController: UIInputViewController {
     NSLayoutConstraint.activate([
       mainStackView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.size.width),
       mainStackView.heightAnchor.constraint(equalToConstant: KeyboardSpecs.superViewHeight),
+      spacerView.heightAnchor.constraint(equalToConstant:  0),
+      cryptoButtonsView.widthAnchor.constraint(
+        equalToConstant:  UIScreen.main.bounds.size.width * 0.98),
       keyboardButtonsView.heightAnchor.constraint(
         equalToConstant:  KeyboardSpecs.keyboardButtonsViewHeight),
       keyboardButtonsView.widthAnchor.constraint(
@@ -62,6 +66,8 @@ class KeyboardViewController: UIInputViewController {
     // Determine dark mode
     darkMode = textDocumentProxy.keyboardAppearance == UIKeyboardAppearance.dark
 //    keys = Keys()
+    // Add a spacer on top
+    mainStackView.addArrangedSubview(spacerView)
     // Initialize crypto buttons and keyboard buttons views
     cryptoButtonsView = getCryptoButtonsView()
     mainStackView.addArrangedSubview(cryptoButtonsView)

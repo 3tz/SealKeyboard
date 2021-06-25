@@ -24,29 +24,6 @@ extension String {
   }
 }
 
-let buttonLayout: [String: [[String]]] = [
-  Keyboard.State.alphabets.rawValue: [
-    ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
-    ["spacer_1", "a", "s", "d", "f", "g","h", "j", "k", "l", "spacer_1"],
-    ["shift", "spacer_2", "z", "x", "c", "v", "b", "n", "m", "spacer_2", "backspace"],
-    ["123", "switch", "space", "return"]
-  ],
-  Keyboard.State.numbers.rawValue:[
-    ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0",],
-    ["-", "/", ":", ";", "(", ")", "$", "&", "@", "\""],
-    ["#+=", "spacer_2", ".", ",", "?", "!", "'", "spacer_2", "backspace"],
-    ["ABC", "switch", "space", "return"]
-  ],
-  Keyboard.State.symbols.rawValue:[
-    ["[", "]", "{", "}", "#", "%", "^", "*", "+", "="],
-    ["_", "\\", "|", "~", "<", ">", "€", "£", "¥", "·"],
-    ["123", "spacer_2", ".", ",", "?", "!", "'", "spacer_2", "backspace"],
-    ["ABC", "switch", "space", "return"]
-  ]
-]
-
-let specialKeyNames = ["123", "ABC", "space", "return", "backspace", "switch", "#+=", "shift"]
-
 class Keyboard{
   enum State: String {
     case alphabets
@@ -97,6 +74,7 @@ class Keyboard{
     reloadButtonsToView()
     updateConstraints()
     updateColors()
+    updateReturnKeyType()
   }
 
   func updateConstraints() {
