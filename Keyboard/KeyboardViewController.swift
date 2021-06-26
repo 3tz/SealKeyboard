@@ -90,7 +90,7 @@ class KeyboardViewController: UIInputViewController {
       darkModeOn: textDocumentProxy.keyboardAppearance == UIKeyboardAppearance.dark
     )
     keyboard.updateReturnKeyType()
-    
+
     if stageToSendText == true {
       textDocumentProxy.insertText("\n")
       stageToSendText = false

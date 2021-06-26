@@ -21,6 +21,7 @@
 		30CDACEE2682C5B2005070D1 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30CDACED2682C5B2005070D1 /* Constants.swift */; };
 		30CDACF02682C772005070D1 /* CryptoButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30CDACEF2682C772005070D1 /* CryptoButtons.swift */; };
 		30D4DF832676AA1F00CF9DE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 306589C4267554B300708E73 /* Assets.xcassets */; };
+		30DF7A182687B58400990C1A /* KeyboardButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DF7A172687B58400990C1A /* KeyboardButton.swift */; };
 		30E034DB2683CA140026BE0D /* KeyboardButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E034DA2683CA140026BE0D /* KeyboardButtons.swift */; };
 		30EFC19B267B278F00EF65E8 /* KeyStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC196267B278F00EF65E8 /* KeyStoreError.swift */; };
 		30EFC19C267B278F00EF65E8 /* KeyStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC196267B278F00EF65E8 /* KeyStoreError.swift */; };
@@ -95,6 +96,7 @@
 		30C0D6C326796024002433D7 /* Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
 		30CDACED2682C5B2005070D1 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		30CDACEF2682C772005070D1 /* CryptoButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoButtons.swift; sourceTree = "<group>"; };
+		30DF7A172687B58400990C1A /* KeyboardButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardButton.swift; sourceTree = "<group>"; };
 		30E034DA2683CA140026BE0D /* KeyboardButtons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardButtons.swift; sourceTree = "<group>"; };
 		30EFC196267B278F00EF65E8 /* KeyStoreError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyStoreError.swift; sourceTree = "<group>"; };
 		30EFC197267B278F00EF65E8 /* GenericPasswordStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericPasswordStore.swift; sourceTree = "<group>"; };
@@ -182,6 +184,7 @@
 			children = (
 				30E034DA2683CA140026BE0D /* KeyboardButtons.swift */,
 				30CDACEF2682C772005070D1 /* CryptoButtons.swift */,
+				30DF7A172687B58400990C1A /* KeyboardButton.swift */,
 			);
 			path = Subviews;
 			sourceTree = "<group>";
@@ -352,6 +355,7 @@
 				306589D62675556400708E73 /* KeyboardViewController.swift in Sources */,
 				30EFC1A4267B278F00EF65E8 /* SecKeyStore.swift in Sources */,
 				30EFC1A2267B278F00EF65E8 /* SecKeyConvertible.swift in Sources */,
+				30DF7A182687B58400990C1A /* KeyboardButton.swift in Sources */,
 				30CDACEE2682C5B2005070D1 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

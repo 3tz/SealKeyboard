@@ -37,8 +37,6 @@ class Keyboard{
     case locked
   }
 
-//  var buttonsStackViews: [UIStackView] = []
-
   var mode: State!
   var shiftState: ShiftState!
   var shiftDoubleTapped: Bool = false
@@ -47,7 +45,7 @@ class Keyboard{
   var controller: KeyboardViewController!
   var view: UIStackView! = nil
 
-  var returnButton: UIButton!
+  var returnButton: KeyboardButton!
 
   init(controller: KeyboardViewController, darkMode: Bool) {
     self.darkMode = darkMode
@@ -65,7 +63,7 @@ class Keyboard{
 
     view = UIStackView()
     view.axis = .vertical
-    view.spacing = KeyboardSpecs.verticalSpacing
+    view.spacing = 0
     reloadButtonsAndLooks()
     return view
   }
@@ -92,7 +90,7 @@ class Keyboard{
       for subView in (rowStackView as! UIStackView).arrangedSubviews {
         let keyname = subView.accessibilityIdentifier!
 
-        guard let button = subView as? UIButton else {
+        guard let button = subView as? KeyboardButton else {
           // It's a spacer UIView
           // spacers of the same row have the same width
           switch keyname {
@@ -113,6 +111,7 @@ class Keyboard{
             equalTo: buttonWithStandardSize.heightAnchor).isActive = true
           continue
         }
+
         // all buttons have the same height
         button.heightAnchor.constraint(
           equalTo: buttonWithStandardSize.heightAnchor).isActive = true
@@ -124,13 +123,11 @@ class Keyboard{
         // 123 = ABC = switch = Shift = Backspace = Numbers = #+=
         //     = [(10-5) * Letter + (9-6-2) * HorizontalSpacing] / 4
         //     = 1.25 * Letter + 0.25 * horizontal Spacing
-
         switch keyname {
           case "123", "ABC", "switch", "shift", "backspace", "#+=", ".", ",", "?", "!", "'":
-              button.widthAnchor.constraint(
+            button.widthAnchor.constraint(
                 equalTo: buttonWithStandardSize.widthAnchor,
-                multiplier: 1.25,
-                constant: 0.25 * KeyboardSpecs.horizontalSpacing
+                multiplier: 1.25
               ).isActive = true
           case keyname where keyname.count == 1:
             button.widthAnchor.constraint(
@@ -138,8 +135,7 @@ class Keyboard{
           case "space":
             button.widthAnchor.constraint(
               equalTo: buttonWithStandardSize.widthAnchor,
-              multiplier: 5,
-              constant: 4 * KeyboardSpecs.horizontalSpacing
+              multiplier: 5
             ).isActive = true
           default:
             break
@@ -156,22 +152,24 @@ class Keyboard{
     darkMode = darkModeOn
     for rowStackView in view.arrangedSubviews {
       for subView in (rowStackView as! UIStackView).arrangedSubviews {
-        guard let button = subView as? UIButton else {
+        guard let button = subView as? KeyboardButton else {
           // It's a spacer UIView
           continue
         }
         let keyname = button.accessibilityIdentifier!
 
         if specialKeyNames.contains(keyname) && keyname != "space" {
-          button.backgroundColor = darkMode ? .darkGray : .lightGray
+          // special buttons except for space have a darker color
+          button.setBackgroundColor(darkMode ? .darkGray : .lightGray)
           if keyname == "switch" {
-            button.tintColor = darkMode ? .white : .black
+            button.setTintColor(darkMode ? .white : .black)
           } else {
             button.setTitleColor(darkMode ? .white : .black, for: [])
           }
 
         } else {
-          button.backgroundColor = darkMode ? .gray : .white
+          // regular input buttons
+          button.setBackgroundColor(darkMode ? .gray : .white)
           button.setTitleColor(darkMode ? .white : .black, for: [])
         }
       }
@@ -194,8 +192,7 @@ class Keyboard{
           continue
         }
 
-        let button = UIButton(type: .custom)
-        button.accessibilityIdentifier = keyname
+        let button = KeyboardButton(keyname: keyname)
 
         // Assign display char
         // Special symbols: ⇧ ⇪  ⌫
@@ -212,13 +209,8 @@ class Keyboard{
             button.setTitle(keyname, for: .normal)
         }
 
-        button.titleLabel!.font = button.titleLabel!.font.withSize(
-          KeyboardSpecs.fontSize(keyname)
-        )
-
+        button.setFontSize(KeyboardSpecs.fontSize(keyname))
         button.sizeToFit()
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
 
         switch keyname {
           case "switch":
@@ -243,7 +235,7 @@ class Keyboard{
 
       let rowStackView = UIStackView(arrangedSubviews: rowOfButtons)
       rowStackView.axis = .horizontal
-      rowStackView.spacing = KeyboardSpecs.horizontalSpacing
+      rowStackView.spacing = 0
       rowStackView.alignment = .fill
 
       view.addArrangedSubview(rowStackView)
@@ -258,22 +250,22 @@ class Keyboard{
 
     for rowStackView in view.arrangedSubviews {
       for subView in (rowStackView as! UIStackView).arrangedSubviews {
-        guard let button = subView as? UIButton else { continue }
+        guard let button = subView as? KeyboardButton else { continue }
         var keyname = button.accessibilityIdentifier!
 
         switch keyname {
           case "shift":
             switch shiftState {
               case .off:
-                button.backgroundColor = darkMode ? .darkGray : .lightGray
+                button.setBackgroundColor(darkMode ? .darkGray : .lightGray)
                 button.setTitleColor(darkMode ? .white : .black, for: [])
                 button.setTitle("⇧", for: .normal)
               case .on:
-                button.backgroundColor = .white
+                button.setBackgroundColor(.white)
                 button.setTitleColor(.black, for: [])
                 button.setTitle("⇧", for: .normal)
               case .locked:
-                button.backgroundColor = .white
+                button.setBackgroundColor(.white)
                 button.setTitleColor(.black, for: [])
                 button.setTitle("⇪", for: .normal)
               default:
@@ -306,7 +298,7 @@ class Keyboard{
     }
   }
 
-  @objc func keyTouchUpInside(_ sender:UIButton) {
+  @objc func keyTouchUpInside(_ sender:KeyboardButton) {
     let keyname = sender.accessibilityIdentifier!
 
     // Clicking any key key while shift is on but not locked toggles shift back to off
@@ -359,7 +351,7 @@ class Keyboard{
     }
   }
 
-  @objc func shiftMutipleTouch(_ sender: UIButton, event: UIEvent) {
+  @objc func shiftMutipleTouch(_ sender: KeyboardButton, event: UIEvent) {
     if event.allTouches!.first!.tapCount != 2 { return }
     // Let touchUpInside know that the touch up action this time is from doubletaps
     shiftDoubleTapped = true
