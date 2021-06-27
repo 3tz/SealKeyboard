@@ -10,32 +10,34 @@ import UIKit
 
 
 class KeyboardButton: UIButton {
-  var label: UILabel!
-
+  var keycapBackground: UILabel!
 
   convenience init(keyname: String) {
     self.init(type: .custom)
     translatesAutoresizingMaskIntoConstraints = false
     accessibilityIdentifier = keyname
     backgroundColor = UIColor(white:0, alpha:0.01)
-    label = UILabel()
-    label.translatesAutoresizingMaskIntoConstraints = false
-    label.layer.masksToBounds = true
-    label.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
-    label.textAlignment = .center
 
-    self.insertSubview(label, at: 0)
+    keycapBackground = UILabel()
+    keycapBackground.translatesAutoresizingMaskIntoConstraints = false
+    keycapBackground.layer.masksToBounds = true
+    keycapBackground.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
+//    label.textAlignment = .center
+
+    self.insertSubview(keycapBackground, at: 0)
+
+
     NSLayoutConstraint.activate([
-      label.widthAnchor.constraint(
+      keycapBackground.widthAnchor.constraint(
         equalTo: self.widthAnchor,
         constant: -KeyboardSpecs.horizontalSpacing
       ),
-      label.heightAnchor.constraint(
+      keycapBackground.heightAnchor.constraint(
         equalTo: self.heightAnchor,
         constant: -KeyboardSpecs.verticalSpacing
       ),
-      label.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-      label.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+      keycapBackground.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+      keycapBackground.centerYAnchor.constraint(equalTo: self.centerYAnchor),
     ])
 
   }
@@ -50,26 +52,27 @@ class KeyboardButton: UIButton {
     fatalError("init(coder:) has not been implemented")
   }
 
-  // MARK: Other overrides
-
-  override func setTitle(_ title: String?, for state: UIControl.State) { label.text = title }
+  // MARK: Methods to change displaying character & backgruond
 
   override func setImage(_ image: UIImage?, for state: UIControl.State) {
-    label.backgroundColor = UIColor(patternImage: image!)
+    let imageView = UIImageView(image: image)
+    imageView.translatesAutoresizingMaskIntoConstraints = false
+    self.addSubview(imageView)
+
+    NSLayoutConstraint.activate([
+      imageView.widthAnchor.constraint(equalTo: keycapBackground.widthAnchor, multiplier: 0.5),
+      imageView.heightAnchor.constraint(equalTo: keycapBackground.heightAnchor, multiplier: 0.5),
+      imageView.centerXAnchor.constraint(equalTo: keycapBackground.centerXAnchor),
+      imageView.centerYAnchor.constraint(equalTo: keycapBackground.centerYAnchor),
+    ])
+
   }
 
-  override func setTitleColor(_ color: UIColor?, for state: UIControl.State) {
-    label.textColor = color
+  func setFontSize(_ fontSize: CGFloat) {
+    self.titleLabel!.font = self.titleLabel!.font.withSize(fontSize)
   }
 
-  // MARK: class methods
+  func setTintColor(_ color: UIColor) { self.tintColor = color }
 
-  func setFontSize(_ fontSize: CGFloat) { label.font = label.font.withSize(fontSize) }
-
-  func setBackgroundColor(_ color: UIColor) { label.backgroundColor = color }
-
-  func setTintColor(_ color: UIColor) { label.tintColor = color }
-
-
-
+  func setBackgroundColor(_ color: UIColor) { keycapBackground.backgroundColor = color }
 }
