@@ -56,6 +56,8 @@ class Keyboard{
     view = getButtonsView()
   }
 
+  // MARK: internal methods for getting view & switching dark mode
+
   func getButtonsView() -> UIStackView{
     if view != nil {
       return view
@@ -68,14 +70,111 @@ class Keyboard{
     return view
   }
 
-  func reloadButtonsAndLooks() {
+  func updateColors(darkModeOn: Bool) {
+    darkMode = darkModeOn
+    for rowStackView in view.arrangedSubviews {
+      for subView in (rowStackView as! UIStackView).arrangedSubviews {
+        guard let button = subView as? KeyboardButton else {
+          // It's a spacer UIView
+          continue
+        }
+        let keyname = button.accessibilityIdentifier!
+
+        if specialKeyNames.contains(keyname) && keyname != "space" {
+          // special buttons except for space have a darker color
+          button.setBackgroundColor(darkMode ? .darkGray : .lightGray)
+          if keyname == "switch" {
+            button.setTintColor(darkMode ? .white : .black)
+          } else {
+            button.setTitleColor(darkMode ? .white : .black, for: [])
+          }
+
+        } else {
+          // regular input buttons
+          button.setBackgroundColor(darkMode ? .gray : .white)
+          button.setTitleColor(darkMode ? .white : .black, for: [])
+        }
+      }
+    }
+  }
+
+  // MARK: private methods for adjusting views, constraints, and colors.
+
+  private func reloadButtonsAndLooks() {
     reloadButtonsToView()
     updateConstraints()
     updateColors()
     updateReturnKeyType()
   }
 
-  func updateConstraints() {
+  private func reloadButtonsToView() {
+    for subview in view.subviews {
+      subview.removeFromSuperview()
+    }
+    // Create the buttons
+    for row in buttonLayout[mode.rawValue]! {
+      var rowOfButtons: [UIView] = []
+      for keyname in row {
+        if keyname == "spacer_1" || keyname == "spacer_2" {
+          let spacer = UIView()
+          spacer.translatesAutoresizingMaskIntoConstraints = false
+          spacer.accessibilityIdentifier = keyname
+          rowOfButtons.append(spacer)
+          continue
+        }
+
+        let button = KeyboardButton(keyname: keyname)
+
+        // Assign display char
+        // Special symbols: ⇧ ⇪  ⌫
+        switch keyname {
+          case "shift":
+            button.setTitle("⇧", for: .normal)
+          case "backspace":
+            button.setTitle("⌫", for: .normal)
+          case "switch":
+            button.setImage(UIImage(systemName: "globe"), for: .normal)
+          case "return":
+            returnButton = button
+          default:
+            button.setTitle(keyname, for: .normal)
+        }
+
+        button.setFontSize(KeyboardSpecs.fontSize(keyname))
+        button.sizeToFit()
+
+        switch keyname {
+          case "switch":
+            button.addTarget(
+              controller,
+              action: #selector(controller.handleInputModeList(from:with:)),
+              for: .allTouchEvents
+            )
+          case "shift":
+            button.addTarget(
+              self,
+              action: #selector(shiftMutipleTouch(_:event:)),
+              for: .touchDownRepeat
+            )
+            fallthrough
+          default:
+            button.addTarget(self, action: #selector(keyTouchUpInside), for: .touchUpInside)
+        }
+
+        rowOfButtons.append(button)
+      }
+
+      let rowStackView = UIStackView(arrangedSubviews: rowOfButtons)
+      rowStackView.axis = .horizontal
+      rowStackView.spacing = 0
+      rowStackView.alignment = .fill
+
+      view.addArrangedSubview(rowStackView)
+    }
+
+  }
+
+  private func updateConstraints() {
     // All normal buttons have the same size, so choose one of them and set constraints of
     //  other normal buttons based on that.
     let firstRow = view.arrangedSubviews[0] as! UIStackView
@@ -144,106 +243,26 @@ class Keyboard{
     }
   }
 
-  func updateColors() {
+  private func updateColors() {
     updateColors(darkModeOn: darkMode)
   }
 
-  func updateColors(darkModeOn: Bool) {
-    darkMode = darkModeOn
-    for rowStackView in view.arrangedSubviews {
-      for subView in (rowStackView as! UIStackView).arrangedSubviews {
-        guard let button = subView as? KeyboardButton else {
-          // It's a spacer UIView
-          continue
-        }
-        let keyname = button.accessibilityIdentifier!
+  private func updateReturnKeyType() {
+    let returnType = controller.textDocumentProxy.returnKeyType ?? .default
+    switch returnType {
+      case .send:
+        returnButton.setTitle("Seal & Send", for: .normal)
+      case .default:
+        returnButton.setTitle("return", for: .normal)
+      default:
+        returnButton.setTitle(
+          returnKeyTypeToString[returnType, default: "return"],
+          for: .normal)
 
-        if specialKeyNames.contains(keyname) && keyname != "space" {
-          // special buttons except for space have a darker color
-          button.setBackgroundColor(darkMode ? .darkGray : .lightGray)
-          if keyname == "switch" {
-            button.setTintColor(darkMode ? .white : .black)
-          } else {
-            button.setTitleColor(darkMode ? .white : .black, for: [])
-          }
-
-        } else {
-          // regular input buttons
-          button.setBackgroundColor(darkMode ? .gray : .white)
-          button.setTitleColor(darkMode ? .white : .black, for: [])
-        }
-      }
     }
   }
 
-  func reloadButtonsToView() {
-    for subview in view.subviews {
-      subview.removeFromSuperview()
-    }
-    // Create the buttons
-    for row in buttonLayout[mode.rawValue]! {
-      var rowOfButtons: [UIView] = []
-      for keyname in row {
-        if keyname == "spacer_1" || keyname == "spacer_2" {
-          let spacer = UIView()
-          spacer.translatesAutoresizingMaskIntoConstraints = false
-          spacer.accessibilityIdentifier = keyname
-          rowOfButtons.append(spacer)
-          continue
-        }
-
-        let button = KeyboardButton(keyname: keyname)
-
-        // Assign display char
-        // Special symbols: ⇧ ⇪  ⌫
-        switch keyname {
-          case "shift":
-            button.setTitle("⇧", for: .normal)
-          case "backspace":
-            button.setTitle("⌫", for: .normal)
-          case "switch":
-            button.setImage(UIImage(systemName: "globe"), for: .normal)
-          case "return":
-            returnButton = button
-          default:
-            button.setTitle(keyname, for: .normal)
-        }
-
-        button.setFontSize(KeyboardSpecs.fontSize(keyname))
-        button.sizeToFit()
-
-        switch keyname {
-          case "switch":
-            button.addTarget(
-              controller,
-              action: #selector(controller.handleInputModeList(from:with:)),
-              for: .allTouchEvents
-            )
-          case "shift":
-            button.addTarget(
-              self,
-              action: #selector(shiftMutipleTouch(_:event:)),
-              for: .touchDownRepeat
-            )
-            fallthrough
-          default:
-            button.addTarget(self, action: #selector(keyTouchUpInside), for: .touchUpInside)
-        }
-
-        rowOfButtons.append(button)
-      }
-
-      let rowStackView = UIStackView(arrangedSubviews: rowOfButtons)
-      rowStackView.axis = .horizontal
-      rowStackView.spacing = 0
-      rowStackView.alignment = .fill
-
-      view.addArrangedSubview(rowStackView)
-    }
-
-  }
-
-  func toggleLettersCases(to newState: ShiftState) {
+  private func toggleLettersCases(to newState: ShiftState) {
     if shiftState == newState { return }
     NSLog("Letter cases toggled from \(shiftState!) to \(newState)")
     shiftState = newState
@@ -283,22 +302,9 @@ class Keyboard{
     }
   }
 
-  func updateReturnKeyType() {
-    let returnType = controller.textDocumentProxy.returnKeyType ?? .default
-    switch returnType {
-      case .send:
-        returnButton.setTitle("Seal & Send", for: .normal)
-      case .default:
-        returnButton.setTitle("return", for: .normal)
-      default:
-        returnButton.setTitle(
-          returnKeyTypeToString[returnType, default: "return"],
-          for: .normal)
+  // MARK: button trigger methods
 
-    }
-  }
-
-  @objc func keyTouchUpInside(_ sender:KeyboardButton) {
+  @objc private func keyTouchUpInside(_ sender:KeyboardButton) {
     let keyname = sender.accessibilityIdentifier!
 
     // Clicking any key key while shift is on but not locked toggles shift back to off
@@ -351,7 +357,7 @@ class Keyboard{
     }
   }
 
-  @objc func shiftMutipleTouch(_ sender: KeyboardButton, event: UIEvent) {
+  @objc private func shiftMutipleTouch(_ sender: KeyboardButton, event: UIEvent) {
     if event.allTouches!.first!.tapCount != 2 { return }
     // Let touchUpInside know that the touch up action this time is from doubletaps
     shiftDoubleTapped = true
