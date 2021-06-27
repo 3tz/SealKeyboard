@@ -86,3 +86,5 @@ let returnKeyTypeToString: [UIReturnKeyType: String] = [
   .emergencyCall: "emergencyCall",
   .continue: "continue",
 ]
+
+let backspaceHeldDeleteInterval = 0.1

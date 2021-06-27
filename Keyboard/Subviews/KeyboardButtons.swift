@@ -47,6 +47,8 @@ class Keyboard{
 
   var returnButton: KeyboardButton!
 
+  var backspaceHeldTimer: Timer!
+
   init(controller: KeyboardViewController, darkMode: Bool) {
     self.darkMode = darkMode
     self.controller = controller
@@ -95,6 +97,21 @@ class Keyboard{
           button.setTitleColor(darkMode ? .white : .black, for: [])
         }
       }
+    }
+  }
+
+  func updateReturnKeyType() {
+    let returnType = controller.textDocumentProxy.returnKeyType ?? .default
+    switch returnType {
+      case .send:
+        returnButton.setTitle("Seal & Send", for: .normal)
+      case .default:
+        returnButton.setTitle("return", for: .normal)
+      default:
+        returnButton.setTitle(
+          returnKeyTypeToString[returnType, default: "return"],
+          for: .normal)
+
     }
   }
 
@@ -156,7 +173,12 @@ class Keyboard{
               action: #selector(shiftMutipleTouch(_:event:)),
               for: .touchDownRepeat
             )
-            fallthrough
+            button.addTarget(self, action: #selector(keyTouchUpInside), for: .touchUpInside)
+          case "backspace":
+            button.addGestureRecognizer(
+              UILongPressGestureRecognizer(target: self, action: #selector(backspaceHeld(_:)))
+            )
+            button.addTarget(self, action: #selector(keyTouchDown), for: .touchDown)
           default:
             button.addTarget(self, action: #selector(keyTouchUpInside), for: .touchUpInside)
         }
@@ -247,21 +269,6 @@ class Keyboard{
     updateColors(darkModeOn: darkMode)
   }
 
-  private func updateReturnKeyType() {
-    let returnType = controller.textDocumentProxy.returnKeyType ?? .default
-    switch returnType {
-      case .send:
-        returnButton.setTitle("Seal & Send", for: .normal)
-      case .default:
-        returnButton.setTitle("return", for: .normal)
-      default:
-        returnButton.setTitle(
-          returnKeyTypeToString[returnType, default: "return"],
-          for: .normal)
-
-    }
-  }
-
   private func toggleLettersCases(to newState: ShiftState) {
     if shiftState == newState { return }
     NSLog("Letter cases toggled from \(shiftState!) to \(newState)")
@@ -316,8 +323,6 @@ class Keyboard{
     switch keyname {
       case "space":
         controller.textDocumentProxy.insertText(" ")
-      case "backspace":
-        controller.textDocumentProxy.deleteBackward()
       case "shift":
         if !shiftDoubleTapped {
           switch shiftState {
@@ -364,4 +369,32 @@ class Keyboard{
     toggleLettersCases(to: .locked)
   }
 
+  @objc private func keyTouchDown(_ sender:KeyboardButton) {
+    controller.textDocumentProxy.deleteBackward()
+  }
+
+  @objc private func backspaceHeld(_ sender: UIGestureRecognizer) {
+    var count = 0
+    if sender.state == .began {
+      backspaceHeldTimer = Timer.scheduledTimer(
+        withTimeInterval: backspaceHeldDeleteInterval, repeats: true) { timer in
+        count += 1
+        self.controller.textDocumentProxy.deleteBackward()
+
+        // Delete faster
+        if count > 10 {
+          self.backspaceHeldTimer.invalidate()
+          self.backspaceHeldTimer =  Timer.scheduledTimer(
+            withTimeInterval: backspaceHeldDeleteInterval * 2, repeats: true) { timer in
+            for _ in 0..<20 {
+              self.controller.textDocumentProxy.deleteBackward()
+            }
+          }
+        }
+      }
+    }
+    else if sender.state == .ended {
+      backspaceHeldTimer.invalidate()
+    }
+  }
 }
