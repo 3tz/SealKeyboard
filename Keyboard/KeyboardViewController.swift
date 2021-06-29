@@ -58,6 +58,9 @@ class KeyboardViewController: UIInputViewController {
 
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
+    keyboard.updateColors(
+      darkModeOn: textDocumentProxy.keyboardAppearance == UIKeyboardAppearance.dark
+    )
   }
 
 
@@ -86,9 +89,7 @@ class KeyboardViewController: UIInputViewController {
   
   override func textDidChange(_ textInput: UITextInput?) {
     super.textDidChange(textInput)
-    keyboard.updateColors(
-      darkModeOn: textDocumentProxy.keyboardAppearance == UIKeyboardAppearance.dark
-    )
+
     keyboard.updateReturnKeyType()
 
     if stageToSendText == true {

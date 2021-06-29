@@ -49,9 +49,20 @@ struct KeyboardSpecs {
     regularBackgroundLight = UIColor.white,
     regularTitleLight = UIColor.black
 
+  static private let pressedRegularBackgroundLight = specialBackgroundLight,
+    pressedRegularBackgroundDark = specialBackgroundDark,
+    pressedSpecialBackgroundLight = regularBackgroundLight,
+    pressedSpecialBackgroundDark = regularBackgroundDark
 
   static func fontSize(_ keyname: String) -> CGFloat {
     return _specialFontSize[keyname, default: standardFontSize]
+  }
+
+  static func getPressedKeyBackgroundColors(keyname: String, darkMode: Bool) -> UIColor{
+    if keyname == "backspace" || keyname == "return" {
+      return darkMode ? pressedSpecialBackgroundDark : pressedSpecialBackgroundLight
+    }
+    return darkMode ? pressedRegularBackgroundDark : pressedRegularBackgroundLight
   }
 
   static func getKeyColors(keyname: String, darkMode: Bool) -> (UIColor, UIColor){

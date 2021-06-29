@@ -73,6 +73,7 @@ class KeyboardButton: UIButton {
   }
 
   override func setTitleColor(_ color: UIColor?, for state: UIControl.State) {
+    // Language mode switch key uses a system image instead of text
     if self.accessibilityIdentifier == "switch" {
       self.tintColor = color
     } else {
@@ -93,11 +94,18 @@ class KeyboardButton: UIButton {
     setTitleColor(titleColor, for: [])
   }
 
-  func setKeyState(_ pressed: Bool) {
+  func setKeyColor(pressed: Bool, darkMode: Bool) {
+    let backgroundColor: UIColor!
+    let keyname = self.accessibilityIdentifier!
+    
     if pressed {
-
+      backgroundColor = KeyboardSpecs.getPressedKeyBackgroundColors(
+        keyname: keyname, darkMode: darkMode)
     } else {
-
+      (backgroundColor, _) = KeyboardSpecs.getKeyColors(
+        keyname: keyname, darkMode: darkMode
+      )
     }
+    setBackgroundColor(backgroundColor)
   }
 }

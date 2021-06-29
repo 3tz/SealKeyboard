@@ -150,6 +150,9 @@ class Keyboard{
         button.sizeToFit()
 
         // Assign the target actions
+        // Shift & backspace have their own special selector funcs
+        // All special keys minus space & return perform their actions upon touchdown
+        // all normal keys and space & return perform actions upon touchup inside
         switch keyname {
           case "switch":
             button.addTarget(
@@ -163,16 +166,22 @@ class Keyboard{
               action: #selector(shiftMutipleTouch(_:event:)),
               for: .touchDownRepeat
             )
-            button.addTarget(self, action: #selector(keyTouchUpInside), for: .touchUpInside)
           case "backspace":
             button.addGestureRecognizer(
               UILongPressGestureRecognizer(target: self, action: #selector(backspaceHeld(_:)))
             )
-            button.addTarget(self, action: #selector(keyTouchDown), for: .touchDown)
+          case keyname where specialKeyNames.contains(keyname) &&
+                keyname != "space" && keyname != "return":
+            break
           default:
-//            button.addTarget(self, action: #selector(<#T##@objc method#>), for: .touchDown)
-            button.addTarget(self, action: #selector(keyTouchUpInside), for: .touchUpInside)
+            button.addTarget(self, action: #selector(keyTouchUpInside(_:event:)), for: .touchUpInside)
+            button.addTarget(self, action: #selector(keyDragEnter(_:event:)), for:
+                              [.touchDragEnter, .touchDragInside])
         }
+
+        button.addTarget(self, action: #selector(keyTouchDown(_:)), for: .touchDown)
+        button.addTarget(self, action: #selector(keyUntouched(_:)), for: .touchUpInside)
+        button.addTarget(self, action: #selector(keyUntouched(_:event:)), for: .touchDragInside)
 
         rowOfButtons.append(button)
       }
@@ -301,15 +310,44 @@ class Keyboard{
     }
   }
 
-  // MARK: button trigger methods
+  // MARK: button trigger methods. To future self, sorry.
 
-//  @objc private func key
+  /// Reset key color back to unpressed.
+  @objc private func keyUntouched(_ sender: KeyboardButton) {
+    if sender.accessibilityIdentifier == "shift" { return }
 
-  @objc private func keyTouchUpInside(_ sender: KeyboardButton) {
+    sender.setKeyColor(pressed: false, darkMode: darkMode)
+  }
+
+  /// Reset key color back to unpressed if touch is dragged to exterior of its bounds.
+  @objc private func keyUntouched(_ sender: KeyboardButton, event: UIEvent) {
+    if sender.accessibilityIdentifier == "shift" { return }
+
+    // if a touch is actually still inside the button, don't make it be unpressed
+    let touch = event.touches(for: sender)!.first!
+    if sender.bounds.contains(touch.location(in: sender)) { return }
+
+    sender.setKeyColor(pressed: false, darkMode: darkMode)
+  }
+
+  @objc private func keyDragEnter(_ sender: KeyboardButton, event: UIEvent) {
+    let touch = event.touches(for: sender)!.first!
+    if sender.bounds.contains(touch.location(in: sender)) {
+      sender.setKeyColor(pressed: true, darkMode: darkMode)
+    }
+  }
+
+  /// Only normal keys and space & return should call this method for .touchUpInside
+  /// Perform actions of @sender correspondingly.
+  @objc private func keyTouchUpInside(_ sender: KeyboardButton, event: UIEvent) {
     let keyname = sender.accessibilityIdentifier!
 
+    // if touch is not actually inside, ignore
+    let touch = event.touches(for: sender)!.first!
+    if !sender.bounds.contains(touch.location(in: sender)) { return }
+
     // Clicking any key key while shift is on but not locked toggles shift back to off
-    if shiftState == .on && keyname != "shift"{
+    if shiftState == .on && keyname != "shift" {
       toggleLettersCases(to: .off)
       shiftDoubleTapped = false
     }
@@ -317,6 +355,46 @@ class Keyboard{
     switch keyname {
       case "space":
         controller.textDocumentProxy.insertText(" ")
+      case "return":
+        let returnKeyType = controller.textDocumentProxy.returnKeyType ?? .default
+
+        switch returnKeyType {
+          case .send:
+            if !controller.textDocumentProxy.hasText { break }
+            controller.cryptoBar.sealAndSend()
+          default:
+            controller.textDocumentProxy.insertText("\n")
+        }
+      default:
+        controller.textDocumentProxy.insertText(keyname)
+    }
+  }
+
+  @objc private func shiftMutipleTouch(_ sender: KeyboardButton, event: UIEvent) {
+    if event.allTouches!.first!.tapCount % 2 != 0 { return }
+    // Let touchUpInside know that the touch up action this time is from doubletaps
+    shiftDoubleTapped = true
+    toggleLettersCases(to: .locked)
+    shiftDoubleTapped = false
+  }
+
+  @objc private func keyTouchDown(_ sender:KeyboardButton) {
+    let keyname = sender.accessibilityIdentifier
+
+    switch keyname {
+      case "123":
+        mode = .numbers
+        reloadButtonsAndLooks()
+      case "ABC":
+        mode = .alphabets
+        reloadButtonsAndLooks()
+        toggleLettersCases(to: .off)
+      case "#+=":
+        mode = .symbols
+        reloadButtonsAndLooks()
+      case "backspace":
+        sender.setKeyColor(pressed: true, darkMode: darkMode)
+        controller.textDocumentProxy.deleteBackward()
       case "shift":
         if !shiftDoubleTapped {
           switch shiftState {
@@ -331,49 +409,8 @@ class Keyboard{
           }
         }
         shiftDoubleTapped = false
-      case "123":
-        mode = .numbers
-        reloadButtonsAndLooks()
-      case "ABC":
-        mode = .alphabets
-        reloadButtonsAndLooks()
-        toggleLettersCases(to: .off)
-      case "return":
-        let returnKeyType = controller.textDocumentProxy.returnKeyType ?? .default
-
-        switch returnKeyType {
-          case .send:
-            if !controller.textDocumentProxy.hasText { break }
-            controller.cryptoBar.sealAndSend()
-          default:
-            controller.textDocumentProxy.insertText("\n")
-        }
-      case "#+=":
-        mode = .symbols
-        reloadButtonsAndLooks()
       default:
-        controller.textDocumentProxy.insertText(keyname)
-    }
-  }
-
-  @objc private func shiftMutipleTouch(_ sender: KeyboardButton, event: UIEvent) {
-    if event.allTouches!.first!.tapCount != 2 { return }
-    // Let touchUpInside know that the touch up action this time is from doubletaps
-    shiftDoubleTapped = true
-    toggleLettersCases(to: .locked)
-  }
-
-  @objc private func keyTouchDown(_ sender:KeyboardButton) {
-//    sender.
-
-    let keyname = sender.accessibilityIdentifier
-
-
-    switch keyname {
-      case "backspace":
-        controller.textDocumentProxy.deleteBackward()
-      default:
-        break
+        sender.setKeyColor(pressed: true, darkMode: darkMode)
     }
 
   }
@@ -400,6 +437,7 @@ class Keyboard{
     }
     else if sender.state == .ended {
       backspaceHeldTimer.invalidate()
+      (sender.view as! KeyboardButton).setKeyColor(pressed: false, darkMode: darkMode)
     }
   }
 }
