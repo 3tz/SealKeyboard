@@ -47,11 +47,11 @@ class KeyboardViewController: UIInputViewController {
       mainStackView.heightAnchor.constraint(equalToConstant: KeyboardSpecs.superViewHeight),
       spacerView.heightAnchor.constraint(equalToConstant:  0),
       cryptoBarView.widthAnchor.constraint(
-        equalToConstant:  UIScreen.main.bounds.size.width * 0.98),
+        equalToConstant:  UIScreen.main.bounds.size.width * 0.99),
       keyboardButtonsView.heightAnchor.constraint(
         equalToConstant:  KeyboardSpecs.keyboardButtonsViewHeight),
       keyboardButtonsView.widthAnchor.constraint(
-        equalToConstant:  UIScreen.main.bounds.size.width * 0.98),
+        equalToConstant:  UIScreen.main.bounds.size.width * 0.99),
     ])
 
   }

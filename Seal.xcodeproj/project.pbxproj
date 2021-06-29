@@ -183,8 +183,8 @@
 			isa = PBXGroup;
 			children = (
 				30E034DA2683CA140026BE0D /* KeyboardButtons.swift */,
-				30CDACEF2682C772005070D1 /* CryptoButtons.swift */,
 				30DF7A172687B58400990C1A /* KeyboardButton.swift */,
+				30CDACEF2682C772005070D1 /* CryptoButtons.swift */,
 			);
 			path = Subviews;
 			sourceTree = "<group>";

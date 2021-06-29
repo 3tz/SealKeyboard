@@ -45,7 +45,7 @@ class Keyboard{
   var controller: KeyboardViewController!
   var view: UIStackView! = nil
 
-  var returnButton: KeyboardButton!
+  weak var returnButton: KeyboardButton!
 
   var backspaceHeldTimer: Timer!
 
@@ -80,22 +80,7 @@ class Keyboard{
           // It's a spacer UIView
           continue
         }
-        let keyname = button.accessibilityIdentifier!
-
-        if specialKeyNames.contains(keyname) && keyname != "space" {
-          // special buttons except for space have a darker color
-          button.setBackgroundColor(darkMode ? .darkGray : .lightGray)
-          if keyname == "switch" {
-            button.setTintColor(darkMode ? .white : .black)
-          } else {
-            button.setTitleColor(darkMode ? .white : .black, for: [])
-          }
-
-        } else {
-          // regular input buttons
-          button.setBackgroundColor(darkMode ? .gray : .white)
-          button.setTitleColor(darkMode ? .white : .black, for: [])
-        }
+        button.setDarkModeState(darkMode)
       }
     }
   }
@@ -132,6 +117,8 @@ class Keyboard{
     for row in buttonLayout[mode.rawValue]! {
       var rowOfButtons: [UIView] = []
       for keyname in row {
+
+        // spacers use empty UIView instead of buttons
         if keyname == "spacer_1" || keyname == "spacer_2" {
           let spacer = UIView()
           spacer.translatesAutoresizingMaskIntoConstraints = false
@@ -140,6 +127,7 @@ class Keyboard{
           continue
         }
 
+        // Now build each button
         let button = KeyboardButton(keyname: keyname)
 
         // Assign display char
@@ -152,6 +140,7 @@ class Keyboard{
           case "switch":
             button.setImage(UIImage(systemName: "globe"), for: .normal)
           case "return":
+            // save a ref to the return button for changing with UIReturnType
             returnButton = button
           default:
             button.setTitle(keyname, for: .normal)
@@ -160,6 +149,7 @@ class Keyboard{
         button.setFontSize(KeyboardSpecs.fontSize(keyname))
         button.sizeToFit()
 
+        // Assign the target actions
         switch keyname {
           case "switch":
             button.addTarget(
@@ -180,12 +170,14 @@ class Keyboard{
             )
             button.addTarget(self, action: #selector(keyTouchDown), for: .touchDown)
           default:
+//            button.addTarget(self, action: #selector(<#T##@objc method#>), for: .touchDown)
             button.addTarget(self, action: #selector(keyTouchUpInside), for: .touchUpInside)
         }
 
         rowOfButtons.append(button)
       }
 
+      // Create a stackview for current row
       let rowStackView = UIStackView(arrangedSubviews: rowOfButtons)
       rowStackView.axis = .horizontal
       rowStackView.spacing = 0
@@ -311,7 +303,9 @@ class Keyboard{
 
   // MARK: button trigger methods
 
-  @objc private func keyTouchUpInside(_ sender:KeyboardButton) {
+//  @objc private func key
+
+  @objc private func keyTouchUpInside(_ sender: KeyboardButton) {
     let keyname = sender.accessibilityIdentifier!
 
     // Clicking any key key while shift is on but not locked toggles shift back to off
@@ -370,7 +364,18 @@ class Keyboard{
   }
 
   @objc private func keyTouchDown(_ sender:KeyboardButton) {
-    controller.textDocumentProxy.deleteBackward()
+//    sender.
+
+    let keyname = sender.accessibilityIdentifier
+
+
+    switch keyname {
+      case "backspace":
+        controller.textDocumentProxy.deleteBackward()
+      default:
+        break
+    }
+
   }
 
   @objc private func backspaceHeld(_ sender: UIGestureRecognizer) {
@@ -382,7 +387,7 @@ class Keyboard{
         self.controller.textDocumentProxy.deleteBackward()
 
         // Delete faster
-        if count > 10 {
+        if count > 15 {
           self.backspaceHeldTimer.invalidate()
           self.backspaceHeldTimer =  Timer.scheduledTimer(
             withTimeInterval: backspaceHeldDeleteInterval * 2, repeats: true) { timer in

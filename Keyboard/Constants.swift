@@ -40,8 +40,35 @@ struct KeyboardSpecs {
     "backspace": 25,
   ]
 
+  static private let specialBackgroundDark = UIColor.darkGray,
+    specialTitleDark = UIColor.white,
+    regularBackgroundDark = UIColor.gray,
+    regularTitleDark = UIColor.white,
+    specialBackgroundLight = UIColor.lightGray,
+    specialTitleLight = UIColor.black,
+    regularBackgroundLight = UIColor.white,
+    regularTitleLight = UIColor.black
+
+
   static func fontSize(_ keyname: String) -> CGFloat {
     return _specialFontSize[keyname, default: standardFontSize]
+  }
+
+  static func getKeyColors(keyname: String, darkMode: Bool) -> (UIColor, UIColor){
+
+    if specialKeyNames.contains(keyname) && keyname != "space" {
+      // special buttons except for space have a darker color
+      return (
+        (darkMode ? specialBackgroundDark : specialBackgroundLight),
+        (darkMode ? specialTitleDark : specialTitleLight)
+      )
+    } else {
+      // regular input buttons
+      return (
+        (darkMode ? regularBackgroundDark : regularBackgroundLight),
+        (darkMode ? regularTitleDark : regularTitleLight)
+      )
+    }
   }
 
 }

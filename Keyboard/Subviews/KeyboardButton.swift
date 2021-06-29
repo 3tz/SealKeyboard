@@ -72,7 +72,32 @@ class KeyboardButton: UIButton {
     self.titleLabel!.font = self.titleLabel!.font.withSize(fontSize)
   }
 
-  func setTintColor(_ color: UIColor) { self.tintColor = color }
+  override func setTitleColor(_ color: UIColor?, for state: UIControl.State) {
+    if self.accessibilityIdentifier == "switch" {
+      self.tintColor = color
+    } else {
+      super.setTitleColor(color, for: state)
+    }
+  }
 
   func setBackgroundColor(_ color: UIColor) { keycapBackground.backgroundColor = color }
+
+  func setDarkModeState(_ darkMode: Bool) {
+    let keyname = self.accessibilityIdentifier!
+
+    let (backgroundColor, titleColor) = KeyboardSpecs.getKeyColors(
+      keyname: keyname, darkMode: darkMode
+    )
+
+    setBackgroundColor(backgroundColor)
+    setTitleColor(titleColor, for: [])
+  }
+
+  func setKeyState(_ pressed: Bool) {
+    if pressed {
+
+    } else {
+
+    }
+  }
 }
