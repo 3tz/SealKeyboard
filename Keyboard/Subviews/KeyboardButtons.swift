@@ -94,7 +94,7 @@ class Keyboard{
         returnButton.setTitle("return", for: .normal)
       default:
         returnButton.setTitle(
-          returnKeyTypeToString[returnType, default: "return"],
+          KeyboardSpecs.returnKeyTypeToString[returnType, default: "return"],
           for: .normal)
 
     }
@@ -114,7 +114,7 @@ class Keyboard{
       subview.removeFromSuperview()
     }
     // Create the buttons
-    for row in buttonLayout[mode.rawValue]! {
+    for row in KeyboardSpecs.buttonLayout[mode.rawValue]! {
       var rowOfButtons: [UIView] = []
       for keyname in row {
 
@@ -170,7 +170,7 @@ class Keyboard{
             button.addGestureRecognizer(
               UILongPressGestureRecognizer(target: self, action: #selector(backspaceHeld(_:)))
             )
-          case keyname where specialKeyNames.contains(keyname) &&
+          case keyname where KeyboardSpecs.specialKeyNames.contains(keyname) &&
                 keyname != "space" && keyname != "return":
             break
           default:
@@ -419,7 +419,7 @@ class Keyboard{
     var count = 0
     if sender.state == .began {
       backspaceHeldTimer = Timer.scheduledTimer(
-        withTimeInterval: backspaceHeldDeleteInterval, repeats: true) { timer in
+        withTimeInterval: KeyboardSpecs.backspaceHeldDeleteInterval, repeats: true) { timer in
         count += 1
         self.controller.textDocumentProxy.deleteBackward()
 
@@ -427,7 +427,7 @@ class Keyboard{
         if count > 15 {
           self.backspaceHeldTimer.invalidate()
           self.backspaceHeldTimer =  Timer.scheduledTimer(
-            withTimeInterval: backspaceHeldDeleteInterval * 2, repeats: true) { timer in
+            withTimeInterval: KeyboardSpecs.backspaceHeldDeleteInterval * 2, repeats: true) { timer in
             for _ in 0..<20 {
               self.controller.textDocumentProxy.deleteBackward()
             }

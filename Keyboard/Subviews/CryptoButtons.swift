@@ -105,7 +105,6 @@ class CryptoBar {
     buttonsView.distribution = .fillProportionally
   }
 
-
   /// Request button pressed, so perform key exchange process by placing our encryption public key in the input text field.
   @objc func requestButtonPressed(_ sender: Any) {
     textView.text = "request pressed" // TODO: placeholder
@@ -254,15 +253,6 @@ class CryptoBar {
     controller.clearInputText()
     controller.textDocumentProxy.insertText(msg)
   }
-
-//  func startClipboardUpdateObserver() {
-//    NotificationCenter.addObserver(
-//      self,
-//      selector: #selector(clipboardUpdated),
-//      name: UIPasteboard.changedNotification,
-//      object: nil
-//    )
-//  }
 
   /// Check if pasteboard has changed every 1 second, and unseal if it has.
   func startPasteboardChangeCountMonitor() {
