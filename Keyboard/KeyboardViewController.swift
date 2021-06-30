@@ -13,7 +13,7 @@ class KeyboardViewController: UIInputViewController {
   @IBOutlet var textBox: UILabel!
 
   var cryptoBar: CryptoBar!
-  var keyboard: Keyboard!
+  var typingViewController: TypingViewController!
 
   var spacerView: UIView = UIView()
 
@@ -47,8 +47,10 @@ class KeyboardViewController: UIInputViewController {
     cryptoBarView = cryptoBar.getView()
     mainStackView.addArrangedSubview(cryptoBarView)
 
-    keyboard = Keyboard(controller: self, darkMode: darkMode)
-    keyboardButtonsView = keyboard.getButtonsView()
+    typingViewController = TypingViewController(parentController: self)
+    keyboardButtonsView = (typingViewController.view as! UIStackView)
+
+    self.addChild(typingViewController)
     mainStackView.addArrangedSubview(keyboardButtonsView)
 
     NSLog("\(UIPasteboard.general.changeCount)")
@@ -56,9 +58,6 @@ class KeyboardViewController: UIInputViewController {
 
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-    keyboard.updateColors(
-      darkModeOn: textDocumentProxy.keyboardAppearance == UIKeyboardAppearance.dark
-    )
   }
 
   override func viewWillLayoutSubviews() {
@@ -93,8 +92,6 @@ class KeyboardViewController: UIInputViewController {
 
   override func textDidChange(_ textInput: UITextInput?) {
     super.textDidChange(textInput)
-
-    keyboard.updateReturnKeyType()
 
     if stageToSendText == true {
       textDocumentProxy.insertText("\n")

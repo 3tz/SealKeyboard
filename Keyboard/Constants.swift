@@ -17,19 +17,19 @@ enum MessageType: String {
 
 struct KeyboardSpecs {
   static let buttonLayout: [String: [[String]]] = [
-    Keyboard.State.alphabets.rawValue: [
+    KeyboardMode.alphabets.rawValue: [
       ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
       ["spacer_1", "a", "s", "d", "f", "g","h", "j", "k", "l", "spacer_1"],
       ["shift", "spacer_2", "z", "x", "c", "v", "b", "n", "m", "spacer_2", "backspace"],
       ["123", "switch", "space", "return"]
     ],
-    Keyboard.State.numbers.rawValue:[
+    KeyboardMode.numbers.rawValue:[
       ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0",],
       ["-", "/", ":", ";", "(", ")", "$", "&", "@", "\""],
       ["#+=", "spacer_2", ".", ",", "?", "!", "'", "spacer_2", "backspace"],
       ["ABC", "switch", "space", "return"]
     ],
-    Keyboard.State.symbols.rawValue:[
+    KeyboardMode.symbols.rawValue:[
       ["[", "]", "{", "}", "#", "%", "^", "*", "+", "="],
       ["_", "\\", "|", "~", "<", ">", "€", "£", "¥", "·"],
       ["123", "spacer_2", ".", ",", "?", "!", "'", "spacer_2", "backspace"],
