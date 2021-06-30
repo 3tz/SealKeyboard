@@ -147,7 +147,10 @@ class CryptoBar {
       // Request to initiate ECDH, i.e., to generate a symmetric key.
       // Generate a symmetric key and send it over.
       // Expected format: "{.ECDH0}|{sender's public key}"
-      if tokens.count != 2 { fallthrough }
+      if tokens.count != 2 {
+        textView.text = "Unknown type of message copied."
+        break
+      }
 
       let theirEncryptionPublicKeyString = tokens[1]
 
@@ -158,7 +161,8 @@ class CryptoBar {
                 try keys.ECDHKeyExchange(with: theirEncryptionPublicKeyString)
       } catch {
         NSLog(".ECDH0 error caught:\n\(error)")
-        fallthrough
+        textView.text = "Unknown type of message copied."
+        break
       }
 
       let msg = [
@@ -178,7 +182,10 @@ class CryptoBar {
       // Reposne to request to ECDH. Expect to receive ephemeral public key.
       // Verify signature, compute and save symmetric key.
       // Expected format: "{.ECDH1}|{ephemeralPublicKey}|{signature}|{signingPublicKey}"
-      if tokens.count != 4 { fallthrough }
+      if tokens.count != 4 {
+        textView.text = "Unknown type of message copied."
+        break
+      }
 
       do {
         try keys.verifyECDHKeyExchangeResponse(
@@ -188,23 +195,27 @@ class CryptoBar {
         )
       } catch {
         NSLog(".ECDH1 error caught:\n\(error)")
-        fallthrough
+        textView.text = "Unknown type of message copied."
+        break
       }
-
 
       // TODO: placeholder
       textView.text = "Symmetric key generated"
 
     case .ciphertext:
       // Ciphertext received. Verify signature and decrypt using symmetric key.
-      if tokens.count != 4 { fallthrough }
+      if tokens.count != 4 {
+        textView.text = "Unknown type of message copied."
+        break
+      }
       var plaintext: String
 
       do {
         plaintext = try keys.decrypt((tokens[1], tokens[2]), from: tokens[3])
       } catch {
           NSLog(".ciphertext error caught:\n\(error)")
-          fallthrough
+          textView.text = "Unknown type of message copied."
+          break
       }
 
       // TODO: placeholder
