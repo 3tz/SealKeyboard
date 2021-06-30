@@ -35,6 +35,36 @@ class KeyboardViewController: UIInputViewController {
     view = mainStackView
   }
 
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    let mainStackView = view as! UIStackView
+    // Determine dark mode
+    darkMode = textDocumentProxy.keyboardAppearance == UIKeyboardAppearance.dark
+    // Add a spacer on top
+    mainStackView.addArrangedSubview(spacerView)
+    // Initialize crypto buttons and keyboard buttons views
+    cryptoBar = CryptoBar(controller: self)
+    cryptoBarView = cryptoBar.getView()
+    mainStackView.addArrangedSubview(cryptoBarView)
+
+    keyboard = Keyboard(controller: self, darkMode: darkMode)
+    keyboardButtonsView = keyboard.getButtonsView()
+    mainStackView.addArrangedSubview(keyboardButtonsView)
+
+    NSLog("\(UIPasteboard.general.changeCount)")
+  }
+
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    keyboard.updateColors(
+      darkModeOn: textDocumentProxy.keyboardAppearance == UIKeyboardAppearance.dark
+    )
+  }
+
+  override func viewWillLayoutSubviews() {
+    super.viewWillLayoutSubviews()
+  }
+
   override func updateViewConstraints() {
     super.updateViewConstraints()
 
@@ -56,37 +86,11 @@ class KeyboardViewController: UIInputViewController {
 
   }
 
-  override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
-    keyboard.updateColors(
-      darkModeOn: textDocumentProxy.keyboardAppearance == UIKeyboardAppearance.dark
-    )
+  override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillDisappear(animated)
+    cryptoBar.stopPasteboardChangeCountMonitor()
   }
 
-
-  override func viewDidLoad() {
-    super.viewDidLoad()
-    let mainStackView = view as! UIStackView
-    // Determine dark mode
-    darkMode = textDocumentProxy.keyboardAppearance == UIKeyboardAppearance.dark
-    // Add a spacer on top
-    mainStackView.addArrangedSubview(spacerView)
-    // Initialize crypto buttons and keyboard buttons views
-    cryptoBar = CryptoBar(controller: self)
-    cryptoBarView = cryptoBar.getView()
-    mainStackView.addArrangedSubview(cryptoBarView)
-
-    keyboard = Keyboard(controller: self, darkMode: darkMode)
-    keyboardButtonsView = keyboard.getButtonsView()
-    mainStackView.addArrangedSubview(keyboardButtonsView)
-
-  }
-
-  override func viewWillLayoutSubviews() {
-//    self.nextKeyboardButton.isHidden = !self.needsInputModeSwitchKey
-    super.viewWillLayoutSubviews()
-  }
-  
   override func textDidChange(_ textInput: UITextInput?) {
     super.textDidChange(textInput)
 
@@ -116,5 +120,4 @@ class KeyboardViewController: UIInputViewController {
     }
   }
 
-  
 }

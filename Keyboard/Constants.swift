@@ -126,3 +126,7 @@ let returnKeyTypeToString: [UIReturnKeyType: String] = [
 ]
 
 let backspaceHeldDeleteInterval = 0.1
+
+enum DefaultKeys: String {
+  case previousPasteboardChangeCount
+}

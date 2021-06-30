@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 class CryptoBar {
-  var controller: KeyboardViewController!
+  weak var controller: KeyboardViewController!
 
   var mainStackView: UIStackView!
 
@@ -18,12 +18,19 @@ class CryptoBar {
 
   var keys: Keys!
 
+  weak var pasteboardChangeCountMonitor: Timer!
+
   init (controller: KeyboardViewController) {
     self.controller = controller
     self.keys = Keys()
-
     mainStackView = getView()
     textView.text = ""
+
+    if pasteboardChanged() {
+      unsealCopiedText()
+    }
+    startPasteboardChangeCountMonitor()
+    NSLog("CryptoBar initialized")
   }
 
   func getView() -> UIStackView {
@@ -98,6 +105,7 @@ class CryptoBar {
     buttonsView.distribution = .fillProportionally
   }
 
+
   /// Request button pressed, so perform key exchange process by placing our encryption public key in the input text field.
   @objc func requestButtonPressed(_ sender: Any) {
     textView.text = "request pressed" // TODO: placeholder
@@ -108,7 +116,25 @@ class CryptoBar {
   }
 
   @objc func unsealButtonPressed(_ sender: Any) {
+    unsealCopiedText()
+  }
+
+  @objc func sealButtonPressed(_ sender: Any) {
     // TODO: finish
+    sealMessageBox()
+    textView.text = "Text encrypted! Ready to be sent."
+
+  }
+
+  @objc func clipboardUpdated() {
+    UserDefaults.standard.setValue(
+      UIPasteboard.general.changeCount,
+      forKey: DefaultKeys.previousPasteboardChangeCount.rawValue
+    )
+    unsealCopiedText()
+  }
+
+  func unsealCopiedText() {
     guard let copiedText = UIPasteboard.general.string else {
       textView.text = "No copied text found." // TODO: placeholder
       return
@@ -188,15 +214,6 @@ class CryptoBar {
     default:
       textView.text = "Unknown type of message copied."
     }
-
-
-  }
-
-  @objc func sealButtonPressed(_ sender: Any) {
-    // TODO: finish
-    sealMessageBox()
-    textView.text = "Text encrypted! Ready to be sent."
-
   }
 
   func sealAndSend() {
@@ -238,4 +255,33 @@ class CryptoBar {
     controller.textDocumentProxy.insertText(msg)
   }
 
+//  func startClipboardUpdateObserver() {
+//    NotificationCenter.addObserver(
+//      self,
+//      selector: #selector(clipboardUpdated),
+//      name: UIPasteboard.changedNotification,
+//      object: nil
+//    )
+//  }
+
+  /// Check if pasteboard has changed every 1 second, and unseal if it has.
+  func startPasteboardChangeCountMonitor() {
+    pasteboardChangeCountMonitor = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) {
+      timer in
+      if self.pasteboardChanged() { self.unsealCopiedText() }
+    }
+  }
+
+  func stopPasteboardChangeCountMonitor() { pasteboardChangeCountMonitor?.invalidate()}
+
+  func pasteboardChanged() -> Bool {
+    let oldChangeCount = UserDefaults.standard.integer(
+      forKey: DefaultKeys.previousPasteboardChangeCount.rawValue)
+    let currentChangeCount = UIPasteboard.general.changeCount
+    UserDefaults.standard.setValue(
+      currentChangeCount, forKey: DefaultKeys.previousPasteboardChangeCount.rawValue)
+    if oldChangeCount == currentChangeCount { return false }
+
+    return true
+  }
 }
