@@ -67,8 +67,8 @@ class TypingViewController : UIViewController {
 
   }
 
-  override func viewWillLayoutSubviews() {
-    super.viewWillLayoutSubviews()
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
 
     // Update button colors
     for rowStackView in (view as! UIStackView).arrangedSubviews {
