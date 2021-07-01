@@ -197,9 +197,20 @@ class TypingViewController : UIViewController {
           case "switch":
             button.setImage(UIImage(systemName: "globe"), for: .normal)
           case "return":
-            // don't set title for return because it depends on UIReturnKeyType
-            rowOfButtons.append(KeyboardButton(keyname: "seal"))
-            buttonLookup["seal"] = (rowOfButtons.last! as! KeyboardButton)
+            // Don't set title for return because it depends on UIReturnKeyType.
+            // Setup the seal button here
+            let sealButton = KeyboardButton(keyname: "seal")
+            buttonLookup["seal"] = sealButton
+            sealButton.addTarget(
+              self, action: #selector(keyTouchUpInside(_:event:)), for: .touchUpInside)
+            sealButton.addTarget(
+              self, action: #selector(keyDragEnter(_:event:)),
+              for: [.touchDragEnter, .touchDragInside])
+            sealButton.addTarget(self, action: #selector(keyTouchDown(_:)), for: .touchDown)
+            sealButton.addTarget(self, action: #selector(keyUntouched(_:)), for: .touchUpInside)
+            sealButton.addTarget(
+              self, action: #selector(keyUntouched(_:event:)), for: .touchDragInside)
+            rowOfButtons.append(sealButton)
           default:
             button.setTitle(keyname, for: .normal)
         }
@@ -369,14 +380,16 @@ class TypingViewController : UIViewController {
       case "space":
         controller.textDocumentProxy.insertText(" ")
       case "return":
+        controller.textDocumentProxy.insertText("\n")
+      case "seal":
+        // if .send, it's "Seal & Send" button; otherwise, it's just "Seal"
         let returnKeyType = controller.textDocumentProxy.returnKeyType ?? .default
-
         switch returnKeyType {
           case .send:
             if !controller.textDocumentProxy.hasText { break }
             controller.cryptoBar.sealAndSend()
           default:
-            controller.textDocumentProxy.insertText("\n")
+            controller.cryptoBar.sealMessageBox()
         }
       default:
         controller.textDocumentProxy.insertText(keyname)
