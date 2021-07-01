@@ -42,9 +42,10 @@ class TypingViewController : UIViewController {
   var shiftState: ShiftState!
   var shiftDoubleTapped: Bool = false
 
-  weak var controller: KeyboardViewController!
+  var buttonLookup: [String: KeyboardButton] = [:]
+  var spacebarConstraints: [NSLayoutConstraint] = []
 
-  weak var returnButton: KeyboardButton!
+  weak var controller: KeyboardViewController!
 
   var backspaceHeldTimer: Timer!
 
@@ -69,30 +70,7 @@ class TypingViewController : UIViewController {
 
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-
-    // Update button colors
-    for rowStackView in (view as! UIStackView).arrangedSubviews {
-      for subView in (rowStackView as! UIStackView).arrangedSubviews {
-        guard let button = subView as? KeyboardButton else {
-          // It's a spacer UIView
-          continue
-        }
-        button.setDarkModeState(darkMode)
-      }
-    }
-
-    // Update return key type
-    let returnType = controller.textDocumentProxy.returnKeyType ?? .default
-    switch returnType {
-      case .send:
-        returnButton.setTitle("Seal & Send", for: .normal)
-      case .default:
-        returnButton.setTitle("return", for: .normal)
-      default:
-        returnButton.setTitle(
-          KeyboardSpecs.returnKeyTypeToString[returnType, default: "return"],
-          for: .normal)
-    }
+    updateReturnKey()
   }
 
   override func updateViewConstraints() {
@@ -154,15 +132,35 @@ class TypingViewController : UIViewController {
             button.widthAnchor.constraint(
               equalTo: buttonWithStandardSize.widthAnchor).isActive = true
           case "space":
-            button.widthAnchor.constraint(
+            let constraint = button.widthAnchor.constraint(
               equalTo: buttonWithStandardSize.widthAnchor,
-              multiplier: 5
-            ).isActive = true
+              multiplier: 4
+            )
+            constraint.isActive = true
+            spacebarConstraints.append(constraint)
+          case "seal":
+            let constraint = button.widthAnchor.constraint(
+              equalTo: buttonLookup["return"]!.widthAnchor
+            )
+            constraint.isActive = true
+            spacebarConstraints.append(constraint)
           default:
             break
         }
       }
     }
+
+    // Update button colors
+    for rowStackView in (view as! UIStackView).arrangedSubviews {
+      for subView in (rowStackView as! UIStackView).arrangedSubviews {
+        guard let button = subView as? KeyboardButton else {
+          // It's a spacer UIView
+          continue
+        }
+        button.setDarkModeState(darkMode)
+      }
+    }
+    updateReturnKey()
   }
 
   // MARK: private methods for loading subviews
@@ -187,6 +185,7 @@ class TypingViewController : UIViewController {
 
         // Now build each button
         let button = KeyboardButton(keyname: keyname)
+        buttonLookup[keyname] = button
 
         // Assign display char
         // Special symbols: ⇧ ⇪  ⌫
@@ -198,14 +197,12 @@ class TypingViewController : UIViewController {
           case "switch":
             button.setImage(UIImage(systemName: "globe"), for: .normal)
           case "return":
-            // save a ref to the return button for changing with UIReturnType
-            returnButton = button
+            // don't set title for return because it depends on UIReturnKeyType
+            rowOfButtons.append(KeyboardButton(keyname: "seal"))
+            buttonLookup["seal"] = (rowOfButtons.last! as! KeyboardButton)
           default:
             button.setTitle(keyname, for: .normal)
         }
-
-        button.setFontSize(KeyboardSpecs.fontSize(keyname))
-        button.sizeToFit()
 
         // Assign the target actions
         // Shift & backspace have their own special selector funcs
@@ -229,7 +226,7 @@ class TypingViewController : UIViewController {
               UILongPressGestureRecognizer(target: self, action: #selector(backspaceHeld(_:)))
             )
           case keyname where KeyboardSpecs.specialKeyNames.contains(keyname) &&
-                keyname != "space" && keyname != "return":
+                keyname != "space" && keyname != "return" && keyname != "seal":
             break
           default:
             button.addTarget(self, action: #selector(keyTouchUpInside(_:event:)), for: .touchUpInside)
@@ -292,6 +289,37 @@ class TypingViewController : UIViewController {
             break
         }
       }
+    }
+  }
+
+  private func updateReturnKey() {
+    // Update return key type
+    let returnType = controller.textDocumentProxy.returnKeyType ?? .default
+    switch returnType {
+      case .send:
+        for constraint in spacebarConstraints {
+          constraint.isActive = false
+        }
+        spacebarConstraints.removeAll()
+        let firstRow = (view as! UIStackView).arrangedSubviews[0] as! UIStackView
+        let buttonWithStandardSize = firstRow.arrangedSubviews[0]
+        let constraint = buttonLookup["space"]!.widthAnchor.constraint(
+          equalTo: buttonWithStandardSize.widthAnchor,
+          multiplier: 5
+        )
+        constraint.isActive = true
+        spacebarConstraints.append(constraint)
+
+        buttonLookup["return"]!.removeFromSuperview()
+        buttonLookup["seal"]!.setTitle("Seal & Send", for: .normal)
+      case .default:
+        buttonLookup["seal"]!.setTitle("Seal", for: .normal)
+        buttonLookup["return"]!.setTitle("return", for: .normal)
+      default:
+        buttonLookup["seal"]!.setTitle("Seal", for: .normal)
+        buttonLookup["return"]!.setTitle(
+          KeyboardSpecs.returnKeyTypeToString[returnType, default: "return"],
+          for: .normal)
     }
   }
 

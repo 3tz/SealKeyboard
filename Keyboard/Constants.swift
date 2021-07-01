@@ -38,7 +38,7 @@ struct KeyboardSpecs {
   ]
 
   static let specialKeyNames = [
-    "123", "ABC", "space", "return", "backspace", "switch", "#+=", "shift"
+    "123", "ABC", "space", "return", "backspace", "switch", "#+=", "shift", "seal"
   ]
 
   static let returnKeyTypeToString: [UIReturnKeyType: String] = [
@@ -78,6 +78,7 @@ struct KeyboardSpecs {
     "return": specialFontSize,
     "switch": specialFontSize,
     "#+=": specialFontSize,
+    "seal": specialFontSize,
     "shift": 25,
     "backspace": 25,
   ]

@@ -39,6 +39,9 @@ class KeyboardButton: UIButton {
       keycapBackground.centerYAnchor.constraint(equalTo: self.centerYAnchor),
     ])
 
+    setFontSize(KeyboardSpecs.fontSize(keyname))
+    sizeToFit()
+
   }
 
   // MARK: Methods to only use the convenience UIButton.init(type:) while making Swift happy
@@ -109,27 +112,32 @@ class KeyboardButton: UIButton {
   }
 
   func getPressedKeyBackgroundColors(keyname: String, darkMode: Bool) -> UIColor{
-    if keyname == "backspace" || keyname == "return" {
-      return darkMode ?
-        KeyboardSpecs.pressedSpecialBackgroundDark : KeyboardSpecs.pressedSpecialBackgroundLight
+    switch keyname {
+      case "backspace", "return", "seal":
+        return darkMode ? KeyboardSpecs.pressedSpecialBackgroundDark :
+          KeyboardSpecs.pressedSpecialBackgroundLight
+      default:
+        return darkMode ? KeyboardSpecs.pressedRegularBackgroundDark :
+          KeyboardSpecs.pressedRegularBackgroundLight
     }
-    return darkMode ?
-      KeyboardSpecs.pressedRegularBackgroundDark : KeyboardSpecs.pressedRegularBackgroundLight
   }
 
   func getKeyColors(keyname: String, darkMode: Bool) -> (UIColor, UIColor){
-    if KeyboardSpecs.specialKeyNames.contains(keyname) && keyname != "space" {
-      // special buttons except for space have a darker color
-      return (
-        (darkMode ? KeyboardSpecs.specialBackgroundDark : KeyboardSpecs.specialBackgroundLight),
-        (darkMode ? KeyboardSpecs.specialTitleDark : KeyboardSpecs.specialTitleLight)
-      )
-    } else {
-      // regular input buttons
-      return (
-        (darkMode ? KeyboardSpecs.regularBackgroundDark : KeyboardSpecs.regularBackgroundLight),
-        (darkMode ? KeyboardSpecs.regularTitleDark : KeyboardSpecs.regularTitleLight)
-      )
+    switch keyname {
+      case "seal":
+        return (.systemBlue, .white)
+      case keyname where KeyboardSpecs.specialKeyNames.contains(keyname) && keyname != "space":
+        // special buttons except for space have a darker color
+        return (
+          (darkMode ? KeyboardSpecs.specialBackgroundDark : KeyboardSpecs.specialBackgroundLight),
+          (darkMode ? KeyboardSpecs.specialTitleDark : KeyboardSpecs.specialTitleLight)
+        )
+      default:
+        // regular input buttons
+        return (
+          (darkMode ? KeyboardSpecs.regularBackgroundDark : KeyboardSpecs.regularBackgroundLight),
+          (darkMode ? KeyboardSpecs.regularTitleDark : KeyboardSpecs.regularTitleLight)
+        )
     }
   }
 }
