@@ -73,33 +73,33 @@ class CryptoBar {
       for: .touchUpInside
     )
 
-    let unsealButton = UIButton(type: .system)
-    unsealButton.setTitle("Unseal Copied Text", for: .normal)
-    unsealButton.sizeToFit()
-    unsealButton.backgroundColor = .systemBlue
-    unsealButton.setTitleColor(.white, for: [])
-    unsealButton.translatesAutoresizingMaskIntoConstraints = false
-    unsealButton.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
-    unsealButton.addTarget(
-        self,
-        action: #selector(unsealButtonPressed(_:)),
-        for: .touchUpInside
-      )
+//    let unsealButton = UIButton(type: .system)
+//    unsealButton.setTitle("Unseal Copied Text", for: .normal)
+//    unsealButton.sizeToFit()
+//    unsealButton.backgroundColor = .systemBlue
+//    unsealButton.setTitleColor(.white, for: [])
+//    unsealButton.translatesAutoresizingMaskIntoConstraints = false
+//    unsealButton.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
+//    unsealButton.addTarget(
+//        self,
+//        action: #selector(unsealButtonPressed(_:)),
+//        for: .touchUpInside
+//      )
+//
+//    let sealButton = UIButton(type: .system)
+//    sealButton.setTitle("Seal Message Field Text", for: .normal)
+//    sealButton.sizeToFit()
+//    sealButton.backgroundColor = .systemBlue
+//    sealButton.setTitleColor(.white, for: [])
+//    sealButton.translatesAutoresizingMaskIntoConstraints = false
+//    sealButton.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
+//    sealButton.addTarget(
+//      self,
+//      action: #selector(sealButtonPressed(_:)),
+//      for: .touchUpInside
+//    )
 
-    let sealButton = UIButton(type: .system)
-    sealButton.setTitle("Seal Message Field Text", for: .normal)
-    sealButton.sizeToFit()
-    sealButton.backgroundColor = .systemBlue
-    sealButton.setTitleColor(.white, for: [])
-    sealButton.translatesAutoresizingMaskIntoConstraints = false
-    sealButton.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
-    sealButton.addTarget(
-      self,
-      action: #selector(sealButtonPressed(_:)),
-      for: .touchUpInside
-    )
-
-    buttonsView = UIStackView(arrangedSubviews: [requestButton, unsealButton, sealButton])
+    buttonsView = UIStackView(arrangedSubviews: [requestButton])
     buttonsView.axis = .horizontal
     buttonsView.spacing = KeyboardSpecs.horizontalSpacing
     buttonsView.distribution = .fillProportionally

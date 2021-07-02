@@ -17,19 +17,19 @@ enum MessageType: String {
 
 struct KeyboardSpecs {
   static let buttonLayout: [String: [[String]]] = [
-    KeyboardMode.alphabets.rawValue: [
+    TypingLayout.alphabets.rawValue: [
       ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
       ["spacer_1", "a", "s", "d", "f", "g","h", "j", "k", "l", "spacer_1"],
       ["shift", "spacer_2", "z", "x", "c", "v", "b", "n", "m", "spacer_2", "backspace"],
       ["123", "switch", "space", "return"]
     ],
-    KeyboardMode.numbers.rawValue:[
+    TypingLayout.numbers.rawValue:[
       ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0",],
       ["-", "/", ":", ";", "(", ")", "$", "&", "@", "\""],
       ["#+=", "spacer_2", ".", ",", "?", "!", "'", "spacer_2", "backspace"],
       ["ABC", "switch", "space", "return"]
     ],
-    KeyboardMode.symbols.rawValue:[
+    TypingLayout.symbols.rawValue:[
       ["[", "]", "{", "}", "#", "%", "^", "*", "+", "="],
       ["_", "\\", "|", "~", "<", ">", "€", "£", "¥", "·"],
       ["123", "spacer_2", ".", ",", "?", "!", "'", "spacer_2", "backspace"],
@@ -58,11 +58,11 @@ struct KeyboardSpecs {
 
   static let backspaceHeldDeleteInterval = 0.1
 
-  static let superViewHeight = 330 as CGFloat,
-    keyboardButtonsViewHeight = 220 as CGFloat,
-    cryptoButtonsViewHeight = superViewHeight - keyboardButtonsViewHeight,
+  static let superViewSpacing = 10 as CGFloat,
 
-    superViewSpacing = 14 as CGFloat,
+   superViewHeight = 270 as CGFloat, // 330 as CGFloat,
+   keyboardButtonsViewHeight = 220 as CGFloat,
+   cryptoButtonsViewHeight = superViewHeight - keyboardButtonsViewHeight - superViewSpacing,
 
     verticalSpacing = 14 as CGFloat,
     horizontalSpacing = 6 as CGFloat,

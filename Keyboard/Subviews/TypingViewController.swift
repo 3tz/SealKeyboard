@@ -24,7 +24,7 @@ extension String {
   }
 }
 
-enum KeyboardMode: String {
+enum TypingLayout: String {
   case alphabets
   case numbers
   case symbols
@@ -38,7 +38,7 @@ enum ShiftState: Int {
 
 class TypingViewController : UIViewController {
   var darkMode: Bool!
-  var mode: KeyboardMode!
+  var currentLayout: TypingLayout!
   var shiftState: ShiftState!
   var shiftDoubleTapped: Bool = false
 
@@ -55,7 +55,7 @@ class TypingViewController : UIViewController {
   }
 
   override func loadView() {
-    mode = .alphabets
+    currentLayout = .alphabets
     shiftState = .off
 
     let stackView = UIStackView()
@@ -170,7 +170,7 @@ class TypingViewController : UIViewController {
       subview.removeFromSuperview()
     }
     // Create the buttons
-    for row in KeyboardSpecs.buttonLayout[mode.rawValue]! {
+    for row in KeyboardSpecs.buttonLayout[currentLayout.rawValue]! {
       var rowOfButtons: [UIView] = []
       for keyname in row {
 
@@ -409,14 +409,14 @@ class TypingViewController : UIViewController {
 
     switch keyname {
       case "123":
-        mode = .numbers
+        currentLayout = .numbers
         reloadButtonsToView()
       case "ABC":
-        mode = .alphabets
+        currentLayout = .alphabets
         reloadButtonsToView()
         toggleLettersCases(to: .off)
       case "#+=":
-        mode = .symbols
+        currentLayout = .symbols
         reloadButtonsToView()
       case "backspace":
         sender.setKeyColor(pressed: true, darkMode: darkMode)

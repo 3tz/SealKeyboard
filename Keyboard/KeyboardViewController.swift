@@ -7,21 +7,31 @@
 
 import UIKit
 
+enum KeyboardLayout {
+  case typingView
+  case logView
+}
+
 class KeyboardViewController: UIInputViewController {
   
   var keyboardView: UIView!
   @IBOutlet var textBox: UILabel!
 
+  // TODO: placeholder
+  var currentLayout: KeyboardLayout! = .typingView
+
+  var layoutButton: UIButton!
+  var textView: UITextView!
+  var statusStackView: UIStackView!
+
   var cryptoBar: CryptoBar!
   var typingViewController: TypingViewController!
 
-  var spacerView: UIView = UIView()
-
   var cryptoBarView: UIStackView!
-  var keyboardButtonsView: UIStackView!
 
-  var darkMode: Bool!
   var stageToSendText = false
+
+  // MARK: view overrides
 
   override func loadView() {
     // Use stackview as the main view
@@ -37,23 +47,16 @@ class KeyboardViewController: UIInputViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    let mainStackView = view as! UIStackView
-    // Determine dark mode
-    darkMode = textDocumentProxy.keyboardAppearance == UIKeyboardAppearance.dark
-    // Add a spacer on top
-    mainStackView.addArrangedSubview(spacerView)
-    // Initialize crypto buttons and keyboard buttons views
-    cryptoBar = CryptoBar(controller: self)
-    cryptoBarView = cryptoBar.getView()
-    mainStackView.addArrangedSubview(cryptoBarView)
 
-    typingViewController = TypingViewController(parentController: self)
-    keyboardButtonsView = (typingViewController.view as! UIStackView)
+    switch currentLayout {
+      case .typingView:
+        loadTypingViewLayout()
+      case .logView:
+        loadLogViewLayout()
+      default:
+        fatalError()
+    }
 
-    self.addChild(typingViewController)
-    mainStackView.addArrangedSubview(keyboardButtonsView)
-
-    NSLog("\(UIPasteboard.general.changeCount)")
   }
 
   override func viewWillAppear(_ animated: Bool) {
@@ -74,12 +77,12 @@ class KeyboardViewController: UIInputViewController {
     NSLayoutConstraint.activate([
       mainStackView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.size.width),
       mainStackView.heightAnchor.constraint(equalToConstant: KeyboardSpecs.superViewHeight),
-      spacerView.heightAnchor.constraint(equalToConstant:  0),
-      cryptoBarView.widthAnchor.constraint(
-        equalToConstant:  UIScreen.main.bounds.size.width * 0.99),
-      keyboardButtonsView.heightAnchor.constraint(
+//      cryptoBarView.widthAnchor.constraint(
+//        equalToConstant:  UIScreen.main.bounds.size.width * 0.99),
+      statusStackView.widthAnchor.constraint(equalToConstant:  UIScreen.main.bounds.size.width * 0.99),
+      typingViewController.view.heightAnchor.constraint(
         equalToConstant:  KeyboardSpecs.keyboardButtonsViewHeight),
-      keyboardButtonsView.widthAnchor.constraint(
+      typingViewController.view.widthAnchor.constraint(
         equalToConstant:  UIScreen.main.bounds.size.width * 0.99),
     ])
 
@@ -90,6 +93,8 @@ class KeyboardViewController: UIInputViewController {
     cryptoBar.stopPasteboardChangeCountMonitor()
   }
 
+  // MARK: UI Input overrides
+
   override func textDidChange(_ textInput: UITextInput?) {
     super.textDidChange(textInput)
 
@@ -99,6 +104,53 @@ class KeyboardViewController: UIInputViewController {
     }
 
   }
+
+  // MARK: view loading methods
+
+  func loadTypingViewLayout() {
+    cryptoBar = CryptoBar(controller: self)
+    let mainStackView = view as! UIStackView
+
+    // create the layout switch button
+    layoutButton = UIButton()
+    layoutButton.translatesAutoresizingMaskIntoConstraints = false
+    layoutButton.setImage(UIImage(systemName: "message.fill"), for: .normal)
+    layoutButton.backgroundColor = .systemBlue
+    layoutButton.tintColor = .white
+    layoutButton.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
+
+    NSLayoutConstraint.activate([
+      layoutButton.widthAnchor.constraint(equalToConstant: KeyboardSpecs.cryptoButtonsViewHeight),
+      layoutButton.heightAnchor.constraint(equalTo: layoutButton.widthAnchor)
+    ])
+
+    // Create the status / decryption text view
+    textView = UITextView()
+    textView.isEditable = true
+    textView.isSelectable = false
+    textView.text = "Ready!"
+    textView.backgroundColor = .clear
+    textView.translatesAutoresizingMaskIntoConstraints = false
+
+    statusStackView = UIStackView(arrangedSubviews: [layoutButton, textView])
+    statusStackView.axis = .horizontal
+    statusStackView.spacing = KeyboardSpecs.horizontalSpacing
+
+    mainStackView.addArrangedSubview(statusStackView)
+
+
+    typingViewController = TypingViewController(parentController: self)
+
+    self.addChild(typingViewController)
+    mainStackView.addArrangedSubview(typingViewController.view)
+
+  }
+
+  func loadLogViewLayout() {
+
+  }
+
+  // MARK: helper methods
 
   /// Clear the input text field if it's not empty.
   func clearInputText() {
@@ -116,5 +168,7 @@ class KeyboardViewController: UIInputViewController {
       textDocumentProxy.deleteBackward()
     }
   }
+
+
 
 }
