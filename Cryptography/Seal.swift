@@ -15,7 +15,7 @@ enum MessageType: String {
 }
 
 class Seal {
-  let keys: Keys
+  private let keys: Keys
 
   init() {
     keys = Keys()

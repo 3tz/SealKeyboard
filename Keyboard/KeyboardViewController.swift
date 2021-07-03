@@ -16,20 +16,15 @@ class KeyboardViewController: UIInputViewController {
   let seal = Seal()
 
   // TODO: placeholder
-  var currentLayout: KeyboardLayout! = .typingView
+  var currentLayout: KeyboardLayout! = .logView // .typingView
 
-  var layoutButton: UIButton!
   var textView: UITextView!
-  var statusStackView: UIStackView!
-
-//  var cryptoBar: CryptoBar!
+  var barStackView: UIStackView!
   var typingViewController: TypingViewController!
-
-//  var cryptoBarView: UIStackView!
 
   var stageToSendText = false
 
-  var pasteboardChangeCountMonitor: Timer!
+  var pasteboardChangeCountTimer: Timer!
 
   // MARK: view overrides
 
@@ -62,6 +57,7 @@ class KeyboardViewController: UIInputViewController {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     startPasteboardChangeCountMonitor()
+    pasteboardChangeCountTimer.fire()
   }
 
   override func viewWillLayoutSubviews() {
@@ -75,17 +71,31 @@ class KeyboardViewController: UIInputViewController {
       fatalError()
     }
 
-    NSLayoutConstraint.activate([
-      mainStackView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.size.width),
-      mainStackView.heightAnchor.constraint(equalToConstant: KeyboardSpecs.superViewHeight),
-//      cryptoBarView.widthAnchor.constraint(
-//        equalToConstant:  UIScreen.main.bounds.size.width * 0.99),
-      statusStackView.widthAnchor.constraint(equalToConstant:  UIScreen.main.bounds.size.width * 0.99),
-      typingViewController.view.heightAnchor.constraint(
-        equalToConstant:  KeyboardSpecs.keyboardButtonsViewHeight),
-      typingViewController.view.widthAnchor.constraint(
-        equalToConstant:  UIScreen.main.bounds.size.width * 0.99),
-    ])
+    switch currentLayout {
+      case .typingView:
+        NSLayoutConstraint.activate([
+          mainStackView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.size.width),
+          mainStackView.heightAnchor.constraint(equalToConstant: KeyboardSpecs.superViewHeight),
+    //      cryptoBarView.widthAnchor.constraint(
+    //        equalToConstant:  UIScreen.main.bounds.size.width * 0.99),
+          barStackView.widthAnchor.constraint(equalToConstant:  UIScreen.main.bounds.size.width * 0.99),
+          typingViewController.view.heightAnchor.constraint(
+            equalToConstant:  KeyboardSpecs.keyboardButtonsViewHeight),
+          typingViewController.view.widthAnchor.constraint(
+            equalToConstant:  UIScreen.main.bounds.size.width * 0.99),
+        ])
+      case .logView:
+        NSLayoutConstraint.activate([
+          mainStackView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.size.width),
+          mainStackView.heightAnchor.constraint(equalToConstant: KeyboardSpecs.superViewHeight),
+          textView.widthAnchor.constraint(
+            equalToConstant:  UIScreen.main.bounds.size.width * 0.99),
+          barStackView.widthAnchor.constraint(equalToConstant:  UIScreen.main.bounds.size.width * 0.99),
+        ])
+      default:
+        fatalError()
+    }
+
 
   }
 
@@ -112,13 +122,13 @@ class KeyboardViewController: UIInputViewController {
     let mainStackView = view as! UIStackView
 
     // create the layout switch button
-    layoutButton = UIButton()
+    let layoutButton = UIButton()
     layoutButton.translatesAutoresizingMaskIntoConstraints = false
     layoutButton.setImage(UIImage(systemName: "message.fill"), for: .normal)
     layoutButton.backgroundColor = .systemBlue
     layoutButton.tintColor = .white
     layoutButton.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
-
+    layoutButton.addTarget(self, action: #selector(layoutButtonPressed(_:)), for: .touchUpInside)
     NSLayoutConstraint.activate([
       layoutButton.widthAnchor.constraint(equalToConstant: KeyboardSpecs.cryptoButtonsViewHeight),
       layoutButton.heightAnchor.constraint(equalTo: layoutButton.widthAnchor)
@@ -132,11 +142,11 @@ class KeyboardViewController: UIInputViewController {
     textView.backgroundColor = .clear
     textView.translatesAutoresizingMaskIntoConstraints = false
 
-    statusStackView = UIStackView(arrangedSubviews: [layoutButton, textView])
-    statusStackView.axis = .horizontal
-    statusStackView.spacing = KeyboardSpecs.horizontalSpacing
+    barStackView = UIStackView(arrangedSubviews: [layoutButton, textView])
+    barStackView.axis = .horizontal
+    barStackView.spacing = KeyboardSpecs.horizontalSpacing
 
-    mainStackView.addArrangedSubview(statusStackView)
+    mainStackView.addArrangedSubview(barStackView)
 
 
     typingViewController = TypingViewController(parentController: self)
@@ -147,11 +157,104 @@ class KeyboardViewController: UIInputViewController {
   }
 
   func loadLogViewLayout() {
+    let mainStackView = view as! UIStackView
 
+    // create the layout switch button
+    let layoutButton = UIButton()
+    layoutButton.translatesAutoresizingMaskIntoConstraints = false
+    layoutButton.setImage(UIImage(systemName: "keyboard"), for: .normal)
+    layoutButton.backgroundColor = .systemBlue
+    layoutButton.tintColor = .white
+    layoutButton.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
+    layoutButton.addTarget(self, action: #selector(layoutButtonPressed(_:)), for: .touchUpInside)
+    NSLayoutConstraint.activate([
+      layoutButton.widthAnchor.constraint(equalToConstant: KeyboardSpecs.cryptoButtonsViewHeight),
+      layoutButton.heightAnchor.constraint(equalTo: layoutButton.widthAnchor)
+    ])
+
+    // create the two button cryptobar
+    let requestButton = UIButton(type: .system)
+    requestButton.setTitle("Request", for: .normal)
+    requestButton.sizeToFit()
+    requestButton.backgroundColor = .systemBlue
+    requestButton.setTitleColor(.white, for: [])
+    requestButton.translatesAutoresizingMaskIntoConstraints = false
+    requestButton.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
+    requestButton.addTarget(
+      self,
+      action: #selector(requestButtonPressed(_:)),
+      for: .touchUpInside
+    )
+
+    let sealButton = UIButton(type: .system)
+    sealButton.setTitle("Seal Message Field Text", for: .normal)
+    sealButton.sizeToFit()
+    sealButton.backgroundColor = .systemBlue
+    sealButton.setTitleColor(.white, for: [])
+    sealButton.translatesAutoresizingMaskIntoConstraints = false
+    sealButton.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
+    sealButton.addTarget(
+      self,
+      action: #selector(sealButtonPressed(_:)),
+      for: .touchUpInside
+    )
+
+    // Add them to a horizontal stackview
+    barStackView = UIStackView(
+      arrangedSubviews: [layoutButton, requestButton, sealButton]
+    )
+    barStackView.axis = .horizontal
+    barStackView.spacing = KeyboardSpecs.horizontalSpacing
+    mainStackView.addArrangedSubview(barStackView)
+
+//    typingViewController = TypingViewController(parentController: self)
+//    self.addChild(typingViewController)
+    // Create the status / decryption text view
+    textView = UITextView()
+    textView.isEditable = false
+    textView.isSelectable = true
+    textView.text = "Ready!"
+    textView.backgroundColor = .clear
+    textView.translatesAutoresizingMaskIntoConstraints = false
+
+
+    mainStackView.addArrangedSubview(textView)
   }
+
+  // MARK: @objc #selector methods
+
+  @objc func layoutButtonPressed(_ sender: UIButton) {
+    switch currentLayout {
+      case .logView:
+        textView.removeFromSuperview()
+        barStackView.removeFromSuperview()
+        loadTypingViewLayout()
+        currentLayout = .typingView
+      case .typingView:
+        barStackView.removeFromSuperview()
+        typingViewController.view.removeFromSuperview()
+        loadLogViewLayout()
+        currentLayout = .logView
+      default:
+        fatalError()
+    }
+  }
+
+  @objc func requestButtonPressed(_ sender: Any) { ECDHRequestStringToMessageBox() }
+
+  @objc func unsealButtonPressed(_ sender: Any) { unsealCopiedText() }
+
+  @objc func sealButtonPressed(_ sender: Any) { sealMessageBox() }
 
 
   // MARK: Sealing/unsealing/ECDH methods
+
+  func ECDHRequestStringToMessageBox() {
+    textView.text = "ECDH initiated." // TODO: placeholder
+    let message = seal.initiateECDHRequest()
+    clearInputText()
+    textDocumentProxy.insertText(message)
+  }
 
   func sealAndSend() {
     sealMessageBox()
@@ -176,13 +279,14 @@ class KeyboardViewController: UIInputViewController {
     do {
       message = try seal.seal(string: textInput)
     } catch {
-      NSLog("sealMessageBox rror caught:\n\(error)")
+      NSLog("sealMessageBox error caught:\n\(error)")
       textView.text = "Something went wrong. Unable to encrypt. Try again later."
       return
     }
 
     clearInputText()
     textDocumentProxy.insertText(message)
+    textView.text = "Textfield sealed. Ready to send."
   }
 
   func unsealCopiedText() {
@@ -218,7 +322,7 @@ class KeyboardViewController: UIInputViewController {
         textView.text = "Decrypted Message:\n\(message!)"
     }
   }
-  
+
 
   // MARK: helper methods
 
@@ -241,14 +345,14 @@ class KeyboardViewController: UIInputViewController {
 
   /// Check if pasteboard has changed every 1 second, and unseal if it has.
   func startPasteboardChangeCountMonitor() {
-    pasteboardChangeCountMonitor = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) {
+    pasteboardChangeCountTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) {
       timer in
       if self.pasteboardChanged() { self.unsealCopiedText() }
       NSLog("Pasteboard counter checked")
     }
   }
 
-  func stopPasteboardChangeCountMonitor() { pasteboardChangeCountMonitor?.invalidate()}
+  func stopPasteboardChangeCountMonitor() { pasteboardChangeCountTimer?.invalidate()}
 
   func pasteboardChanged() -> Bool {
     let oldChangeCount = UserDefaults.standard.integer(
