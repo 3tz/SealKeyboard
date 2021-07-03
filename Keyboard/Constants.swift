@@ -9,12 +9,6 @@ import Foundation
 import UIKit
 
 
-enum MessageType: String {
-  case ECDH0
-  case ECDH1
-  case ciphertext
-}
-
 struct KeyboardSpecs {
   static let buttonLayout: [String: [[String]]] = [
     TypingLayout.alphabets.rawValue: [

@@ -13,9 +13,7 @@ enum KeyboardLayout {
 }
 
 class KeyboardViewController: UIInputViewController {
-  
-  var keyboardView: UIView!
-  @IBOutlet var textBox: UILabel!
+  let seal = Seal()
 
   // TODO: placeholder
   var currentLayout: KeyboardLayout! = .typingView
@@ -24,12 +22,14 @@ class KeyboardViewController: UIInputViewController {
   var textView: UITextView!
   var statusStackView: UIStackView!
 
-  var cryptoBar: CryptoBar!
+//  var cryptoBar: CryptoBar!
   var typingViewController: TypingViewController!
 
-  var cryptoBarView: UIStackView!
+//  var cryptoBarView: UIStackView!
 
   var stageToSendText = false
+
+  var pasteboardChangeCountMonitor: Timer!
 
   // MARK: view overrides
 
@@ -61,6 +61,7 @@ class KeyboardViewController: UIInputViewController {
 
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
+    startPasteboardChangeCountMonitor()
   }
 
   override func viewWillLayoutSubviews() {
@@ -90,7 +91,7 @@ class KeyboardViewController: UIInputViewController {
 
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
-    cryptoBar.stopPasteboardChangeCountMonitor()
+    stopPasteboardChangeCountMonitor()
   }
 
   // MARK: UI Input overrides
@@ -108,7 +109,6 @@ class KeyboardViewController: UIInputViewController {
   // MARK: view loading methods
 
   func loadTypingViewLayout() {
-    cryptoBar = CryptoBar(controller: self)
     let mainStackView = view as! UIStackView
 
     // create the layout switch button
@@ -150,6 +150,76 @@ class KeyboardViewController: UIInputViewController {
 
   }
 
+
+  // MARK: Sealing/unsealing/ECDH methods
+
+  func sealAndSend() {
+    sealMessageBox()
+    textView.text = "Text encrypted and sent."
+    // Apps with ReturnType of .send look for a single "\n" upon text change.
+    // Thus, change the text to ciphertext first, and insert one "\n" under textDidChange.
+    stageToSendText = true
+  }
+
+  func sealMessageBox() {
+    let textInput = (textDocumentProxy.documentContextBeforeInput ?? "") +
+      (textDocumentProxy.selectedText ?? "") +
+      (textDocumentProxy.documentContextAfterInput ?? "")
+
+    if textInput.isEmpty {
+      textView.text = "Unable to seal message because input text field is empty."
+      return
+    }
+
+    let message: String
+
+    do {
+      message = try seal.seal(string: textInput)
+    } catch {
+      NSLog("sealMessageBox rror caught:\n\(error)")
+      textView.text = "Something went wrong. Unable to encrypt. Try again later."
+      return
+    }
+
+    clearInputText()
+    textDocumentProxy.insertText(message)
+  }
+
+  func unsealCopiedText() {
+    guard let copiedText = UIPasteboard.general.string else {
+      textView.text = "No copied text found." // TODO: placeholder
+      return
+    }
+
+    let messageType: MessageType, message: String?
+
+    do {
+      (messageType, message) = try seal.unseal(string: copiedText)
+    } catch DecryptionErrors.parsingError {
+      textView.text = "Unknown type of message copied."
+      return
+    } catch DecryptionErrors.authenticationError {
+      textView.text = "Message signature verification failed."
+      return
+    } catch {
+      textView.text = "Unable to unseal. Unknown key or others."
+      return
+    }
+
+    switch messageType {
+      case .ECDH0:
+        clearInputText()
+        textDocumentProxy.insertText(message!)
+        // TODO: placeholder
+        textView.text = "Request to generate symmetric key received."
+      case .ECDH1:
+        textView.text = "Symmetric key generated"
+      case .ciphertext:
+        textView.text = "Decrypted Message:\n\(message!)"
+    }
+  }
+  
+
   // MARK: helper methods
 
   /// Clear the input text field if it's not empty.
@@ -169,6 +239,25 @@ class KeyboardViewController: UIInputViewController {
     }
   }
 
+  /// Check if pasteboard has changed every 1 second, and unseal if it has.
+  func startPasteboardChangeCountMonitor() {
+    pasteboardChangeCountMonitor = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) {
+      timer in
+      if self.pasteboardChanged() { self.unsealCopiedText() }
+      NSLog("Pasteboard counter checked")
+    }
+  }
 
+  func stopPasteboardChangeCountMonitor() { pasteboardChangeCountMonitor?.invalidate()}
 
+  func pasteboardChanged() -> Bool {
+    let oldChangeCount = UserDefaults.standard.integer(
+      forKey: DefaultKeys.previousPasteboardChangeCount.rawValue)
+    let currentChangeCount = UIPasteboard.general.changeCount
+    UserDefaults.standard.setValue(
+      currentChangeCount, forKey: DefaultKeys.previousPasteboardChangeCount.rawValue)
+    if oldChangeCount == currentChangeCount { return false }
+
+    return true
+  }
 }

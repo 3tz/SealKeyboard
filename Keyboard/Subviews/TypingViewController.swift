@@ -387,9 +387,9 @@ class TypingViewController : UIViewController {
         switch returnKeyType {
           case .send:
             if !controller.textDocumentProxy.hasText { break }
-            controller.cryptoBar.sealAndSend()
+            controller.sealAndSend()
           default:
-            controller.cryptoBar.sealMessageBox()
+            controller.sealMessageBox()
         }
       default:
         controller.textDocumentProxy.insertText(keyname)
