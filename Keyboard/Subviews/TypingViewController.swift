@@ -138,9 +138,9 @@ class TypingViewController : UIViewController {
             )
             constraint.isActive = true
             spacebarConstraints.append(constraint)
-          case "seal":
+          case "return":
             let constraint = button.widthAnchor.constraint(
-              equalTo: buttonLookup["return"]!.widthAnchor
+              equalTo: buttonLookup["seal"]!.widthAnchor
             )
             constraint.isActive = true
             spacebarConstraints.append(constraint)
