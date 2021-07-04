@@ -18,12 +18,15 @@
 		30B1075F267DAB13002868E3 /* MessageKit in Frameworks */ = {isa = PBXBuildFile; productRef = 30B1075E267DAB13002868E3 /* MessageKit */; };
 		30B72B80269022AC003B4256 /* Seal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B72B7E269022AC003B4256 /* Seal.swift */; };
 		30B72B81269023CE003B4256 /* Seal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B72B7E269022AC003B4256 /* Seal.swift */; };
+		30B72B8326911935003B4256 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B72B8226911935003B4256 /* ChatViewController.swift */; };
+		30B72B8426911935003B4256 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B72B8226911935003B4256 /* ChatViewController.swift */; };
 		30C0D6C426796024002433D7 /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C0D6C326796024002433D7 /* Keys.swift */; };
 		30C0D6C526796024002433D7 /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C0D6C326796024002433D7 /* Keys.swift */; };
 		30CDACEE2682C5B2005070D1 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30CDACED2682C5B2005070D1 /* Constants.swift */; };
 		30D4DF832676AA1F00CF9DE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 306589C4267554B300708E73 /* Assets.xcassets */; };
 		30DF7A182687B58400990C1A /* KeyboardButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DF7A172687B58400990C1A /* KeyboardButton.swift */; };
 		30E034DB2683CA140026BE0D /* TypingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E034DA2683CA140026BE0D /* TypingViewController.swift */; };
+		30E14778269174B600004D61 /* MessageKit in Frameworks */ = {isa = PBXBuildFile; productRef = 30E14777269174B600004D61 /* MessageKit */; };
 		30EFC19B267B278F00EF65E8 /* KeyStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC196267B278F00EF65E8 /* KeyStoreError.swift */; };
 		30EFC19C267B278F00EF65E8 /* KeyStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC196267B278F00EF65E8 /* KeyStoreError.swift */; };
 		30EFC19D267B278F00EF65E8 /* GenericPasswordStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC197267B278F00EF65E8 /* GenericPasswordStore.swift */; };
@@ -95,6 +98,7 @@
 		306589D52675556400708E73 /* KeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewController.swift; sourceTree = "<group>"; };
 		306589D72675556400708E73 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		30B72B7E269022AC003B4256 /* Seal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Seal.swift; sourceTree = "<group>"; };
+		30B72B8226911935003B4256 /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		30C0D6C326796024002433D7 /* Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
 		30CDACED2682C5B2005070D1 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		30DF7A172687B58400990C1A /* KeyboardButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardButton.swift; sourceTree = "<group>"; };
@@ -112,6 +116,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				30E14778269174B600004D61 /* MessageKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -185,6 +190,7 @@
 			children = (
 				30E034DA2683CA140026BE0D /* TypingViewController.swift */,
 				30DF7A172687B58400990C1A /* KeyboardButton.swift */,
+				30B72B8226911935003B4256 /* ChatViewController.swift */,
 			);
 			path = Subviews;
 			sourceTree = "<group>";
@@ -238,6 +244,7 @@
 			);
 			name = Seal;
 			packageProductDependencies = (
+				30E14777269174B600004D61 /* MessageKit */,
 			);
 			productName = Seal;
 			productReference = 306589B8267554B200708E73 /* Seal.app */;
@@ -334,6 +341,7 @@
 				306589C0267554B200708E73 /* ViewController.swift in Sources */,
 				306589BC267554B200708E73 /* AppDelegate.swift in Sources */,
 				30C0D6C426796024002433D7 /* Keys.swift in Sources */,
+				30B72B8326911935003B4256 /* ChatViewController.swift in Sources */,
 				30EFC1A1267B278F00EF65E8 /* SecKeyConvertible.swift in Sources */,
 				306589BE267554B200708E73 /* SceneDelegate.swift in Sources */,
 				30EFC19D267B278F00EF65E8 /* GenericPasswordStore.swift in Sources */,
@@ -351,6 +359,7 @@
 				30E034DB2683CA140026BE0D /* TypingViewController.swift in Sources */,
 				30C0D6C526796024002433D7 /* Keys.swift in Sources */,
 				30B72B80269022AC003B4256 /* Seal.swift in Sources */,
+				30B72B8426911935003B4256 /* ChatViewController.swift in Sources */,
 				30EFC19C267B278F00EF65E8 /* KeyStoreError.swift in Sources */,
 				30EFC1A0267B278F00EF65E8 /* GenericPasswordConvertible.swift in Sources */,
 				30EFC19E267B278F00EF65E8 /* GenericPasswordStore.swift in Sources */,
@@ -649,6 +658,11 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		30B1075E267DAB13002868E3 /* MessageKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 30B1075D267DAB13002868E3 /* XCRemoteSwiftPackageReference "MessageKit" */;
+			productName = MessageKit;
+		};
+		30E14777269174B600004D61 /* MessageKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 30B1075D267DAB13002868E3 /* XCRemoteSwiftPackageReference "MessageKit" */;
 			productName = MessageKit;

@@ -26,14 +26,34 @@ public struct Sender: SenderType {
     public let displayName: String
 }
 
+public struct Message: MessageKit.MessageType {
+  public let sender: SenderType
+  public let messageId: String
+  public let sentDate: Date
+  public let kind: MessageKind
+}
+
 // Some global variables for the sake of the example. Using globals is not recommended!
 let sender = Sender(senderId: "any_unique_id", displayName: "Steven")
-let messages: [MessageKit.MessageType] = []
+let messages: [MessageKit.MessageType] = [
+  Message(
+    sender: Sender(senderId: "me", displayName: "Steven"),
+    messageId: "a01",
+    sentDate: Date.init(),
+    kind: .text("abcdefg some text")
+  ),
+  Message(
+    sender: Sender(senderId: "bob", displayName: "bob"),
+    messageId: "a02",
+    sentDate: Date.init(),
+    kind: .text("from bob")
+  )
+]
 
 extension ChatViewController: MessagesDataSource {
 
   func currentSender() -> SenderType {
-    return Sender(senderId: "any_unique_id", displayName: "Steven")
+    return Sender(senderId: "me", displayName: "Steven")
   }
 
   func numberOfSections(in messagesCollectionView: MessagesCollectionView) -> Int {

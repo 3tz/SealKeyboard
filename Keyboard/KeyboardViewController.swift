@@ -9,19 +9,19 @@ import UIKit
 
 enum KeyboardLayout {
   case typingView
-  case logView
+  case chatView
 }
 
 class KeyboardViewController: UIInputViewController {
   let seal = Seal()
 
   // TODO: placeholder
-  var currentLayout: KeyboardLayout! = .logView // .typingView
+  var currentLayout: KeyboardLayout! = .chatView // .typingView
 
   var textView: UITextView!
   var barStackView: UIStackView!
   var typingViewController: TypingViewController!
-
+  var chatViewController: ChatViewController!
   var stageToSendText = false
 
   var pasteboardChangeCountTimer: Timer!
@@ -46,8 +46,8 @@ class KeyboardViewController: UIInputViewController {
     switch currentLayout {
       case .typingView:
         loadTypingViewLayout()
-      case .logView:
-        loadLogViewLayout()
+      case .chatView:
+        loadChatViewLayout()
       default:
         fatalError()
     }
@@ -84,11 +84,11 @@ class KeyboardViewController: UIInputViewController {
           typingViewController.view.widthAnchor.constraint(
             equalToConstant:  UIScreen.main.bounds.size.width * 0.99),
         ])
-      case .logView:
+      case .chatView:
         NSLayoutConstraint.activate([
           mainStackView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.size.width),
           mainStackView.heightAnchor.constraint(equalToConstant: KeyboardSpecs.superViewHeight),
-          textView.widthAnchor.constraint(
+          chatViewController.view.widthAnchor.constraint(
             equalToConstant:  UIScreen.main.bounds.size.width * 0.99),
           barStackView.widthAnchor.constraint(equalToConstant:  UIScreen.main.bounds.size.width * 0.99),
         ])
@@ -156,7 +156,7 @@ class KeyboardViewController: UIInputViewController {
 
   }
 
-  func loadLogViewLayout() {
+  func loadChatViewLayout() {
     let mainStackView = view as! UIStackView
 
     // create the layout switch button
@@ -207,8 +207,6 @@ class KeyboardViewController: UIInputViewController {
     barStackView.spacing = KeyboardSpecs.horizontalSpacing
     mainStackView.addArrangedSubview(barStackView)
 
-//    typingViewController = TypingViewController(parentController: self)
-//    self.addChild(typingViewController)
     // Create the status / decryption text view
     textView = UITextView()
     textView.isEditable = false
@@ -217,24 +215,28 @@ class KeyboardViewController: UIInputViewController {
     textView.backgroundColor = .clear
     textView.translatesAutoresizingMaskIntoConstraints = false
 
+    chatViewController = ChatViewController()
+    self.addChild(chatViewController)
+    mainStackView.addArrangedSubview(chatViewController.view)
 
-    mainStackView.addArrangedSubview(textView)
   }
 
   // MARK: @objc #selector methods
 
   @objc func layoutButtonPressed(_ sender: UIButton) {
     switch currentLayout {
-      case .logView:
-        textView.removeFromSuperview()
+      case .chatView:
         barStackView.removeFromSuperview()
+        chatViewController.view.removeFromSuperview()
+        chatViewController.removeFromParent()
         loadTypingViewLayout()
         currentLayout = .typingView
       case .typingView:
         barStackView.removeFromSuperview()
         typingViewController.view.removeFromSuperview()
-        loadLogViewLayout()
-        currentLayout = .logView
+        typingViewController.removeFromParent()
+        loadChatViewLayout()
+        currentLayout = .chatView
       default:
         fatalError()
     }
