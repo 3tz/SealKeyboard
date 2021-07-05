@@ -9,19 +9,21 @@ import UIKit
 
 enum KeyboardLayout {
   case typingView
-  case chatView
+  case detailView
 }
 
 class KeyboardViewController: UIInputViewController {
   let seal = Seal()
 
   // TODO: placeholder
-  var currentLayout: KeyboardLayout! = .chatView // .typingView
+  var currentLayout: KeyboardLayout! = .detailView // .typingView
 
   var textView: UITextView!
-  var barStackView: UIStackView!
+  var topBarView: UIStackView!
   var typingViewController: TypingViewController!
-  var chatViewController: ChatViewController!
+  var detailViewController: DetailViewController!
+  var bottomBarView: UIStackView!
+
   var stageToSendText = false
 
   var pasteboardChangeCountTimer: Timer!
@@ -42,11 +44,12 @@ class KeyboardViewController: UIInputViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+    createTopBarView()
 
     switch currentLayout {
       case .typingView:
         loadTypingViewLayout()
-      case .chatView:
+      case .detailView:
         loadChatViewLayout()
       default:
         fatalError()
@@ -70,32 +73,30 @@ class KeyboardViewController: UIInputViewController {
     guard let mainStackView = view as? UIStackView else {
       fatalError()
     }
+    NSLayoutConstraint.activate([
+      mainStackView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.size.width),
+      mainStackView.heightAnchor.constraint(equalToConstant: KeyboardSpecs.superViewHeight),
+      topBarView.widthAnchor.constraint(equalToConstant:  UIScreen.main.bounds.size.width * 0.99),
+    ])
 
     switch currentLayout {
       case .typingView:
         NSLayoutConstraint.activate([
-          mainStackView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.size.width),
-          mainStackView.heightAnchor.constraint(equalToConstant: KeyboardSpecs.superViewHeight),
-    //      cryptoBarView.widthAnchor.constraint(
-    //        equalToConstant:  UIScreen.main.bounds.size.width * 0.99),
-          barStackView.widthAnchor.constraint(equalToConstant:  UIScreen.main.bounds.size.width * 0.99),
           typingViewController.view.heightAnchor.constraint(
             equalToConstant:  KeyboardSpecs.keyboardButtonsViewHeight),
           typingViewController.view.widthAnchor.constraint(
             equalToConstant:  UIScreen.main.bounds.size.width * 0.99),
         ])
-      case .chatView:
+      case .detailView:
         NSLayoutConstraint.activate([
-          mainStackView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.size.width),
-          mainStackView.heightAnchor.constraint(equalToConstant: KeyboardSpecs.superViewHeight),
-          chatViewController.view.widthAnchor.constraint(
+          detailViewController.view.heightAnchor.constraint(
+            equalToConstant:  KeyboardSpecs.keyboardButtonsViewHeight),
+          detailViewController.view.widthAnchor.constraint(
             equalToConstant:  UIScreen.main.bounds.size.width * 0.99),
-          barStackView.widthAnchor.constraint(equalToConstant:  UIScreen.main.bounds.size.width * 0.99),
         ])
       default:
         fatalError()
     }
-
 
   }
 
@@ -119,12 +120,27 @@ class KeyboardViewController: UIInputViewController {
   // MARK: view loading methods
 
   func loadTypingViewLayout() {
+    typingViewController = TypingViewController(parentController: self)
+    addChild(typingViewController)
+    (view as! UIStackView).addArrangedSubview(typingViewController.view)
+
+  }
+
+  func loadChatViewLayout() {
+    detailViewController = DetailViewController(keyboardViewController: self)
+    addChild(detailViewController)
+    (view as! UIStackView).addArrangedSubview(detailViewController.view)
+
+  }
+
+  func createTopBarView() {
     let mainStackView = view as! UIStackView
 
     // create the layout switch button
     let layoutButton = UIButton()
     layoutButton.translatesAutoresizingMaskIntoConstraints = false
-    layoutButton.setImage(UIImage(systemName: "message.fill"), for: .normal)
+    let imageSystemName = currentLayout == .typingView ? "message.fill" : "keyboard"
+    layoutButton.setImage(UIImage(systemName: imageSystemName), for: .normal)
     layoutButton.backgroundColor = .systemBlue
     layoutButton.tintColor = .white
     layoutButton.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
@@ -142,112 +158,31 @@ class KeyboardViewController: UIInputViewController {
     textView.backgroundColor = .clear
     textView.translatesAutoresizingMaskIntoConstraints = false
 
-    barStackView = UIStackView(arrangedSubviews: [layoutButton, textView])
-    barStackView.axis = .horizontal
-    barStackView.spacing = KeyboardSpecs.horizontalSpacing
+    topBarView = UIStackView(arrangedSubviews: [layoutButton, textView])
+    topBarView.axis = .horizontal
+    topBarView.spacing = KeyboardSpecs.horizontalSpacing
 
-    mainStackView.addArrangedSubview(barStackView)
-
-
-    typingViewController = TypingViewController(parentController: self)
-
-    self.addChild(typingViewController)
-    mainStackView.addArrangedSubview(typingViewController.view)
-
-  }
-
-  func loadChatViewLayout() {
-    let mainStackView = view as! UIStackView
-
-    // create the layout switch button
-    let layoutButton = UIButton()
-    layoutButton.translatesAutoresizingMaskIntoConstraints = false
-    layoutButton.setImage(UIImage(systemName: "keyboard"), for: .normal)
-    layoutButton.backgroundColor = .systemBlue
-    layoutButton.tintColor = .white
-    layoutButton.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
-    layoutButton.addTarget(self, action: #selector(layoutButtonPressed(_:)), for: .touchUpInside)
-    NSLayoutConstraint.activate([
-      layoutButton.widthAnchor.constraint(equalToConstant: KeyboardSpecs.cryptoButtonsViewHeight),
-      layoutButton.heightAnchor.constraint(equalTo: layoutButton.widthAnchor)
-    ])
-
-    // create the two button cryptobar
-    let requestButton = UIButton(type: .system)
-    requestButton.setTitle("Request", for: .normal)
-    requestButton.sizeToFit()
-    requestButton.backgroundColor = .systemBlue
-    requestButton.setTitleColor(.white, for: [])
-    requestButton.translatesAutoresizingMaskIntoConstraints = false
-    requestButton.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
-    requestButton.addTarget(
-      self,
-      action: #selector(requestButtonPressed(_:)),
-      for: .touchUpInside
-    )
-
-    let sealButton = UIButton(type: .system)
-    sealButton.setTitle("Seal Message Field Text", for: .normal)
-    sealButton.sizeToFit()
-    sealButton.backgroundColor = .systemBlue
-    sealButton.setTitleColor(.white, for: [])
-    sealButton.translatesAutoresizingMaskIntoConstraints = false
-    sealButton.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
-    sealButton.addTarget(
-      self,
-      action: #selector(sealButtonPressed(_:)),
-      for: .touchUpInside
-    )
-
-    // Add them to a horizontal stackview
-    barStackView = UIStackView(
-      arrangedSubviews: [layoutButton, requestButton, sealButton]
-    )
-    barStackView.axis = .horizontal
-    barStackView.spacing = KeyboardSpecs.horizontalSpacing
-    mainStackView.addArrangedSubview(barStackView)
-
-    // Create the status / decryption text view
-    textView = UITextView()
-    textView.isEditable = false
-    textView.isSelectable = true
-    textView.text = "Ready!"
-    textView.backgroundColor = .clear
-    textView.translatesAutoresizingMaskIntoConstraints = false
-
-    chatViewController = ChatViewController()
-    self.addChild(chatViewController)
-    mainStackView.addArrangedSubview(chatViewController.view)
-
+    mainStackView.addArrangedSubview(topBarView)
   }
 
   // MARK: @objc #selector methods
 
   @objc func layoutButtonPressed(_ sender: UIButton) {
     switch currentLayout {
-      case .chatView:
-        barStackView.removeFromSuperview()
-        chatViewController.view.removeFromSuperview()
-        chatViewController.removeFromParent()
+      case .detailView:
+        detailViewController.view.removeFromSuperview()
+        detailViewController.removeFromParent()
         loadTypingViewLayout()
         currentLayout = .typingView
       case .typingView:
-        barStackView.removeFromSuperview()
         typingViewController.view.removeFromSuperview()
         typingViewController.removeFromParent()
         loadChatViewLayout()
-        currentLayout = .chatView
+        currentLayout = .detailView
       default:
         fatalError()
     }
   }
-
-  @objc func requestButtonPressed(_ sender: Any) { ECDHRequestStringToMessageBox() }
-
-  @objc func unsealButtonPressed(_ sender: Any) { unsealCopiedText() }
-
-  @objc func sealButtonPressed(_ sender: Any) { sealMessageBox() }
-
 
   // MARK: Sealing/unsealing/ECDH methods
 
@@ -297,7 +232,7 @@ class KeyboardViewController: UIInputViewController {
       return
     }
 
-    let messageType: MessageType, message: String?
+    let messageType: SealMessageType, message: String?
 
     do {
       (messageType, message) = try seal.unseal(string: copiedText)

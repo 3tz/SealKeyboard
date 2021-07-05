@@ -8,7 +8,7 @@
 import Foundation
 
 
-enum MessageType: String {
+enum SealMessageType: String {
   case ECDH0
   case ECDH1
   case ciphertext
@@ -24,16 +24,16 @@ class Seal {
   /// Return a string that indicates a MessageType.ECDH0 event
   func initiateECDHRequest() -> String {
     return [
-      MessageType.ECDH0.rawValue,
+      SealMessageType.ECDH0.rawValue,
       asString(keys.encryptionPublicKey.rawRepresentation)
    ].joined(separator: "|")
   }
 
-  func unseal(string: String) throws -> (MessageType, String?) {
+  func unseal(string: String) throws -> (SealMessageType, String?) {
     let tokens = string.components(separatedBy: "|")
     var msg: String? = nil
 
-    switch MessageType(rawValue: tokens[0]){
+    switch SealMessageType(rawValue: tokens[0]){
     case .ECDH0:
       // Request to initiate ECDH, i.e., to generate a symmetric key.
       // Generate a symmetric key and send it over.
@@ -47,7 +47,7 @@ class Seal {
         try keys.ECDHKeyExchange(with: theirEncryptionPublicKeyString)
 
       msg = [
-        MessageType.ECDH1.rawValue,
+        SealMessageType.ECDH1.rawValue,
         ephemeralPublicKeyString,
         signatureString,
         signingPublicKeyString
@@ -74,7 +74,7 @@ class Seal {
       throw DecryptionErrors.parsingError
     }
 
-    return (MessageType(rawValue: tokens[0])!, msg)
+    return (SealMessageType(rawValue: tokens[0])!, msg)
   }
 
   func seal(string: String) throws -> String {
@@ -82,7 +82,7 @@ class Seal {
     (ciphertextString, signatureString, signingPublicKeyString) = try keys.encrypt(string)
 
     return [
-      MessageType.ciphertext.rawValue,
+      SealMessageType.ciphertext.rawValue,
       ciphertextString,
       signatureString,
       signingPublicKeyString

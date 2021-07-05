@@ -54,16 +54,18 @@ struct KeyboardSpecs {
 
   static let superViewSpacing = 10 as CGFloat,
 
-   superViewHeight = 270 as CGFloat, // 330 as CGFloat,
-   keyboardButtonsViewHeight = 220 as CGFloat,
-   cryptoButtonsViewHeight = superViewHeight - keyboardButtonsViewHeight - superViewSpacing,
-
+    superViewHeight = 270 as CGFloat, // 330 as CGFloat,
+    keyboardButtonsViewHeight = 220 as CGFloat,
+    cryptoButtonsViewHeight = superViewHeight - keyboardButtonsViewHeight - superViewSpacing,
     verticalSpacing = 14 as CGFloat,
     horizontalSpacing = 6 as CGFloat,
     buttonCornerRadius = 7 as CGFloat,
 
     standardFontSize = 25 as CGFloat,
-    specialFontSize = 16 as CGFloat
+    specialFontSize = 16 as CGFloat,
+
+    bottomBarViewHeight = (keyboardButtonsViewHeight - 3 * verticalSpacing) / 4,
+    chatViewHeight = keyboardButtonsViewHeight - bottomBarViewHeight
 
   static private let _specialFontSize: [String: CGFloat] = [
     "123": specialFontSize,
