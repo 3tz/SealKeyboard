@@ -37,6 +37,7 @@ class DetailViewController: UIViewController {
     (view as! UIStackView).addArrangedSubview(chatViewController.view)
     addChild(chatViewController)
     addBottomBarViewToView()
+    view.sendSubviewToBack(chatViewController.view)
   }
 
   override func updateViewConstraints() {
@@ -104,6 +105,7 @@ class DetailViewController: UIViewController {
     )
     bottomBarView.axis = .horizontal
     bottomBarView.spacing = KeyboardSpecs.horizontalSpacing
+    bottomBarView.backgroundColor = KeyboardSpecs.bottomBarViewBackgroundColor
     (view as! UIStackView).addArrangedSubview(bottomBarView)
   }
 

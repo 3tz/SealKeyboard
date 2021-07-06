@@ -52,7 +52,7 @@ struct KeyboardSpecs {
 
   static let backspaceHeldDeleteInterval = 0.1
 
-  static let superViewSpacing = 10 as CGFloat,
+  static let superViewSpacing = 0 as CGFloat,
 
     superViewHeight = 270 as CGFloat, // 330 as CGFloat,
     keyboardButtonsViewHeight = 220 as CGFloat,
@@ -96,6 +96,11 @@ struct KeyboardSpecs {
   static func fontSize(_ keyname: String) -> CGFloat {
     return _specialFontSize[keyname, default: standardFontSize]
   }
+
+  static let topBarViewBackgroundColor = UIColor.systemGray3,
+    chatViewBackgroundColor = UIColor.systemBackground,
+    bottomBarViewBackgroundColor = UIColor.systemBackground
+
 }
 
 enum DefaultKeys: String {

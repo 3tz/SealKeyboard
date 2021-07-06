@@ -27,6 +27,8 @@ class ChatViewController: MessagesViewController {
 
     let layout = messagesCollectionView.collectionViewLayout as? MessagesCollectionViewFlowLayout
 
+    layout?.collectionView?.backgroundColor = KeyboardSpecs.chatViewBackgroundColor
+
     // Hide the outgoing avatar and adjust the label alignment to line up with the messages
     layout?.setMessageOutgoingAvatarSize(.zero)
     let outgoingAlignment = LabelAlignment(

@@ -76,7 +76,7 @@ class KeyboardViewController: UIInputViewController {
     NSLayoutConstraint.activate([
       mainStackView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.size.width),
       mainStackView.heightAnchor.constraint(equalToConstant: KeyboardSpecs.superViewHeight),
-      topBarView.widthAnchor.constraint(equalToConstant:  UIScreen.main.bounds.size.width * 0.99),
+      topBarView.widthAnchor.constraint(equalToConstant:  UIScreen.main.bounds.size.width),
     ])
 
     switch currentLayout {
@@ -85,14 +85,14 @@ class KeyboardViewController: UIInputViewController {
           typingViewController.view.heightAnchor.constraint(
             equalToConstant:  KeyboardSpecs.keyboardButtonsViewHeight),
           typingViewController.view.widthAnchor.constraint(
-            equalToConstant:  UIScreen.main.bounds.size.width * 0.99),
+            equalToConstant:  UIScreen.main.bounds.size.width),
         ])
       case .detailView:
         NSLayoutConstraint.activate([
           detailViewController.view.heightAnchor.constraint(
             equalToConstant:  KeyboardSpecs.keyboardButtonsViewHeight),
           detailViewController.view.widthAnchor.constraint(
-            equalToConstant:  UIScreen.main.bounds.size.width * 0.99),
+            equalToConstant:  UIScreen.main.bounds.size.width),
         ])
       default:
         fatalError()
@@ -130,7 +130,7 @@ class KeyboardViewController: UIInputViewController {
     detailViewController = DetailViewController(keyboardViewController: self)
     addChild(detailViewController)
     (view as! UIStackView).addArrangedSubview(detailViewController.view)
-
+    (view as! UIStackView).sendSubviewToBack(detailViewController.view)
   }
 
   func createTopBarView() {
@@ -161,6 +161,7 @@ class KeyboardViewController: UIInputViewController {
     topBarView = UIStackView(arrangedSubviews: [layoutButton, textView])
     topBarView.axis = .horizontal
     topBarView.spacing = KeyboardSpecs.horizontalSpacing
+    topBarView.backgroundColor = KeyboardSpecs.topBarViewBackgroundColor
 
     mainStackView.addArrangedSubview(topBarView)
   }
