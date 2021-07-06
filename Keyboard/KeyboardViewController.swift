@@ -192,7 +192,7 @@ class KeyboardViewController: UIInputViewController {
   // MARK: Sealing/unsealing/ECDH methods
 
   func ECDHRequestStringToMessageBox() {
-    textView.text = "ECDH initiated." // TODO: placeholder
+    textView.text =  StatusText.ECDHInitialized // TODO: placeholder
     let message = seal.initiateECDHRequest()
     clearInputText()
     textDocumentProxy.insertText(message)
@@ -200,7 +200,7 @@ class KeyboardViewController: UIInputViewController {
 
   func sealAndSend() {
     sealMessageBox()
-    textView.text = "Text encrypted and sent."
+    textView.text = StatusText.sealSuccessAndSent
     // Apps with ReturnType of .send look for a single "\n" upon text change.
     // Thus, change the text to ciphertext first, and insert one "\n" under textDidChange.
     stageToSendText = true
@@ -212,7 +212,7 @@ class KeyboardViewController: UIInputViewController {
       (textDocumentProxy.documentContextAfterInput ?? "")
 
     if textInput.isEmpty {
-      textView.text = "Unable to seal message because input text field is empty."
+      textView.text = StatusText.sealFailureEmpty
       return
     }
 
@@ -222,18 +222,18 @@ class KeyboardViewController: UIInputViewController {
       message = try seal.seal(string: textInput)
     } catch {
       NSLog("sealMessageBox error caught:\n\(error)")
-      textView.text = "Something went wrong. Unable to encrypt. Try again later."
+      textView.text = StatusText.sealFailureSymmetricAlgo
       return
     }
 
     clearInputText()
     textDocumentProxy.insertText(message)
-    textView.text = "Textfield sealed. Ready to send."
+    textView.text = StatusText.sealSuccessButNotSent
   }
 
   func unsealCopiedText() {
     guard let copiedText = UIPasteboard.general.string else {
-      textView.text = "No copied text found." // TODO: placeholder
+      textView.text = StatusText.unsealFailureEmpty // TODO: placeholder
       return
     }
 
@@ -242,13 +242,13 @@ class KeyboardViewController: UIInputViewController {
     do {
       (messageType, message) = try seal.unseal(string: copiedText)
     } catch DecryptionErrors.parsingError {
-      textView.text = "Unknown type of message copied."
+      textView.text = StatusText.unsealFailureParsingError
       return
     } catch DecryptionErrors.authenticationError {
-      textView.text = "Message signature verification failed."
+      textView.text = StatusText.unsealFailureAuthenticationError
       return
     } catch {
-      textView.text = "Unable to unseal. Unknown key or others."
+      textView.text = StatusText.unsealFailureOtherError
       return
     }
 
@@ -257,11 +257,11 @@ class KeyboardViewController: UIInputViewController {
         clearInputText()
         textDocumentProxy.insertText(message!)
         // TODO: placeholder
-        textView.text = "Request to generate symmetric key received."
+        textView.text = StatusText.unsealSuccessReceivedECDH0
       case .ECDH1:
-        textView.text = "Symmetric key generated"
+        textView.text = StatusText.unsealSuccessReceivedECDH1
       case .ciphertext:
-        textView.text = "Decrypted Message:\n\(message!)"
+        textView.text = "\(StatusText.unsealSuccessReceivedCiphertext):\n\(message!)"
     }
   }
 

@@ -106,3 +106,20 @@ struct KeyboardSpecs {
 enum DefaultKeys: String {
   case previousPasteboardChangeCount
 }
+
+struct StatusText {
+  static let ECDHInitialized = "ECDH initiated.",
+    sealSuccessAndSent = "Text encrypted and sent.",
+    sealSuccessButNotSent = "Textfield sealed. Ready to send.",
+    sealFailureEmpty =  "Unable to seal message because input text field is empty.",
+    sealFailureSymmetricAlgo = "Something went wrong. Unable to encrypt. Try again later.",
+
+    unsealFailureEmpty = "No copied text found.",
+    unsealFailureParsingError = "Unknown type of message copied.",
+    unsealFailureAuthenticationError = "Message signature verification failed.",
+    unsealFailureOtherError = "Unable to unseal. Unknown key or others.",
+
+    unsealSuccessReceivedECDH0 = "Request to generate symmetric key received.",
+    unsealSuccessReceivedECDH1 = "Symmetric key generated.",
+    unsealSuccessReceivedCiphertext = "Message Decrypted"
+}
