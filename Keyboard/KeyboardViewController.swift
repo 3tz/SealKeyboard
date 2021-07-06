@@ -44,13 +44,13 @@ class KeyboardViewController: UIInputViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    createTopBarView()
+    loadTopBarView()
 
     switch currentLayout {
       case .typingView:
-        loadTypingViewLayout()
+        loadTypingView()
       case .detailView:
-        loadChatViewLayout()
+        loadChatView()
       default:
         fatalError()
     }
@@ -119,21 +119,21 @@ class KeyboardViewController: UIInputViewController {
 
   // MARK: view loading methods
 
-  func loadTypingViewLayout() {
+  func loadTypingView() {
     typingViewController = TypingViewController(parentController: self)
     addChild(typingViewController)
     (view as! UIStackView).addArrangedSubview(typingViewController.view)
 
   }
 
-  func loadChatViewLayout() {
+  func loadChatView() {
     detailViewController = DetailViewController(keyboardViewController: self)
     addChild(detailViewController)
     (view as! UIStackView).addArrangedSubview(detailViewController.view)
     (view as! UIStackView).sendSubviewToBack(detailViewController.view)
   }
 
-  func createTopBarView() {
+  func loadTopBarView() {
     let mainStackView = view as! UIStackView
 
     // create the layout switch button
@@ -173,14 +173,14 @@ class KeyboardViewController: UIInputViewController {
       case .detailView:
         detailViewController.view.removeFromSuperview()
         detailViewController.removeFromParent()
-        loadTypingViewLayout()
+        loadTypingView()
         currentLayout = .typingView
         (topBarView.arrangedSubviews[0] as! UIButton).setImage(
           UIImage(systemName: "message.fill"), for: .normal)
       case .typingView:
         typingViewController.view.removeFromSuperview()
         typingViewController.removeFromParent()
-        loadChatViewLayout()
+        loadChatView()
         currentLayout = .detailView
         (topBarView.arrangedSubviews[0] as! UIButton).setImage(
           UIImage(systemName: "keyboard"), for: .normal)
