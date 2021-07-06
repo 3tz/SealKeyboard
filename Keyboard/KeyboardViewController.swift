@@ -175,11 +175,15 @@ class KeyboardViewController: UIInputViewController {
         detailViewController.removeFromParent()
         loadTypingViewLayout()
         currentLayout = .typingView
+        (topBarView.arrangedSubviews[0] as! UIButton).setImage(
+          UIImage(systemName: "message.fill"), for: .normal)
       case .typingView:
         typingViewController.view.removeFromSuperview()
         typingViewController.removeFromParent()
         loadChatViewLayout()
         currentLayout = .detailView
+        (topBarView.arrangedSubviews[0] as! UIButton).setImage(
+          UIImage(systemName: "keyboard"), for: .normal)
       default:
         fatalError()
     }
