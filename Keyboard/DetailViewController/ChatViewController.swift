@@ -1,26 +1,3 @@
-/*
-MIT License
-
-Copyright (c) 2017-2020 MessageKit
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-*/
 //
 //  LogViewController.swift
 //  Seal
@@ -40,13 +17,9 @@ class ChatViewController: MessagesViewController {
 
   weak var controller: KeyboardViewController!
 
-  var messages: Messages!
-
   convenience init(keyboardViewController: KeyboardViewController) {
     self.init()
     controller = keyboardViewController
-
-    messages = Messages()
   }
 
   override func viewDidLoad() {
@@ -98,7 +71,7 @@ class ChatViewController: MessagesViewController {
   func appendStringMessage(_ string: String, sender: Sender) {
     appendMessage(Message(
       sender: sender,
-      messageId: "\(String(messages.count))",
+      messageId: "\(String(Messages.default.count))",
       sentDate: Date.init(),
       kind: .text(string)
     ))
@@ -107,12 +80,12 @@ class ChatViewController: MessagesViewController {
   // MARK: Helper methods
 
   private func appendMessage(_ message: Message) {
-      messages.append(message)
+      Messages.default.append(message)
       // Reload last section to update header/footer labels and insert a new one
       messagesCollectionView.performBatchUpdates({
-          messagesCollectionView.insertSections([messages.count - 1])
-          if messages.count >= 2 {
-              messagesCollectionView.reloadSections([messages.count - 2])
+          messagesCollectionView.insertSections([Messages.default.count - 1])
+          if Messages.default.count >= 2 {
+              messagesCollectionView.reloadSections([Messages.default.count - 2])
           }
       }, completion: { [weak self] _ in
           if self?.isLastSectionVisible() == true {
@@ -122,8 +95,8 @@ class ChatViewController: MessagesViewController {
   }
 
   private func isLastSectionVisible() -> Bool {
-      guard !messages.isEmpty else { return false }
-      let lastIndexPath = IndexPath(item: 0, section: messages.count - 2)
+      guard !Messages.default.isEmpty else { return false }
+      let lastIndexPath = IndexPath(item: 0, section: Messages.default.count - 2)
       return messagesCollectionView.indexPathsForVisibleItems.contains(lastIndexPath)
   }
 
@@ -136,11 +109,11 @@ extension ChatViewController: MessagesDataSource {
   }
 
   func numberOfSections(in messagesCollectionView: MessagesCollectionView) -> Int {
-    return messages.count
+    return Messages.default.count
   }
 
   func messageForItem(at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageType {
-    return messages[indexPath.section]
+    return Messages.default[indexPath.section]
   }
 }
 

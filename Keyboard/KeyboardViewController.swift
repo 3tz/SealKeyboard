@@ -13,8 +13,6 @@ enum KeyboardLayout {
 }
 
 class KeyboardViewController: UIInputViewController {
-  let seal = Seal()
-
   // TODO: placeholder
   var currentLayout: KeyboardLayout! = .detailView // .typingView
 
@@ -193,7 +191,7 @@ class KeyboardViewController: UIInputViewController {
 
   func ECDHRequestStringToMessageBox() {
     textView.text =  StatusText.ECDHInitialized // TODO: placeholder
-    let message = seal.initiateECDHRequest()
+    let message = Seal.initiateECDHRequest()
     clearInputText()
     textDocumentProxy.insertText(message)
   }
@@ -219,7 +217,7 @@ class KeyboardViewController: UIInputViewController {
     let message: String
 
     do {
-      message = try seal.seal(string: textInput)
+      message = try Seal.seal(string: textInput)
     } catch {
       NSLog("sealMessageBox error caught:\n\(error)")
       textView.text = StatusText.sealFailureSymmetricAlgo
@@ -242,7 +240,7 @@ class KeyboardViewController: UIInputViewController {
     let messageType: SealMessageType, message: String?
 
     do {
-      (messageType, message) = try seal.unseal(string: copiedText)
+      (messageType, message) = try Seal.unseal(string: copiedText)
     } catch DecryptionErrors.parsingError {
       textView.text = StatusText.unsealFailureParsingError
       return

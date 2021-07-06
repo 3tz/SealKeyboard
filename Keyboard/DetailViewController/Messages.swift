@@ -22,47 +22,45 @@ public struct Message: MessageType {
   public let kind: MessageKind
 }
 
-class Messages{
-  private var buffer: [Message] = [
-    Message(
-      sender: ChatView.senderMe,
-      messageId: "a01",
-      sentDate: Date.init(),
-      kind: .text("abcdefg some text")
-    ),
-    Message(
-      sender: senderThem,
-      messageId: "a02",
-      sentDate: Date.init(),
-      kind: .text("""
-      line 1
-      line 2
-      line 3
-      line 4
-      line 5 line 5 line 5 line 5 line 5 line 5 line 5 line 5
-      from bob
-      """)
-    )
-  ]
+class Messages {
+  static let `default` = Messages()
 
-  var count: Int {
-    return buffer.count
+  private var buffer: [Message]!
+
+  private init() {
+    buffer = [
+      Message(
+        sender: ChatView.senderMe,
+        messageId: "a01",
+        sentDate: Date.init(),
+        kind: .text("abcdefg some text")
+      ),
+      Message(
+        sender: senderThem,
+        messageId: "a02",
+        sentDate: Date.init(),
+        kind: .text("""
+        line 1
+        line 2
+        line 3
+        line 4
+        line 5 line 5 line 5 line 5 line 5 line 5 line 5 line 5
+        from bob
+        """)
+      )
+    ]
   }
 
-  var isEmpty: Bool {
-    return buffer.isEmpty
-  }
+  // MARK: some basic array-like methods. Maybe have class inherit Collection?
 
-  func append(_ message: Message) {
-    buffer.append(message)
-  }
+  var count: Int { return buffer.count }
+
+  var isEmpty: Bool { return buffer.isEmpty }
+
+  func append(_ message: Message) { buffer.append(message) }
 
   subscript(index: Int) -> Message {
-    get {
-      return buffer[index]
-    }
-    set(item) {
-      buffer.insert(item, at: index)
-    }
+    get { return buffer[index] }
+    set(item) { buffer.insert(item, at: index) }
   }
 }
