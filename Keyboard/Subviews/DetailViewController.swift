@@ -53,7 +53,7 @@ class DetailViewController: UIViewController {
 
   }
 
-  func addBottomBarViewToView() {
+  private func addBottomBarViewToView() {
     let globeButton = UIButton(type: .custom)
     globeButton.translatesAutoresizingMaskIntoConstraints = false
     globeButton.setImage(UIImage(systemName: "globe"), for: .normal)
@@ -109,12 +109,15 @@ class DetailViewController: UIViewController {
     (view as! UIStackView).addArrangedSubview(bottomBarView)
   }
 
+  // MARK: Internal methods
+
+  func appendStringMessageToChatView(_ string: String, sender: Sender) {
+    chatViewController.appendStringMessage(string, sender: sender)
+  }
+
   // MARK: @objc #selector methods
 
-  @objc func requestButtonPressed(_ sender: Any) {
-    controller.ECDHRequestStringToMessageBox()
-    chatViewController.appendMessage(Message(sender: senderMe, messageId: "a04", sentDate: Date.init(), kind: .text("prequeste pressedr")))
-  }
+  @objc func requestButtonPressed(_ sender: Any) { controller.ECDHRequestStringToMessageBox() }
 
   @objc func unsealButtonPressed(_ sender: Any) { controller.unsealCopiedText() }
 

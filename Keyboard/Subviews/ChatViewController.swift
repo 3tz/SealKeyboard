@@ -33,7 +33,20 @@ import Foundation
 import UIKit
 import MessageKit
 
-let senderMe = Sender(senderId: "s01", displayName: "me")
+public struct Sender: SenderType {
+    public let senderId: String
+
+    public let displayName: String
+}
+
+public struct Message: MessageType {
+  public let sender: SenderType
+  public let messageId: String
+  public let sentDate: Date
+  public let kind: MessageKind
+}
+
+
 let senderThem = Sender(senderId: "s02", displayName: "bob")
 
 class ChatViewController: MessagesViewController {
@@ -42,7 +55,7 @@ class ChatViewController: MessagesViewController {
 
   var messages: [MessageType] = [
     Message(
-      sender: senderMe,
+      sender: ChatView.senderMe,
       messageId: "a01",
       sentDate: Date.init(),
       kind: .text("abcdefg some text")
@@ -121,9 +134,20 @@ class ChatViewController: MessagesViewController {
       return 20
   }
 
+  // MARK: internal methods for modifying messages
+
+  func appendStringMessage(_ string: String, sender: Sender) {
+    appendMessage(Message(
+      sender: sender,
+      messageId: "\(String(messages.count))",
+      sentDate: Date.init(),
+      kind: .text(string)
+    ))
+  }
+
   // MARK: Helper methods
 
-  func appendMessage(_ message: Message) {
+  private func appendMessage(_ message: Message) {
       messages.append(message)
       // Reload last section to update header/footer labels and insert a new one
       messagesCollectionView.performBatchUpdates({
@@ -138,7 +162,7 @@ class ChatViewController: MessagesViewController {
       })
   }
 
-  func isLastSectionVisible() -> Bool {
+  private func isLastSectionVisible() -> Bool {
       guard !messages.isEmpty else { return false }
       let lastIndexPath = IndexPath(item: 0, section: messages.count - 2)
       return messagesCollectionView.indexPathsForVisibleItems.contains(lastIndexPath)
@@ -146,23 +170,12 @@ class ChatViewController: MessagesViewController {
 
 }
 
-public struct Sender: SenderType {
-    public let senderId: String
 
-    public let displayName: String
-}
-
-public struct Message: MessageType {
-  public let sender: SenderType
-  public let messageId: String
-  public let sentDate: Date
-  public let kind: MessageKind
-}
 
 extension ChatViewController: MessagesDataSource {
 
   func currentSender() -> SenderType {
-    return senderMe
+    return ChatView.senderMe
   }
 
   func numberOfSections(in messagesCollectionView: MessagesCollectionView) -> Int {

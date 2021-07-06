@@ -123,3 +123,8 @@ struct StatusText {
     unsealSuccessReceivedECDH1 = "Symmetric key generated.",
     unsealSuccessReceivedCiphertext = "Message Decrypted"
 }
+
+// todo: placeholder
+struct ChatView {
+  static let senderMe = Sender(senderId: "s01", displayName: "me")
+}

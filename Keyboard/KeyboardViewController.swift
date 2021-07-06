@@ -229,6 +229,8 @@ class KeyboardViewController: UIInputViewController {
     clearInputText()
     textDocumentProxy.insertText(message)
     textView.text = StatusText.sealSuccessButNotSent
+
+    detailViewController.appendStringMessageToChatView(textInput, sender: ChatView.senderMe)
   }
 
   func unsealCopiedText() {
@@ -261,7 +263,19 @@ class KeyboardViewController: UIInputViewController {
       case .ECDH1:
         textView.text = StatusText.unsealSuccessReceivedECDH1
       case .ciphertext:
-        textView.text = "\(StatusText.unsealSuccessReceivedCiphertext):\n\(message!)"
+        let statusText: String!
+        switch currentLayout {
+          case .detailView:
+            statusText = "\(StatusText.unsealSuccessReceivedCiphertext). See below."
+            detailViewController.appendStringMessageToChatView(
+              message!,
+              sender: Sender(senderId: "placeholder", displayName: "placeholder"))
+          case .typingView:
+             statusText = "\(StatusText.unsealSuccessReceivedCiphertext):\n\(message!)"
+          default:
+            fatalError()
+        }
+        textView.text = statusText
     }
   }
 
