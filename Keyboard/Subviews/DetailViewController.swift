@@ -111,7 +111,10 @@ class DetailViewController: UIViewController {
 
   // MARK: @objc #selector methods
 
-  @objc func requestButtonPressed(_ sender: Any) { controller.ECDHRequestStringToMessageBox() }
+  @objc func requestButtonPressed(_ sender: Any) {
+    controller.ECDHRequestStringToMessageBox()
+    chatViewController.appendMessage(Message(sender: senderMe, messageId: "a04", sentDate: Date.init(), kind: .text("prequeste pressedr")))
+  }
 
   @objc func unsealButtonPressed(_ sender: Any) { controller.unsealCopiedText() }
 

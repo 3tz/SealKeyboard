@@ -1,6 +1,30 @@
+/*
+MIT License
+
+Copyright (c) 2017-2020 MessageKit
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
 //
 //  LogViewController.swift
 //  Seal
+//  Modified from MessageKit
 //
 //  Created by tz on 7/3/21.
 //
@@ -9,9 +33,44 @@ import Foundation
 import UIKit
 import MessageKit
 
+let senderMe = Sender(senderId: "s01", displayName: "me")
+let senderThem = Sender(senderId: "s02", displayName: "bob")
+
 class ChatViewController: MessagesViewController {
 
   weak var controller: KeyboardViewController!
+
+  var messages: [MessageType] = [
+    Message(
+      sender: senderMe,
+      messageId: "a01",
+      sentDate: Date.init(),
+      kind: .text("abcdefg some text")
+    ),
+    Message(
+      sender: senderThem,
+      messageId: "a02",
+      sentDate: Date.init(),
+      kind: .text("""
+      line 1
+      line 2
+      from bob
+      """)
+    ),
+    Message(
+      sender: senderThem,
+      messageId: "a02",
+      sentDate: Date.init(),
+      kind: .text("""
+      line 1
+      line 2
+      line 3
+      line 4
+      line 5 line 5 line 5 line 5 line 5 line 5 line 5 line 5
+      from bob
+      """)
+    )
+  ]
 
   convenience init(keyboardViewController: KeyboardViewController) {
     self.init()
@@ -48,6 +107,10 @@ class ChatViewController: MessagesViewController {
     layout?.setMessageIncomingMessageBottomLabelAlignment(incomingAlignment)
   }
 
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    messagesCollectionView.scrollToLastItem(at: .bottom, animated: false)
+  }
 
   func messageTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
       let name = message.sender.displayName
@@ -58,6 +121,28 @@ class ChatViewController: MessagesViewController {
       return 20
   }
 
+  // MARK: Helper methods
+
+  func appendMessage(_ message: Message) {
+      messages.append(message)
+      // Reload last section to update header/footer labels and insert a new one
+      messagesCollectionView.performBatchUpdates({
+          messagesCollectionView.insertSections([messages.count - 1])
+          if messages.count >= 2 {
+              messagesCollectionView.reloadSections([messages.count - 2])
+          }
+      }, completion: { [weak self] _ in
+          if self?.isLastSectionVisible() == true {
+              self?.messagesCollectionView.scrollToLastItem(animated: true)
+          }
+      })
+  }
+
+  func isLastSectionVisible() -> Bool {
+      guard !messages.isEmpty else { return false }
+      let lastIndexPath = IndexPath(item: 0, section: messages.count - 2)
+      return messagesCollectionView.indexPathsForVisibleItems.contains(lastIndexPath)
+  }
 
 }
 
@@ -73,41 +158,6 @@ public struct Message: MessageType {
   public let sentDate: Date
   public let kind: MessageKind
 }
-
-// Some global variables for the sake of the example. Using globals is not recommended!
-let senderMe = Sender(senderId: "s01", displayName: "me")
-let senderThem = Sender(senderId: "s02", displayName: "bob")
-let messages: [MessageType] = [
-  Message(
-    sender: senderMe,
-    messageId: "a01",
-    sentDate: Date.init(),
-    kind: .text("abcdefg some text")
-  ),
-  Message(
-    sender: senderThem,
-    messageId: "a02",
-    sentDate: Date.init(),
-    kind: .text("""
-    line 1
-    line 2
-    from bob
-    """)
-  ),
-  Message(
-    sender: senderThem,
-    messageId: "a02",
-    sentDate: Date.init(),
-    kind: .text("""
-    line 1
-    line 2
-    line 3
-    line 4
-    line 5 line 5 line 5 line 5 line 5 line 5 line 5 line 5
-    from bob
-    """)
-  )
-]
 
 extension ChatViewController: MessagesDataSource {
 
