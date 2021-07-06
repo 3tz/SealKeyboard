@@ -8,21 +8,24 @@
 import Foundation
 import CryptoKit
 
-final class Keys {
-  private var signingSecretKey: Curve25519.Signing.PrivateKey!
-  var signingPublicKey: Curve25519.Signing.PublicKey!
-  private var encryptionSecretKey: Curve25519.KeyAgreement.PrivateKey!
-  var encryptionPublicKey: Curve25519.KeyAgreement.PublicKey!
-  private var symmetricKey: SymmetricKey!
+final class EncryptionKeys {
+  static let `default` = EncryptionKeys()
 
+  // Internal get vars for public keys
+  private(set) var signingPublicKey: Curve25519.Signing.PublicKey!
+  private(set) var encryptionPublicKey: Curve25519.KeyAgreement.PublicKey!
+  // Private vars for secret & symmetric keys
+  private var signingSecretKey: Curve25519.Signing.PrivateKey!
+  private var encryptionSecretKey: Curve25519.KeyAgreement.PrivateKey!
+  private var symmetricKey: SymmetricKey!
   private var storageSymmetricKey: SymmetricKey!
 
-  let keyChain = GenericPasswordStore()
+  private let keyChain = GenericPasswordStore()
 
   // TODO: placeholder. use random salt for each msg
-  let protocolSalt = "CryptoKit Playgrounds Putting It Together".data(using: .utf8)!
+  private let protocolSalt = "CryptoKit Playgrounds Putting It Together".data(using: .utf8)!
 
-  init() {
+  private init() {
     // Try reading keys from KeyChain. If no key exists, generate new keys and save them.
     // Signing Secret Key
     var account = KeyChainAccount.signingSecretKey.rawValue

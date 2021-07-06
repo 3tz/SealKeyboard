@@ -15,21 +15,17 @@ enum SealMessageType: String {
 }
 
 class Seal {
-  private let keys: Keys
-
-  init() {
-    keys = Keys()
-  }
+  private init() {}
 
   /// Return a string that indicates a MessageType.ECDH0 event
-  func initiateECDHRequest() -> String {
+  static func initiateECDHRequest() -> String {
     return [
       SealMessageType.ECDH0.rawValue,
-      asString(keys.encryptionPublicKey.rawRepresentation)
+      asString(EncryptionKeys.default.encryptionPublicKey.rawRepresentation)
    ].joined(separator: "|")
   }
 
-  func unseal(string: String) throws -> (SealMessageType, String?) {
+  static func unseal(string: String) throws -> (SealMessageType, String?) {
     let tokens = string.components(separatedBy: "|")
     var msg: String? = nil
 
@@ -44,7 +40,7 @@ class Seal {
 
       // Start ECDH, store the symmetric key, and send them the public key
       let (ephemeralPublicKeyString, signatureString, signingPublicKeyString) =
-        try keys.ECDHKeyExchange(with: theirEncryptionPublicKeyString)
+        try EncryptionKeys.default.ECDHKeyExchange(with: theirEncryptionPublicKeyString)
 
       msg = [
         SealMessageType.ECDH1.rawValue,
@@ -59,7 +55,7 @@ class Seal {
       // Expected format: "{.ECDH1}|{ephemeralPublicKey}|{signature}|{signingPublicKey}"
       if tokens.count != 4 { throw DecryptionErrors.parsingError }
 
-      try keys.verifyECDHKeyExchangeResponse(
+      try EncryptionKeys.default.verifyECDHKeyExchangeResponse(
         ephemeralPublicKeyString: tokens[1],
         signatureString: tokens[2],
         theirSigningPublicKeyString: tokens[3]
@@ -68,7 +64,7 @@ class Seal {
     case .ciphertext:
       // Ciphertext received. Verify signature and decrypt using symmetric key.
       if tokens.count != 4 { throw DecryptionErrors.parsingError }
-      msg = try keys.decrypt((tokens[1], tokens[2]), from: tokens[3])
+      msg = try EncryptionKeys.default.decrypt((tokens[1], tokens[2]), from: tokens[3])
 
     default:
       throw DecryptionErrors.parsingError
@@ -77,9 +73,9 @@ class Seal {
     return (SealMessageType(rawValue: tokens[0])!, msg)
   }
 
-  func seal(string: String) throws -> String {
+  static func seal(string: String) throws -> String {
     var ciphertextString, signatureString, signingPublicKeyString: String!
-    (ciphertextString, signatureString, signingPublicKeyString) = try keys.encrypt(string)
+    (ciphertextString, signatureString, signingPublicKeyString) = try EncryptionKeys.default.encrypt(string)
 
     return [
       SealMessageType.ciphertext.rawValue,
