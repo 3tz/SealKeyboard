@@ -33,19 +33,6 @@ import Foundation
 import UIKit
 import MessageKit
 
-public struct Sender: SenderType {
-    public let senderId: String
-
-    public let displayName: String
-}
-
-public struct Message: MessageType {
-  public let sender: SenderType
-  public let messageId: String
-  public let sentDate: Date
-  public let kind: MessageKind
-}
-
 
 let senderThem = Sender(senderId: "s02", displayName: "bob")
 
@@ -53,41 +40,13 @@ class ChatViewController: MessagesViewController {
 
   weak var controller: KeyboardViewController!
 
-  var messages: [MessageType] = [
-    Message(
-      sender: ChatView.senderMe,
-      messageId: "a01",
-      sentDate: Date.init(),
-      kind: .text("abcdefg some text")
-    ),
-    Message(
-      sender: senderThem,
-      messageId: "a02",
-      sentDate: Date.init(),
-      kind: .text("""
-      line 1
-      line 2
-      from bob
-      """)
-    ),
-    Message(
-      sender: senderThem,
-      messageId: "a02",
-      sentDate: Date.init(),
-      kind: .text("""
-      line 1
-      line 2
-      line 3
-      line 4
-      line 5 line 5 line 5 line 5 line 5 line 5 line 5 line 5
-      from bob
-      """)
-    )
-  ]
+  var messages: Messages!
 
   convenience init(keyboardViewController: KeyboardViewController) {
     self.init()
     controller = keyboardViewController
+
+    messages = Messages()
   }
 
   override func viewDidLoad() {
@@ -169,8 +128,6 @@ class ChatViewController: MessagesViewController {
   }
 
 }
-
-
 
 extension ChatViewController: MessagesDataSource {
 

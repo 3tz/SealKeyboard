@@ -15,6 +15,8 @@ final class Keys {
   var encryptionPublicKey: Curve25519.KeyAgreement.PublicKey!
   private var symmetricKey: SymmetricKey!
 
+  private var storageSymmetricKey: SymmetricKey!
+
   let keyChain = GenericPasswordStore()
 
   // TODO: placeholder. use random salt for each msg

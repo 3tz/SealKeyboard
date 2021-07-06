@@ -22,6 +22,7 @@
 		30C0D6C526796024002433D7 /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C0D6C326796024002433D7 /* Keys.swift */; };
 		30CDACEE2682C5B2005070D1 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30CDACED2682C5B2005070D1 /* Constants.swift */; };
 		30D4DF832676AA1F00CF9DE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 306589C4267554B300708E73 /* Assets.xcassets */; };
+		30DBD8BC2694E94600D8637D /* Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBD8BB2694E94600D8637D /* Messages.swift */; };
 		30DE0158269385610093EC65 /* TypingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DE0157269385610093EC65 /* TypingViewController.swift */; };
 		30DE015A269385750093EC65 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DE0159269385750093EC65 /* ChatViewController.swift */; };
 		30DE015C2693AD6B0093EC65 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DE015B2693AD6B0093EC65 /* DetailViewController.swift */; };
@@ -100,6 +101,7 @@
 		30B72B7E269022AC003B4256 /* Seal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Seal.swift; sourceTree = "<group>"; };
 		30C0D6C326796024002433D7 /* Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
 		30CDACED2682C5B2005070D1 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		30DBD8BB2694E94600D8637D /* Messages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Messages.swift; sourceTree = "<group>"; };
 		30DE0157269385610093EC65 /* TypingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypingViewController.swift; sourceTree = "<group>"; };
 		30DE0159269385750093EC65 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		30DE015B2693AD6B0093EC65 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
@@ -171,7 +173,8 @@
 		306589D42675556400708E73 /* Keyboard */ = {
 			isa = PBXGroup;
 			children = (
-				30E9386F2681BC1B00DEC08C /* Subviews */,
+				30DBD8BA2694E8DE00D8637D /* TypingViewController */,
+				30DBD8B92694E8C400D8637D /* DetailViewController */,
 				306589D52675556400708E73 /* KeyboardViewController.swift */,
 				306589D72675556400708E73 /* Info.plist */,
 				30CDACED2682C5B2005070D1 /* Constants.swift */,
@@ -186,15 +189,23 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		30E9386F2681BC1B00DEC08C /* Subviews */ = {
+		30DBD8B92694E8C400D8637D /* DetailViewController */ = {
 			isa = PBXGroup;
 			children = (
+				30DE015B2693AD6B0093EC65 /* DetailViewController.swift */,
 				30DE0159269385750093EC65 /* ChatViewController.swift */,
+				30DBD8BB2694E94600D8637D /* Messages.swift */,
+			);
+			path = DetailViewController;
+			sourceTree = "<group>";
+		};
+		30DBD8BA2694E8DE00D8637D /* TypingViewController */ = {
+			isa = PBXGroup;
+			children = (
 				30DE0157269385610093EC65 /* TypingViewController.swift */,
 				30DF7A172687B58400990C1A /* KeyboardButton.swift */,
-				30DE015B2693AD6B0093EC65 /* DetailViewController.swift */,
 			);
-			path = Subviews;
+			path = TypingViewController;
 			sourceTree = "<group>";
 		};
 		30EFC195267B278F00EF65E8 /* Storage */ = {
@@ -360,6 +371,7 @@
 				30C0D6C526796024002433D7 /* Keys.swift in Sources */,
 				30B72B80269022AC003B4256 /* Seal.swift in Sources */,
 				30DE0158269385610093EC65 /* TypingViewController.swift in Sources */,
+				30DBD8BC2694E94600D8637D /* Messages.swift in Sources */,
 				30EFC19C267B278F00EF65E8 /* KeyStoreError.swift in Sources */,
 				30EFC1A0267B278F00EF65E8 /* GenericPasswordConvertible.swift in Sources */,
 				30EFC19E267B278F00EF65E8 /* GenericPasswordStore.swift in Sources */,
