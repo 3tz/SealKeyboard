@@ -139,8 +139,6 @@
 			children = (
 				306589BA267554B200708E73 /* Seal */,
 				306589D42675556400708E73 /* Keyboard */,
-				30EFC1A9267C023300EF65E8 /* Cryptography */,
-				30EFC195267B278F00EF65E8 /* Storage */,
 				30EFC1A5267B27A100EF65E8 /* LICENSE */,
 				306589B9267554B200708E73 /* Products */,
 				30C0D6BC2677512E002433D7 /* Frameworks */,
@@ -173,11 +171,10 @@
 		306589D42675556400708E73 /* Keyboard */ = {
 			isa = PBXGroup;
 			children = (
-				30DBD8BA2694E8DE00D8637D /* TypingViewController */,
-				30DBD8B92694E8C400D8637D /* DetailViewController */,
-				306589D52675556400708E73 /* KeyboardViewController.swift */,
+				30C78EA826967339008925A4 /* Models */,
+				30DBD8BA2694E8DE00D8637D /* ViewControllers */,
+				30DBD8B92694E8C400D8637D /* Views */,
 				306589D72675556400708E73 /* Info.plist */,
-				30CDACED2682C5B2005070D1 /* Constants.swift */,
 			);
 			path = Keyboard;
 			sourceTree = "<group>";
@@ -189,26 +186,37 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		30DBD8B92694E8C400D8637D /* DetailViewController */ = {
+		30C78EA826967339008925A4 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				30DE015B2693AD6B0093EC65 /* DetailViewController.swift */,
-				30DE0159269385750093EC65 /* ChatViewController.swift */,
+				30EFC1A9267C023300EF65E8 /* Cryptography */,
+				30EFC195267B278F00EF65E8 /* KeychainStorage */,
+				30CDACED2682C5B2005070D1 /* Constants.swift */,
 				30DBD8BB2694E94600D8637D /* Messages.swift */,
 			);
-			path = DetailViewController;
+			path = Models;
 			sourceTree = "<group>";
 		};
-		30DBD8BA2694E8DE00D8637D /* TypingViewController */ = {
+		30DBD8B92694E8C400D8637D /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				30DE0157269385610093EC65 /* TypingViewController.swift */,
 				30DF7A172687B58400990C1A /* KeyboardButton.swift */,
 			);
-			path = TypingViewController;
+			path = Views;
 			sourceTree = "<group>";
 		};
-		30EFC195267B278F00EF65E8 /* Storage */ = {
+		30DBD8BA2694E8DE00D8637D /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				306589D52675556400708E73 /* KeyboardViewController.swift */,
+				30DE0157269385610093EC65 /* TypingViewController.swift */,
+				30DE015B2693AD6B0093EC65 /* DetailViewController.swift */,
+				30DE0159269385750093EC65 /* ChatViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		30EFC195267B278F00EF65E8 /* KeychainStorage */ = {
 			isa = PBXGroup;
 			children = (
 				30EFC196267B278F00EF65E8 /* KeyStoreError.swift */,
@@ -217,7 +225,7 @@
 				30EFC199267B278F00EF65E8 /* SecKeyConvertible.swift */,
 				30EFC19A267B278F00EF65E8 /* SecKeyStore.swift */,
 			);
-			path = Storage;
+			path = KeychainStorage;
 			sourceTree = "<group>";
 		};
 		30EFC1A5267B27A100EF65E8 /* LICENSE */ = {
