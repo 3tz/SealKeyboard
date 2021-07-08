@@ -56,10 +56,11 @@ class DetailViewController: UIViewController {
 
   private func addBottomBarViewToView() {
     let globeButton = UIButton(type: .custom)
-    globeButton.translatesAutoresizingMaskIntoConstraints = false
     globeButton.setImage(UIImage(systemName: "globe"), for: .normal)
     globeButton.tintColor = .white
     globeButton.backgroundColor = .systemBlue
+    globeButton.translatesAutoresizingMaskIntoConstraints = false
+    globeButton.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
     globeButton.addTarget(
       controller,
       action: #selector(controller.handleInputModeList(from:with:)),
@@ -106,6 +107,7 @@ class DetailViewController: UIViewController {
     )
     bottomBarView.axis = .horizontal
     bottomBarView.spacing = KeyboardSpecs.horizontalSpacing
+    bottomBarView.distribution = .fillProportionally
     bottomBarView.backgroundColor = KeyboardSpecs.bottomBarViewBackgroundColor
     (view as! UIStackView).addArrangedSubview(bottomBarView)
   }
