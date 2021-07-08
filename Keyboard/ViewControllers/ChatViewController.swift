@@ -11,7 +11,7 @@ import UIKit
 import MessageKit
 
 
-let senderThem = Sender(senderId: "s02", displayName: "bob")
+let senderThem = NSMessageSender(senderId: "s02", displayName: "bob")
 
 class ChatViewController: MessagesViewController {
 
@@ -68,13 +68,15 @@ class ChatViewController: MessagesViewController {
 
   // MARK: internal methods for modifying messages
 
-  func appendStringMessage(_ string: String, sender: Sender) {
-    appendMessage(Message(
-      sender: sender,
-      messageId: "\(String(Messages.default.count))",
-      sentDate: Date.init(),
-      kind: .text(string)
-    ))
+  func appendStringMessage(_ string: String, sender: NSMessageSender) {
+    let message = Message(context: Messages.default.persistentContainer.viewContext)
+
+    message.coreSentDate = Date.init()
+    message.coreMessageId = "\(String(Messages.default.count))"
+    message.coreKind = NSMessageKind(message: MessageKind.text(string))
+    message.coreSender = sender
+
+    appendMessage(message)
   }
 
   // MARK: Helper methods

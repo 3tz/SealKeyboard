@@ -267,7 +267,7 @@ class KeyboardViewController: UIInputViewController {
             statusText = "\(StatusText.unsealSuccessReceivedCiphertext). See below."
             detailViewController.appendStringMessageToChatView(
               message!,
-              sender: Sender(senderId: "placeholder", displayName: "placeholder"))
+              sender: NSMessageSender(senderId: "placeholder", displayName: "placeholder"))
           case .typingView:
              statusText = "\(StatusText.unsealSuccessReceivedCiphertext):\n\(message!)"
           default:

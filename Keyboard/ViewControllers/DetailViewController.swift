@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import MessageKit
 
 class DetailViewController: UIViewController {
   var controller: KeyboardViewController!
@@ -111,7 +112,7 @@ class DetailViewController: UIViewController {
 
   // MARK: Internal methods
 
-  func appendStringMessageToChatView(_ string: String, sender: Sender) {
+  func appendStringMessageToChatView(_ string: String, sender: NSMessageSender) {
     chatViewController.appendStringMessage(string, sender: sender)
   }
 

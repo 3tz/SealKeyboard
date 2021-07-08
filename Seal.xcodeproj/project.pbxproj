@@ -20,6 +20,18 @@
 		30B72B81269023CE003B4256 /* Seal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B72B7E269022AC003B4256 /* Seal.swift */; };
 		30C0D6C426796024002433D7 /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C0D6C326796024002433D7 /* Keys.swift */; };
 		30C0D6C526796024002433D7 /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C0D6C326796024002433D7 /* Keys.swift */; };
+		30C78EAD26967705008925A4 /* Seal.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 30C78EAB26967705008925A4 /* Seal.xcdatamodeld */; };
+		30C78EAE26967705008925A4 /* Seal.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 30C78EAB26967705008925A4 /* Seal.xcdatamodeld */; };
+		30C78EB226967D96008925A4 /* Message+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C78EAF26967D96008925A4 /* Message+CoreDataClass.swift */; };
+		30C78EB426967D96008925A4 /* Message+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C78EB026967D96008925A4 /* Message+CoreDataProperties.swift */; };
+		30C78EB626967E6B008925A4 /* NSMessageSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C78EB526967E6B008925A4 /* NSMessageSender.swift */; };
+		30C78EB726967E6B008925A4 /* NSMessageSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C78EB526967E6B008925A4 /* NSMessageSender.swift */; };
+		30C78EB926979C2D008925A4 /* NSMessageKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C78EB826979C2D008925A4 /* NSMessageKind.swift */; };
+		30C78EBA26979C2D008925A4 /* NSMessageKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C78EB826979C2D008925A4 /* NSMessageKind.swift */; };
+		30C78EBC2697A700008925A4 /* MessageKindTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C78EBB2697A700008925A4 /* MessageKindTransformer.swift */; };
+		30C78EBD2697A700008925A4 /* MessageKindTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C78EBB2697A700008925A4 /* MessageKindTransformer.swift */; };
+		30C78EBF2697B6CE008925A4 /* MessageSenderTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C78EBE2697B6CE008925A4 /* MessageSenderTransformer.swift */; };
+		30C78EC02697B6CE008925A4 /* MessageSenderTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C78EBE2697B6CE008925A4 /* MessageSenderTransformer.swift */; };
 		30CDACEE2682C5B2005070D1 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30CDACED2682C5B2005070D1 /* Constants.swift */; };
 		30D4DF832676AA1F00CF9DE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 306589C4267554B300708E73 /* Assets.xcassets */; };
 		30DBD8BC2694E94600D8637D /* Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBD8BB2694E94600D8637D /* Messages.swift */; };
@@ -100,6 +112,13 @@
 		306589D72675556400708E73 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		30B72B7E269022AC003B4256 /* Seal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Seal.swift; sourceTree = "<group>"; };
 		30C0D6C326796024002433D7 /* Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
+		30C78EAC26967705008925A4 /* Seal.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Seal.xcdatamodel; sourceTree = "<group>"; };
+		30C78EAF26967D96008925A4 /* Message+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Message+CoreDataClass.swift"; sourceTree = "<group>"; };
+		30C78EB026967D96008925A4 /* Message+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Message+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		30C78EB526967E6B008925A4 /* NSMessageSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSMessageSender.swift; sourceTree = "<group>"; };
+		30C78EB826979C2D008925A4 /* NSMessageKind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSMessageKind.swift; sourceTree = "<group>"; };
+		30C78EBB2697A700008925A4 /* MessageKindTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageKindTransformer.swift; sourceTree = "<group>"; };
+		30C78EBE2697B6CE008925A4 /* MessageSenderTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageSenderTransformer.swift; sourceTree = "<group>"; };
 		30CDACED2682C5B2005070D1 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		30DBD8BB2694E94600D8637D /* Messages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Messages.swift; sourceTree = "<group>"; };
 		30DE0157269385610093EC65 /* TypingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypingViewController.swift; sourceTree = "<group>"; };
@@ -137,6 +156,7 @@
 		306589AF267554B200708E73 = {
 			isa = PBXGroup;
 			children = (
+				30C78EAB26967705008925A4 /* Seal.xcdatamodeld */,
 				306589BA267554B200708E73 /* Seal */,
 				306589D42675556400708E73 /* Keyboard */,
 				30EFC1A5267B27A100EF65E8 /* LICENSE */,
@@ -189,12 +209,26 @@
 		30C78EA826967339008925A4 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				30CDACED2682C5B2005070D1 /* Constants.swift */,
 				30EFC1A9267C023300EF65E8 /* Cryptography */,
 				30EFC195267B278F00EF65E8 /* KeychainStorage */,
-				30CDACED2682C5B2005070D1 /* Constants.swift */,
-				30DBD8BB2694E94600D8637D /* Messages.swift */,
+				30C78EC12697B75D008925A4 /* Messages */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		30C78EC12697B75D008925A4 /* Messages */ = {
+			isa = PBXGroup;
+			children = (
+				30DBD8BB2694E94600D8637D /* Messages.swift */,
+				30C78EAF26967D96008925A4 /* Message+CoreDataClass.swift */,
+				30C78EB026967D96008925A4 /* Message+CoreDataProperties.swift */,
+				30C78EB526967E6B008925A4 /* NSMessageSender.swift */,
+				30C78EB826979C2D008925A4 /* NSMessageKind.swift */,
+				30C78EBB2697A700008925A4 /* MessageKindTransformer.swift */,
+				30C78EBE2697B6CE008925A4 /* MessageSenderTransformer.swift */,
+			);
+			path = Messages;
 			sourceTree = "<group>";
 		};
 		30DBD8B92694E8C400D8637D /* Views */ = {
@@ -359,14 +393,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				30C78EAD26967705008925A4 /* Seal.xcdatamodeld in Sources */,
 				306589C0267554B200708E73 /* ViewController.swift in Sources */,
 				306589BC267554B200708E73 /* AppDelegate.swift in Sources */,
+				30C78EBC2697A700008925A4 /* MessageKindTransformer.swift in Sources */,
 				30C0D6C426796024002433D7 /* Keys.swift in Sources */,
+				30C78EB626967E6B008925A4 /* NSMessageSender.swift in Sources */,
 				30EFC1A1267B278F00EF65E8 /* SecKeyConvertible.swift in Sources */,
 				306589BE267554B200708E73 /* SceneDelegate.swift in Sources */,
+				30C78EB926979C2D008925A4 /* NSMessageKind.swift in Sources */,
 				30EFC19D267B278F00EF65E8 /* GenericPasswordStore.swift in Sources */,
 				30EFC19F267B278F00EF65E8 /* GenericPasswordConvertible.swift in Sources */,
 				30EFC1A3267B278F00EF65E8 /* SecKeyStore.swift in Sources */,
+				30C78EBF2697B6CE008925A4 /* MessageSenderTransformer.swift in Sources */,
 				30B72B81269023CE003B4256 /* Seal.swift in Sources */,
 				30EFC19B267B278F00EF65E8 /* KeyStoreError.swift in Sources */,
 			);
@@ -376,20 +415,27 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				30C78EC02697B6CE008925A4 /* MessageSenderTransformer.swift in Sources */,
 				30C0D6C526796024002433D7 /* Keys.swift in Sources */,
 				30B72B80269022AC003B4256 /* Seal.swift in Sources */,
+				30C78EAE26967705008925A4 /* Seal.xcdatamodeld in Sources */,
 				30DE0158269385610093EC65 /* TypingViewController.swift in Sources */,
+				30C78EB726967E6B008925A4 /* NSMessageSender.swift in Sources */,
 				30DBD8BC2694E94600D8637D /* Messages.swift in Sources */,
 				30EFC19C267B278F00EF65E8 /* KeyStoreError.swift in Sources */,
 				30EFC1A0267B278F00EF65E8 /* GenericPasswordConvertible.swift in Sources */,
 				30EFC19E267B278F00EF65E8 /* GenericPasswordStore.swift in Sources */,
 				306589D62675556400708E73 /* KeyboardViewController.swift in Sources */,
 				30EFC1A4267B278F00EF65E8 /* SecKeyStore.swift in Sources */,
+				30C78EB426967D96008925A4 /* Message+CoreDataProperties.swift in Sources */,
 				30EFC1A2267B278F00EF65E8 /* SecKeyConvertible.swift in Sources */,
 				30DF7A182687B58400990C1A /* KeyboardButton.swift in Sources */,
 				30DE015C2693AD6B0093EC65 /* DetailViewController.swift in Sources */,
+				30C78EBD2697A700008925A4 /* MessageKindTransformer.swift in Sources */,
 				30DE015A269385750093EC65 /* ChatViewController.swift in Sources */,
 				30CDACEE2682C5B2005070D1 /* Constants.swift in Sources */,
+				30C78EBA26979C2D008925A4 /* NSMessageKind.swift in Sources */,
+				30C78EB226967D96008925A4 /* Message+CoreDataClass.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -690,6 +736,19 @@
 			productName = MessageKit;
 		};
 /* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		30C78EAB26967705008925A4 /* Seal.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				30C78EAC26967705008925A4 /* Seal.xcdatamodel */,
+			);
+			currentVersion = 30C78EAC26967705008925A4 /* Seal.xcdatamodel */;
+			path = Seal.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 306589B0267554B200708E73 /* Project object */;
 }

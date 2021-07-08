@@ -127,5 +127,5 @@ struct StatusText {
 
 // todo: placeholder
 struct ChatView {
-  static let senderMe = Sender(senderId: "s01", displayName: "me")
+  static let senderMe = NSMessageSender(senderId: "s01", displayName: "me")
 }
