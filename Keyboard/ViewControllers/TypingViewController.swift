@@ -387,7 +387,7 @@ class TypingViewController : UIViewController {
         switch returnKeyType {
           case .send:
             if !controller.textDocumentProxy.hasText { break }
-            controller.sealAndSend()
+            controller.sealMessageBox(andSend: true)
           default:
             controller.sealMessageBox()
         }

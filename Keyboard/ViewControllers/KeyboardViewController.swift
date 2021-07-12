@@ -26,6 +26,8 @@ class KeyboardViewController: UIInputViewController {
 
   var pasteboardChangeCountTimer: Timer!
 
+  var taskRunning = false
+
   // MARK: view overrides
 
   override func loadView() {
@@ -196,39 +198,51 @@ class KeyboardViewController: UIInputViewController {
     textDocumentProxy.insertText(message)
   }
 
-  func sealAndSend() {
-    sealMessageBox()
-    textView.text = StatusText.sealSuccessAndSent
-    // Apps with ReturnType of .send look for a single "\n" upon text change.
-    // Thus, change the text to ciphertext first, and insert one "\n" under textDidChange.
-    stageToSendText = true
-  }
+  func sealMessageBox(andSend: Bool = false) {
+    if !taskRunning {
+      taskRunning = true
+      DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+        guard let self = self else { return }
 
-  func sealMessageBox() {
-    let textInput = (textDocumentProxy.documentContextBeforeInput ?? "") +
-      (textDocumentProxy.selectedText ?? "") +
-      (textDocumentProxy.documentContextAfterInput ?? "")
+        let textInput = self.getFullDocumentContextString()
 
-    if textInput.isEmpty {
-      textView.text = StatusText.sealFailureEmpty
-      return
+        DispatchQueue.main.sync { [weak self] in
+          guard let self = self else { return }
+
+          // Delete all text
+          for _ in 0..<textInput.count {
+            self.textDocumentProxy.deleteBackward()
+          }
+
+          if textInput.isEmpty {
+            self.textView.text = StatusText.sealFailureEmpty
+            return
+          }
+
+          let message: String
+
+          do {
+            message = try Seal.seal(string: textInput)
+          } catch {
+            NSLog("sealMessageBox error caught:\n\(error)")
+            self.textView.text = StatusText.sealFailureSymmetricAlgo
+            return
+          }
+
+          self.textDocumentProxy.insertText(message)
+          self.textView.text = StatusText.sealSuccessButNotSent
+
+          self.detailViewController.appendStringMessageToChatView(textInput, sender: ChatView.senderMe)
+          if andSend {
+            self.textView.text = StatusText.sealSuccessAndSent
+            // Apps with ReturnType of .send look for a single "\n" upon text change.
+            // Thus, change the text to ciphertext first, and insert one "\n" under textDidChange.
+            self.stageToSendText = true
+          }
+          self.taskRunning = false
+        } // DispatchQueue.main.sync
+      }
     }
-
-    let message: String
-
-    do {
-      message = try Seal.seal(string: textInput)
-    } catch {
-      NSLog("sealMessageBox error caught:\n\(error)")
-      textView.text = StatusText.sealFailureSymmetricAlgo
-      return
-    }
-
-    clearInputText()
-    textDocumentProxy.insertText(message)
-    textView.text = StatusText.sealSuccessButNotSent
-
-    detailViewController.appendStringMessageToChatView(textInput, sender: ChatView.senderMe)
   }
 
   func unsealCopiedText() {
@@ -280,17 +294,47 @@ class KeyboardViewController: UIInputViewController {
 
   // MARK: helper methods
 
+  /// Modified from: https://stackoverflow.com/a/37956477/10693217
+  /// Must be run on a non-main thread due to the nature of it checking while UI updating
+  func getFullDocumentContextString() -> String {
+    var totalOffset = 0,
+        fullString = ""
+    let sleepTimeInterval = 0.05
+
+      // Move cursor to the end of the text
+      // Note: For some reason, newlines cannot be parsed from contextAfterInput, which is
+      //   why it only moves to the end instead of reading along the way.
+      while let context = textDocumentProxy.documentContextAfterInput{
+        textDocumentProxy.adjustTextPosition(byCharacterOffset: max(context.count, 1))
+        Thread.sleep(forTimeInterval: sleepTimeInterval)
+      }
+
+      // Keep moving cursor backward until it's at the beginning & reading along the way
+      while let context = textDocumentProxy.documentContextBeforeInput, !context.isEmpty {
+        fullString = context + fullString
+        textDocumentProxy.adjustTextPosition(byCharacterOffset: -context.count)
+        totalOffset += context.count
+        Thread.sleep(forTimeInterval: sleepTimeInterval)
+      }
+
+      // Teleport cursor to the end
+      textDocumentProxy.adjustTextPosition(byCharacterOffset: totalOffset)
+      Thread.sleep(forTimeInterval: sleepTimeInterval)
+
+    return fullString
+  }
+
   /// Clear the input text field if it's not empty.
   func clearInputText() {
     if !textDocumentProxy.hasText { return }
-    
+
     let textBeforeInput = textDocumentProxy.documentContextBeforeInput ?? ""
     let textAfterInput = textDocumentProxy.documentContextAfterInput ?? ""
     let selectedText = textDocumentProxy.selectedText ?? ""
-    
+
     // move cursor to the end of the text input
     textDocumentProxy.adjustTextPosition(byCharacterOffset: textAfterInput.count)
-    
+
     // delete backward n times where n is the length of the text
     for _ in 0..<textAfterInput.count + textBeforeInput.count + selectedText.count {
       textDocumentProxy.deleteBackward()
@@ -302,7 +346,7 @@ class KeyboardViewController: UIInputViewController {
     pasteboardChangeCountTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) {
       timer in
       if self.pasteboardChanged() { self.unsealCopiedText() }
-      NSLog("Pasteboard counter checked")
+//      NSLog("Pasteboard counter checked")
     }
   }
 
