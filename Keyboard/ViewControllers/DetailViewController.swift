@@ -68,7 +68,15 @@ class DetailViewController: UIViewController {
     )
     globeButton.widthAnchor.constraint(equalTo: globeButton.heightAnchor).isActive = true
 
-    // create the two button cryptobar
+    let deleteChatButton = UIButton(type: .system)
+    deleteChatButton.setTitle("delete all chat", for: .normal)
+    deleteChatButton.sizeToFit()
+    deleteChatButton.backgroundColor = .systemRed
+    deleteChatButton.setTitleColor(.white, for: [])
+    deleteChatButton.translatesAutoresizingMaskIntoConstraints = false
+    deleteChatButton.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
+    deleteChatButton.addTarget(self, action: #selector(deleteChatButtonPressed(_:)), for: .touchUpInside)
+
     let requestButton = UIButton(type: .system)
     requestButton.setTitle("Request", for: .normal)
     requestButton.sizeToFit()
@@ -103,7 +111,7 @@ class DetailViewController: UIViewController {
 
     // Add them to a horizontal stackview
     bottomBarView = UIStackView(
-      arrangedSubviews: [globeButton, requestButton, sealButton, returnButton]
+      arrangedSubviews: [globeButton, deleteChatButton, requestButton, sealButton, returnButton]
     )
     bottomBarView.axis = .horizontal
     bottomBarView.spacing = KeyboardSpecs.horizontalSpacing
@@ -120,12 +128,24 @@ class DetailViewController: UIViewController {
 
   // MARK: @objc #selector methods
 
-  @objc func requestButtonPressed(_ sender: Any) { controller.ECDHRequestStringToMessageBox() }
+  @objc func deleteChatButtonPressed(_ sender: Any) {
+    chatViewController.deleteAllChat()
+  }
 
-  @objc func unsealButtonPressed(_ sender: Any) { controller.unsealCopiedText() }
+  @objc func requestButtonPressed(_ sender: Any) {
+    controller.ECDHRequestStringToMessageBox()
+  }
 
-  @objc func sealButtonPressed(_ sender: Any) { controller.sealMessageBox() }
+  @objc func unsealButtonPressed(_ sender: Any) {
+    controller.unsealCopiedText()
+  }
 
-  @objc func returnButtonPressed(_ sender: Any) { controller.textDocumentProxy.insertText("\n") }
+  @objc func sealButtonPressed(_ sender: Any) {
+    controller.sealMessageBox()
+  }
+
+  @objc func returnButtonPressed(_ sender: Any) {
+    controller.textDocumentProxy.insertText("\n") 
+  }
 }
 

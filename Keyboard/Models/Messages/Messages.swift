@@ -42,6 +42,15 @@ class Messages {
     fetchData()
   }
 
+  func deleteAll() {
+    let context = persistentContainer.viewContext
+
+    let deleteRequest = NSBatchDeleteRequest(fetchRequest: Message.fetchRequest())
+    try! context.execute(deleteRequest)
+    saveContext()
+    fetchData()
+  }
+
   subscript(index: Int) -> Message {
     get { return buffer[index] }
     set(item) { buffer.insert(item, at: index) }

@@ -79,6 +79,11 @@ class ChatViewController: MessagesViewController {
     appendMessage(message)
   }
 
+  func deleteAllChat() {
+      Messages.default.deleteAll()
+      messagesCollectionView.reloadData()
+  }
+
   // MARK: Helper methods
 
   private func appendMessage(_ message: Message) {
