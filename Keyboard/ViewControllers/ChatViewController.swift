@@ -9,13 +9,18 @@
 import Foundation
 import UIKit
 import MessageKit
-
+import CoreData
 
 let senderThem = NSMessageSender(senderId: "s02", displayName: "bob")
 
-class ChatViewController: MessagesViewController {
+class ChatViewController: MessagesViewController, NSFetchedResultsControllerDelegate {
 
   weak var controller: KeyboardViewController!
+  var fetchedResultsController: NSFetchedResultsController<Message>!
+
+  var messageCount: Int {
+    return fetchedResultsController.fetchedObjects?.count ?? 0
+  }
 
   convenience init(keyboardViewController: KeyboardViewController) {
     self.init()
@@ -24,6 +29,81 @@ class ChatViewController: MessagesViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+    setupMessagesCollectionView()
+    reloadMessages()
+  }
+
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    messagesCollectionView.scrollToLastItem(at: .bottom, animated: false)
+  }
+
+  // MARK: methods for updating messages
+
+  func reloadMessages() {
+    if fetchedResultsController == nil {
+      let request: NSFetchRequest<Message> = Message.fetchRequest()
+      request.sortDescriptors = [NSSortDescriptor(key: "coreSentDate", ascending: true)]
+      request.fetchBatchSize = 5
+
+      fetchedResultsController = NSFetchedResultsController(
+        fetchRequest: request,
+        managedObjectContext: persistentContainer.viewContext,
+        sectionNameKeyPath: nil,
+        cacheName: nil
+      )
+      fetchedResultsController.delegate = self
+    }
+
+    do {
+      try fetchedResultsController.performFetch()
+      messagesCollectionView.reloadData()
+    } catch {
+      NSLog("Fetch failed")
+    }
+  }
+
+  func appendStringMessage(_ string: String, sender: NSMessageSender) {
+    print(messageCount)
+    let message = Message(context: persistentContainer.viewContext)
+
+    message.coreSentDate = Date.init()
+    message.coreMessageId = "\(String(messageCount))"
+    message.coreKind = NSMessageKind(message: MessageKind.text(string))
+    message.coreSender = sender
+    try! persistentContainer.viewContext.save()
+    print(messageCount)
+    reloadMessages()
+    print(messageCount)
+    print(messagesCollectionView.numberOfSections)
+    reloadMessagesCollectionViewLastSection()
+  }
+
+  func reloadMessagesCollectionViewLastSection() {
+      // Reload last section to update header/footer labels
+    messagesCollectionView.performBatchUpdates({
+        if messageCount >= 2 {
+          messagesCollectionView.reloadSections([messageCount - 2])
+        }
+      },
+      completion: { [weak self] _ in
+        if self?.isLastSectionVisible() == true {
+          self?.messagesCollectionView.scrollToLastItem(animated: true)
+        }
+      }
+    )
+  }
+
+  func deleteAllChat() {
+    let context = persistentContainer.viewContext
+    try! context.execute(NSBatchDeleteRequest(fetchRequest: Message.fetchRequest()))
+    saveContext()
+    reloadMessages()
+  }
+
+  // MARK: view setup & data loading
+
+  func setupMessagesCollectionView() {
     messagesCollectionView.messagesDataSource = self
     messagesCollectionView.messagesLayoutDelegate = self
     messagesCollectionView.messagesDisplayDelegate = self
@@ -52,11 +132,6 @@ class ChatViewController: MessagesViewController {
     layout?.setMessageIncomingMessageBottomLabelAlignment(incomingAlignment)
   }
 
-  override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
-    messagesCollectionView.scrollToLastItem(at: .bottom, animated: false)
-  }
-
   func messageTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
       let name = message.sender.displayName
       return NSAttributedString(string: name, attributes: [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .caption1)])
@@ -66,45 +141,53 @@ class ChatViewController: MessagesViewController {
       return 20
   }
 
-  // MARK: internal methods for modifying messages
-
-  func appendStringMessage(_ string: String, sender: NSMessageSender) {
-    let message = Message(context: Messages.default.persistentContainer.viewContext)
-
-    message.coreSentDate = Date.init()
-    message.coreMessageId = "\(String(Messages.default.count))"
-    message.coreKind = NSMessageKind(message: MessageKind.text(string))
-    message.coreSender = sender
-
-    appendMessage(message)
-  }
-
-  func deleteAllChat() {
-      Messages.default.deleteAll()
-      messagesCollectionView.reloadData()
-  }
-
-  // MARK: Helper methods
-
-  private func appendMessage(_ message: Message) {
-      Messages.default.append(message)
-      // Reload last section to update header/footer labels and insert a new one
-      messagesCollectionView.performBatchUpdates({
-          messagesCollectionView.insertSections([Messages.default.count - 1])
-          if Messages.default.count >= 2 {
-              messagesCollectionView.reloadSections([Messages.default.count - 2])
-          }
-      }, completion: { [weak self] _ in
-          if self?.isLastSectionVisible() == true {
-              self?.messagesCollectionView.scrollToLastItem(animated: true)
-          }
-      })
-  }
-
-  private func isLastSectionVisible() -> Bool {
-      guard !Messages.default.isEmpty else { return false }
-      let lastIndexPath = IndexPath(item: 0, section: Messages.default.count - 2)
+  func isLastSectionVisible() -> Bool {
+      guard messageCount != 0 else { return false }
+      let lastIndexPath = IndexPath(item: 0, section: messageCount - 2)
       return messagesCollectionView.indexPathsForVisibleItems.contains(lastIndexPath)
+  }
+
+  // MARK: - Core Data methods copied from xcode init
+
+  lazy var persistentContainer: NSPersistentContainer = {
+    /*
+     The persistent container for the application. This implementation
+     creates and returns a container, having loaded the store for the
+     application to it. This property is optional since there are legitimate
+     error conditions that could cause the creation of the store to fail.
+    */
+    let container = NSPersistentContainer(name: "Seal")
+    container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+      if let error = error as NSError? {
+        // Replace this implementation with code to handle the error appropriately.
+        // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+
+        /*
+         Typical reasons for an error here include:
+         * The parent directory does not exist, cannot be created, or disallows writing.
+         * The persistent store is not accessible, due to permissions or data protection when the device is locked.
+         * The device is out of space.
+         * The store could not be migrated to the current model version.
+         Check the error message to determine what the actual problem was.
+         */
+        fatalError("Unresolved error \(error), \(error.userInfo)")
+      }
+    })
+    return container
+  }()
+
+  func saveContext () {
+    let context = persistentContainer.viewContext
+    if context.hasChanges {
+      do {
+        try context.save()
+      } catch {
+        // Replace this implementation with code to handle the error appropriately.
+        // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+        let nserror = error as NSError
+        fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+      }
+    }
   }
 
 }
@@ -116,11 +199,11 @@ extension ChatViewController: MessagesDataSource {
   }
 
   func numberOfSections(in messagesCollectionView: MessagesCollectionView) -> Int {
-    return Messages.default.count
+    return messageCount
   }
 
   func messageForItem(at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageType {
-    return Messages.default[indexPath.section]
+    return fetchedResultsController.fetchedObjects![indexPath.section]
   }
 }
 

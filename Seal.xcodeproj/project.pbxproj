@@ -34,7 +34,6 @@
 		30C78EC02697B6CE008925A4 /* MessageSenderTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C78EBE2697B6CE008925A4 /* MessageSenderTransformer.swift */; };
 		30CDACEE2682C5B2005070D1 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30CDACED2682C5B2005070D1 /* Constants.swift */; };
 		30D4DF832676AA1F00CF9DE5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 306589C4267554B300708E73 /* Assets.xcassets */; };
-		30DBD8BC2694E94600D8637D /* Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DBD8BB2694E94600D8637D /* Messages.swift */; };
 		30DE0158269385610093EC65 /* TypingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DE0157269385610093EC65 /* TypingViewController.swift */; };
 		30DE015A269385750093EC65 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DE0159269385750093EC65 /* ChatViewController.swift */; };
 		30DE015C2693AD6B0093EC65 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DE015B2693AD6B0093EC65 /* DetailViewController.swift */; };
@@ -120,7 +119,6 @@
 		30C78EBB2697A700008925A4 /* MessageKindTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageKindTransformer.swift; sourceTree = "<group>"; };
 		30C78EBE2697B6CE008925A4 /* MessageSenderTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageSenderTransformer.swift; sourceTree = "<group>"; };
 		30CDACED2682C5B2005070D1 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		30DBD8BB2694E94600D8637D /* Messages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Messages.swift; sourceTree = "<group>"; };
 		30DE0157269385610093EC65 /* TypingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TypingViewController.swift; sourceTree = "<group>"; };
 		30DE0159269385750093EC65 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		30DE015B2693AD6B0093EC65 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
@@ -220,7 +218,6 @@
 		30C78EC12697B75D008925A4 /* Messages */ = {
 			isa = PBXGroup;
 			children = (
-				30DBD8BB2694E94600D8637D /* Messages.swift */,
 				30C78EAF26967D96008925A4 /* Message+CoreDataClass.swift */,
 				30C78EB026967D96008925A4 /* Message+CoreDataProperties.swift */,
 				30C78EB526967E6B008925A4 /* NSMessageSender.swift */,
@@ -421,7 +418,6 @@
 				30C78EAE26967705008925A4 /* Seal.xcdatamodeld in Sources */,
 				30DE0158269385610093EC65 /* TypingViewController.swift in Sources */,
 				30C78EB726967E6B008925A4 /* NSMessageSender.swift in Sources */,
-				30DBD8BC2694E94600D8637D /* Messages.swift in Sources */,
 				30EFC19C267B278F00EF65E8 /* KeyStoreError.swift in Sources */,
 				30EFC1A0267B278F00EF65E8 /* GenericPasswordConvertible.swift in Sources */,
 				30EFC19E267B278F00EF65E8 /* GenericPasswordStore.swift in Sources */,
