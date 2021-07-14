@@ -22,6 +22,9 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
     return fetchedResultsController.fetchedObjects?.count ?? 0
   }
 
+  var fetchOffset: Int!
+  var numberOfNewMessagesToLoad = 10
+
   convenience init(keyboardViewController: KeyboardViewController) {
     self.init()
     controller = keyboardViewController
@@ -40,31 +43,38 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
 
   // MARK: methods for updating messages
 
-  func reloadMessages() {
+  func reloadMessages(keepOffset: Bool = false) {
     if fetchedResultsController == nil {
       let request: NSFetchRequest<Message> = Message.fetchRequest()
-      request.sortDescriptors = [NSSortDescriptor(key: "coreSentDate", ascending: true)]
-      request.fetchBatchSize = 5
+      request.sortDescriptors = [NSSortDescriptor(key: "coreMessageId", ascending: true)]
+      request.fetchBatchSize = 10
+      request.includesPendingChanges = false
 
       fetchedResultsController = NSFetchedResultsController(
         fetchRequest: request,
         managedObjectContext: persistentContainer.viewContext,
         sectionNameKeyPath: nil,
-        cacheName: nil
+        cacheName: "ChatViewController.fetchedResultsController"
       )
       fetchedResultsController.delegate = self
+
+      // Fetch first to get the number of total messages, so offset can be calculated.
+      try! fetchedResultsController.performFetch()
+      fetchOffset = max(messageCount - numberOfNewMessagesToLoad, 0)
     }
 
-    do {
-      try fetchedResultsController.performFetch()
+    fetchedResultsController.fetchRequest.fetchOffset = fetchOffset
+    NSFetchedResultsController<Message>.deleteCache(
+      withName: "ChatViewController.fetchedResultsController")
+    try! fetchedResultsController.performFetch()
+    if keepOffset {
+      self.messagesCollectionView.reloadDataAndKeepOffset()
+    } else {
       messagesCollectionView.reloadData()
-    } catch {
-      NSLog("Fetch failed")
     }
   }
 
   func appendStringMessage(_ string: String, sender: NSMessageSender) {
-    print(messageCount)
     let message = Message(context: persistentContainer.viewContext)
 
     message.coreSentDate = Date.init()
@@ -72,10 +82,8 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
     message.coreKind = NSMessageKind(message: MessageKind.text(string))
     message.coreSender = sender
     try! persistentContainer.viewContext.save()
-    print(messageCount)
+
     reloadMessages()
-    print(messageCount)
-    print(messagesCollectionView.numberOfSections)
     reloadMessagesCollectionViewLastSection()
   }
 
@@ -101,13 +109,37 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
     reloadMessages()
   }
 
-  // MARK: view setup & data loading
+  private(set) lazy var refreshControl: UIRefreshControl = {
+    let control = UIRefreshControl()
+    control.addTarget(self, action: #selector(loadMoreMessages), for: .valueChanged)
+    return control
+  }()
+
+  @objc func loadMoreMessages() {
+    DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 1) {
+      DispatchQueue.main.async {
+        // reduce the fetch offset and load from there
+        // Fetch offset of 0 means load everything from message 0 and up, i.e., all messages
+        self.fetchOffset = max(0, self.fetchOffset-self.numberOfNewMessagesToLoad)
+
+        // Load linearly more for each refresh
+        if self.fetchOffset != 0 {
+          self.numberOfNewMessagesToLoad += self.numberOfNewMessagesToLoad
+        }
+        self.reloadMessages(keepOffset: true)
+        self.refreshControl.endRefreshing()
+      }
+    }
+  }
+
+  // MARK: view setup
 
   func setupMessagesCollectionView() {
     messagesCollectionView.messagesDataSource = self
     messagesCollectionView.messagesLayoutDelegate = self
     messagesCollectionView.messagesDisplayDelegate = self
     showMessageTimestampOnSwipeLeft = true
+    messagesCollectionView.refreshControl = refreshControl
 
     let layout = messagesCollectionView.collectionViewLayout as? MessagesCollectionViewFlowLayout
 
