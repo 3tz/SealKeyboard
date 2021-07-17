@@ -17,10 +17,13 @@ class KeyboardViewController: UIInputViewController {
   var currentLayout: KeyboardLayout! = .detailView // .typingView
 
   var textView: UITextView!
+  var pickerView: UIPickerView!
   var topBarView: UIStackView!
   var typingViewController: TypingViewController!
   var detailViewController: DetailViewController!
   var bottomBarView: UIStackView!
+
+  var pickerData: [String] = ["chat 1", "chat 2", "chat 3", "chat 4", "chat 5"] // TODO: Placeholder
 
   var stageToSendText = false
 
@@ -145,10 +148,6 @@ class KeyboardViewController: UIInputViewController {
     layoutButton.tintColor = .white
     layoutButton.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
     layoutButton.addTarget(self, action: #selector(layoutButtonPressed(_:)), for: .touchUpInside)
-    NSLayoutConstraint.activate([
-      layoutButton.widthAnchor.constraint(equalToConstant: KeyboardSpecs.cryptoButtonsViewHeight),
-      layoutButton.heightAnchor.constraint(equalTo: layoutButton.widthAnchor)
-    ])
 
     // Create the status / decryption text view
     textView = UITextView()
@@ -158,10 +157,25 @@ class KeyboardViewController: UIInputViewController {
     textView.backgroundColor = .clear
     textView.translatesAutoresizingMaskIntoConstraints = false
 
-    topBarView = UIStackView(arrangedSubviews: [layoutButton, textView])
+    // create pickerView
+    pickerView =  UIPickerView()
+    
+    pickerView.delegate = self as UIPickerViewDelegate
+    pickerView.dataSource = self as UIPickerViewDataSource
+    pickerView.translatesAutoresizingMaskIntoConstraints = false
+
+    topBarView = UIStackView(arrangedSubviews: [layoutButton, textView, pickerView])
     topBarView.axis = .horizontal
     topBarView.spacing = KeyboardSpecs.horizontalSpacing
     topBarView.backgroundColor = KeyboardSpecs.topBarViewBackgroundColor
+
+
+    NSLayoutConstraint.activate([
+      layoutButton.widthAnchor.constraint(equalToConstant: KeyboardSpecs.cryptoButtonsViewHeight),
+      layoutButton.heightAnchor.constraint(equalTo: layoutButton.widthAnchor),
+      pickerView.heightAnchor.constraint(equalTo: topBarView.heightAnchor),
+      pickerView.widthAnchor.constraint(equalToConstant: KeyboardSpecs.cryptoButtonsViewHeight * 2),
+    ])
 
     mainStackView.addArrangedSubview(topBarView)
   }
@@ -361,5 +375,36 @@ class KeyboardViewController: UIInputViewController {
     if oldChangeCount == currentChangeCount { return false }
 
     return true
+  }
+}
+
+
+extension KeyboardViewController: UIPickerViewDelegate, UIPickerViewDataSource {
+  func numberOfComponents(in pickerView: UIPickerView) -> Int {
+     return 1
+  }
+
+  func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+     return pickerData.count
+  }
+
+  func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+
+    let label: UILabel
+
+    if let view = view as? UILabel {
+      label = view
+    } else {
+      label = UILabel()
+    }
+
+    label.font = label.font.withSize(KeyboardSpecs.cryptoButtonsViewHeight / 2)
+    label.text = pickerData[row]
+    label.textAlignment = .center
+    return label
+  }
+
+  public func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
+    return KeyboardSpecs.cryptoButtonsViewHeight / 2
   }
 }
