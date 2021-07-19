@@ -10,9 +10,13 @@ import UIKit
 
 class ChatSelectionPopoverViewController: UITableViewController {
   let reuseIdentifier = "ChatSelectionPopoverViewController.cellReuseID"
-  var chats = ["chat 1", "chat 2", "chat 3", "chat 4"]
 
-  //  unowned var controller: KeyboardViewController!
+  unowned var controller: KeyboardViewController!
+
+  convenience init(parentController: KeyboardViewController) {
+    self.init()
+    controller = parentController
+  }
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -25,19 +29,22 @@ class ChatSelectionPopoverViewController: UITableViewController {
   }
 
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return chats.count
+    return controller.chats.count
   }
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
-    cell.textLabel?.text = chats[indexPath.row]
+    cell.textLabel?.text = controller.chats[indexPath.row]
+
+    cell.accessoryType = (indexPath.row == controller.selectedChatIndex) ? .checkmark : .none
 
     return cell
   }
 
-//  convenience init(parentController: KeyboardViewController) {
-//    self.init()
-//    controller = parentController
-//  }
+  override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    controller.selectedChatIndex = indexPath.row
+    tableView.reloadData()
+    controller.updateCurrentChatTitle()
+  }
 
 }

@@ -24,6 +24,10 @@ class KeyboardViewController: UIInputViewController {
   var detailViewController: DetailViewController!
   var bottomBarView: UIStackView!
 
+  // TODO: placeholder
+  var chats: [String]  = ["chat 1", "chat 2", "chat 3", "chat 4", "chat 5", "chat 6"]
+  var selectedChatIndex: Int = 0
+
   var stageToSendText = false
 
   var pasteboardChangeCountTimer: Timer!
@@ -159,7 +163,7 @@ class KeyboardViewController: UIInputViewController {
     // create chat selection button w/ a drop down list
     chatSelectionButton = UIButton()
     // TODO: placeholder
-    chatSelectionButton.setTitle("▼ chat 1", for: .normal)
+    updateCurrentChatTitle()
     chatSelectionButton.addTarget(
       self, action: #selector(chatSelectionButtonPressed), for: .touchUpInside)
 
@@ -203,14 +207,16 @@ class KeyboardViewController: UIInputViewController {
   }
 
   @objc func chatSelectionButtonPressed(_ sender: UIButton) {
-    let popover = ChatSelectionPopoverViewController()
+    let popover = ChatSelectionPopoverViewController(parentController: self)
 
     popover.modalPresentationStyle = .popover
-    popover.preferredContentSize = CGSize(width: KeyboardSpecs.cryptoButtonsViewHeight * 2, height: KeyboardSpecs.cryptoButtonsViewHeight * 3)
+    popover.preferredContentSize = CGSize(width: KeyboardSpecs.cryptoButtonsViewHeight * 2.5, height: KeyboardSpecs.cryptoButtonsViewHeight * 3)
     let popoverController = popover.popoverPresentationController
     popoverController?.delegate = self
     popoverController?.sourceView = sender
-    popoverController?.sourceRect = CGRect(x: sender.bounds.midX, y: sender.bounds.midY, width: 0, height: 0)
+    // TODO: y offset should probably match with text size of chat title
+    popoverController?.sourceRect = CGRect(x: sender.bounds.midX, y: sender.bounds.midY + 10, width: 0, height: 0)
+
     popoverController?.permittedArrowDirections = .up
     present(popover, animated: true, completion: nil)
   }
@@ -387,6 +393,11 @@ class KeyboardViewController: UIInputViewController {
     if oldChangeCount == currentChangeCount { return false }
 
     return true
+  }
+
+  func updateCurrentChatTitle() {
+    let currentChatTitle = "▼ " + chats[selectedChatIndex]
+    chatSelectionButton.setTitle(currentChatTitle, for: .normal)
   }
 }
 
