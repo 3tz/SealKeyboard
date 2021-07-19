@@ -12,15 +12,18 @@ import Security
 struct GenericPasswordStore {
     
     /// Stores a CryptoKit key in the keychain as a generic password.
-    func storeKey<T: GenericPasswordConvertible>(_ key: T, account: String) throws {
+  func storeKey<T: GenericPasswordConvertible>(_ key: T, account: String, service: String? = nil) throws {
 
         // Treat the key data as a generic password.
-        let query = [kSecClass: kSecClassGenericPassword,
+        var query = [kSecClass: kSecClassGenericPassword,
                      kSecAttrAccount: account,
                      kSecAttrAccessible: kSecAttrAccessibleWhenUnlocked,
                      kSecUseDataProtectionKeychain: true,
                      kSecValueData: key.rawRepresentation] as [String: Any]
-        
+        if service != nil {
+            query[kSecAttrService as String] = service!
+        }
+
         // Add the key data.
         let status = SecItemAdd(query as CFDictionary, nil)
         guard status == errSecSuccess else {
@@ -47,7 +50,29 @@ struct GenericPasswordStore {
         case let status: throw KeyStoreError("Keychain read failed: \(status.message)")
         }
     }
-    
+
+
+    /// Reads a CryptoKit key from the keychain as a generic password.
+    func readKeys<T: GenericPasswordConvertible>(account: String) throws -> [T]? {
+
+        // Seek a generic password with the given account.
+        let query = [kSecClass: kSecClassGenericPassword,
+                     kSecAttrAccount: account,
+                     kSecUseDataProtectionKeychain: true,
+                     kSecMatchLimit: kSecMatchLimitAll,
+                     kSecReturnData: true] as [String: Any]
+
+        // Find and cast the result as data.
+        var items: CFTypeRef?
+        switch SecItemCopyMatching(query as CFDictionary, &items) {
+        case errSecSuccess:
+            let array = items as! [Data]
+            return try array.compactMap { try T(rawRepresentation: $0)}
+        case errSecItemNotFound: return nil
+        case let status: throw KeyStoreError("Keychain read failed: \(status.message)")
+        }
+    }
+
     /// Stores a key in the keychain and then reads it back.
     func roundTrip<T: GenericPasswordConvertible>(_ key: T) throws -> T {
         

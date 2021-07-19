@@ -17,11 +17,12 @@ final class EncryptionKeys {
   // Private vars for secret & symmetric keys
   private var signingSecretKey: Curve25519.Signing.PrivateKey!
   private var encryptionSecretKey: Curve25519.KeyAgreement.PrivateKey!
-  private var symmetricKey: SymmetricKey!
-  private var storageSymmetricKey: SymmetricKey!
+  private var symmetricKeys: [SymmetricKey]!
 
   private let keyChain = GenericPasswordStore()
 
+  // TODO: remove this after finishing symmetricKeys
+  private var symmetricKey: SymmetricKey! = SymmetricKey(size: .bits256)
   // TODO: placeholder. use random salt for each msg
   private let protocolSalt = "CryptoKit Playgrounds Putting It Together".data(using: .utf8)!
 
@@ -49,14 +50,16 @@ final class EncryptionKeys {
       try! keyChain.storeKey(encryptionSecretKey, account: account)
       NSLog("\(account) created and saved to KeyChain.")
     }
-    // Symmetric Key
-    account = KeyChainAccount.symmetricKey.rawValue
-    if let storedKey: SymmetricKey = try? keyChain.readKey(account: account) {
-      symmetricKey = storedKey
+
+    // Symmetric Keys
+    account = KeyChainAccount.symmetricKeys.rawValue
+    if let storedKeys: [SymmetricKey] = try? keyChain.readKeys(account: account) {
+      symmetricKeys = storedKeys
       NSLog("\(account) restored from KeyChain.")
     } else {
-      symmetricKey = SymmetricKey(size: .bits256)
-      try! keyChain.storeKey(symmetricKey, account: account)
+      symmetricKeys = [SymmetricKey(size: .bits256)]
+      let service = SHA256.hash(data: symmetricKeys[0].rawRepresentation).string
+      try! keyChain.storeKey(symmetricKeys[0], account: account, service: service)
       NSLog("\(account) created and saved to KeyChain.")
     }
 
@@ -65,7 +68,9 @@ final class EncryptionKeys {
 
     NSLog("signingPublicKey: \(asString(signingPublicKey.rawRepresentation))")
     NSLog("encryptionPublicKey: \(asString(encryptionPublicKey.rawRepresentation))")
-    NSLog("symmetricKey hash: \(SHA256.hash(data: symmetricKey.rawRepresentation).string)")
+    for (index, key) in symmetricKeys!.enumerated() {
+      NSLog("symmetricKey #\(index) hash: \(SHA256.hash(data: key.rawRepresentation).string)")
+    }
     NSLog("Keys instance initialized.")
   }
 
@@ -111,9 +116,13 @@ final class EncryptionKeys {
         signingPublicKey.rawRepresentation,
       outputByteCount: 32
     )
+
+    // TODO: add sym key instead of replacing
     try keyChain.updateKey(
-      newKey: symmetricKey, account: KeyChainAccount.symmetricKey.rawValue
+      newKey: symmetricKey, account: KeyChainAccount.symmetricKeys.rawValue
     )
+
+
     let symmetricKeyHash = SHA256.hash(data: symmetricKey.rawRepresentation).string
     NSLog("New symmetricKey saved to KeyChain. Digest: \(symmetricKeyHash)")
 
@@ -177,9 +186,12 @@ final class EncryptionKeys {
         theirSigningPublicKey.rawRepresentation,
       outputByteCount: 32
     )
+
+    // TODO: add sym key instead of replacing
     try keyChain.updateKey(
-      newKey: symmetricKey, account: KeyChainAccount.symmetricKey.rawValue
+      newKey: symmetricKey, account: KeyChainAccount.symmetricKeys.rawValue
     )
+
     let symmetricKeyHash = SHA256.hash(data: symmetricKey.rawRepresentation).string
     NSLog("New symmetricKey saved to KeyChain. Digest: \(symmetricKeyHash)")
   }
@@ -255,7 +267,7 @@ enum DecryptionErrors: Error {
 enum KeyChainAccount: String {
   case encryptionSecretKey
   case signingSecretKey
-  case symmetricKey
+  case symmetricKeys
 }
 
 extension SHA256.Digest {
