@@ -11,8 +11,6 @@ import UIKit
 import MessageKit
 import CoreData
 
-let senderThem = NSMessageSender(senderId: "s02", displayName: "bob")
-
 class ChatViewController: MessagesViewController, NSFetchedResultsControllerDelegate {
 
   weak var controller: KeyboardViewController!
