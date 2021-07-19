@@ -17,13 +17,12 @@ class KeyboardViewController: UIInputViewController {
   var currentLayout: KeyboardLayout! = .detailView // .typingView
 
   var textView: UITextView!
-  var pickerView: UIPickerView!
+
+  var chatSelectionButton: UIButton!
   var topBarView: UIStackView!
   var typingViewController: TypingViewController!
   var detailViewController: DetailViewController!
   var bottomBarView: UIStackView!
-
-  var pickerData: [String] = ["chat 1", "chat 2", "chat 3", "chat 4", "chat 5"] // TODO: Placeholder
 
   var stageToSendText = false
 
@@ -157,24 +156,24 @@ class KeyboardViewController: UIInputViewController {
     textView.backgroundColor = .clear
     textView.translatesAutoresizingMaskIntoConstraints = false
 
-    // create pickerView
-    pickerView =  UIPickerView()
-    
-    pickerView.delegate = self as UIPickerViewDelegate
-    pickerView.dataSource = self as UIPickerViewDataSource
-    pickerView.translatesAutoresizingMaskIntoConstraints = false
+    // create chat selection button w/ a drop down list
+    chatSelectionButton = UIButton()
+    // TODO: placeholder
+    chatSelectionButton.setTitle("▼ chat 1", for: .normal)
+    chatSelectionButton.addTarget(
+      self, action: #selector(chatSelectionButtonPressed), for: .touchUpInside)
 
-    topBarView = UIStackView(arrangedSubviews: [layoutButton, textView, pickerView])
+    // add above views to a hori stackview
+    topBarView = UIStackView(arrangedSubviews: [layoutButton, textView, chatSelectionButton])
     topBarView.axis = .horizontal
     topBarView.spacing = KeyboardSpecs.horizontalSpacing
     topBarView.backgroundColor = KeyboardSpecs.topBarViewBackgroundColor
 
-
     NSLayoutConstraint.activate([
       layoutButton.widthAnchor.constraint(equalToConstant: KeyboardSpecs.cryptoButtonsViewHeight),
       layoutButton.heightAnchor.constraint(equalTo: layoutButton.widthAnchor),
-      pickerView.heightAnchor.constraint(equalTo: topBarView.heightAnchor),
-      pickerView.widthAnchor.constraint(equalToConstant: KeyboardSpecs.cryptoButtonsViewHeight * 2),
+      chatSelectionButton.heightAnchor.constraint(equalTo: topBarView.heightAnchor),
+      chatSelectionButton.widthAnchor.constraint(equalToConstant: KeyboardSpecs.cryptoButtonsViewHeight * 2),
     ])
 
     mainStackView.addArrangedSubview(topBarView)
@@ -201,6 +200,19 @@ class KeyboardViewController: UIInputViewController {
       default:
         fatalError()
     }
+  }
+
+  @objc func chatSelectionButtonPressed(_ sender: UIButton) {
+    let popover = ChatSelectionPopoverViewController()
+
+    popover.modalPresentationStyle = .popover
+    popover.preferredContentSize = CGSize(width: KeyboardSpecs.cryptoButtonsViewHeight * 2, height: KeyboardSpecs.cryptoButtonsViewHeight * 3)
+    let popoverController = popover.popoverPresentationController
+    popoverController?.delegate = self
+    popoverController?.sourceView = sender
+    popoverController?.sourceRect = CGRect(x: sender.bounds.midX, y: sender.bounds.midY, width: 0, height: 0)
+    popoverController?.permittedArrowDirections = .up
+    present(popover, animated: true, completion: nil)
   }
 
   // MARK: Sealing/unsealing/ECDH methods
@@ -378,33 +390,8 @@ class KeyboardViewController: UIInputViewController {
   }
 }
 
-
-extension KeyboardViewController: UIPickerViewDelegate, UIPickerViewDataSource {
-  func numberOfComponents(in pickerView: UIPickerView) -> Int {
-     return 1
-  }
-
-  func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-     return pickerData.count
-  }
-
-  func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
-
-    let label: UILabel
-
-    if let view = view as? UILabel {
-      label = view
-    } else {
-      label = UILabel()
-    }
-
-    label.font = label.font.withSize(KeyboardSpecs.cryptoButtonsViewHeight / 2)
-    label.text = pickerData[row]
-    label.textAlignment = .center
-    return label
-  }
-
-  public func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
-    return KeyboardSpecs.cryptoButtonsViewHeight / 2
+extension KeyboardViewController: UIPopoverPresentationControllerDelegate {
+  func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+    return .none
   }
 }

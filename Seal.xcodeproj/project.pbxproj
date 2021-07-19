@@ -39,6 +39,7 @@
 		30DE015C2693AD6B0093EC65 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DE015B2693AD6B0093EC65 /* DetailViewController.swift */; };
 		30DF7A182687B58400990C1A /* KeyboardButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DF7A172687B58400990C1A /* KeyboardButton.swift */; };
 		30E14778269174B600004D61 /* MessageKit in Frameworks */ = {isa = PBXBuildFile; productRef = 30E14777269174B600004D61 /* MessageKit */; };
+		30E2426026A6020100A1D831 /* ChatSelectionPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E2425F26A6020100A1D831 /* ChatSelectionPopoverViewController.swift */; };
 		30EFC19B267B278F00EF65E8 /* KeyStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC196267B278F00EF65E8 /* KeyStoreError.swift */; };
 		30EFC19C267B278F00EF65E8 /* KeyStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC196267B278F00EF65E8 /* KeyStoreError.swift */; };
 		30EFC19D267B278F00EF65E8 /* GenericPasswordStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC197267B278F00EF65E8 /* GenericPasswordStore.swift */; };
@@ -123,6 +124,7 @@
 		30DE0159269385750093EC65 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		30DE015B2693AD6B0093EC65 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		30DF7A172687B58400990C1A /* KeyboardButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardButton.swift; sourceTree = "<group>"; };
+		30E2425F26A6020100A1D831 /* ChatSelectionPopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatSelectionPopoverViewController.swift; sourceTree = "<group>"; };
 		30EFC196267B278F00EF65E8 /* KeyStoreError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyStoreError.swift; sourceTree = "<group>"; };
 		30EFC197267B278F00EF65E8 /* GenericPasswordStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericPasswordStore.swift; sourceTree = "<group>"; };
 		30EFC198267B278F00EF65E8 /* GenericPasswordConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericPasswordConvertible.swift; sourceTree = "<group>"; };
@@ -243,6 +245,7 @@
 				30DE0157269385610093EC65 /* TypingViewController.swift */,
 				30DE015B2693AD6B0093EC65 /* DetailViewController.swift */,
 				30DE0159269385750093EC65 /* ChatViewController.swift */,
+				30E2425F26A6020100A1D831 /* ChatSelectionPopoverViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -425,6 +428,7 @@
 				30EFC1A4267B278F00EF65E8 /* SecKeyStore.swift in Sources */,
 				30C78EB426967D96008925A4 /* Message+CoreDataProperties.swift in Sources */,
 				30EFC1A2267B278F00EF65E8 /* SecKeyConvertible.swift in Sources */,
+				30E2426026A6020100A1D831 /* ChatSelectionPopoverViewController.swift in Sources */,
 				30DF7A182687B58400990C1A /* KeyboardButton.swift in Sources */,
 				30DE015C2693AD6B0093EC65 /* DetailViewController.swift in Sources */,
 				30C78EBD2697A700008925A4 /* MessageKindTransformer.swift in Sources */,
