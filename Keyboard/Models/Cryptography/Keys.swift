@@ -11,9 +11,13 @@ import CryptoKit
 final class EncryptionKeys {
   static let `default` = EncryptionKeys()
 
-  // Internal get vars for public keys
+  // Internal get vars for public keys & computed var for symmetric key digests
   private(set) var signingPublicKey: Curve25519.Signing.PublicKey!
   private(set) var encryptionPublicKey: Curve25519.KeyAgreement.PublicKey!
+  var symmetricKeyDigests: [String] {
+    return symmetricKeys.compactMap { SHA256.hash(data: $0.rawRepresentation).string }
+  }
+
   // Private vars for secret & symmetric keys
   private var signingSecretKey: Curve25519.Signing.PrivateKey!
   private var encryptionSecretKey: Curve25519.KeyAgreement.PrivateKey!
@@ -68,8 +72,8 @@ final class EncryptionKeys {
 
     NSLog("signingPublicKey: \(asString(signingPublicKey.rawRepresentation))")
     NSLog("encryptionPublicKey: \(asString(encryptionPublicKey.rawRepresentation))")
-    for (index, key) in symmetricKeys!.enumerated() {
-      NSLog("symmetricKey #\(index) hash: \(SHA256.hash(data: key.rawRepresentation).string)")
+    for (index, key) in symmetricKeyDigests.enumerated() {
+      NSLog("symmetricKey #\(index) digest: \(key)")
     }
     NSLog("Keys instance initialized.")
   }
