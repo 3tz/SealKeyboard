@@ -15,8 +15,9 @@ extension Chat {
         return NSFetchRequest<Chat>(entityName: "Chat")
     }
 
-    @NSManaged public var displayTitle: String?
-    @NSManaged public var symmetricDigest: String?
+    @NSManaged public var displayTitle: String
+    @NSManaged public var symmetricDigest: String
+    @NSManaged public var lastEditTime: Date
     @NSManaged public var messages: NSSet?
 
 }
