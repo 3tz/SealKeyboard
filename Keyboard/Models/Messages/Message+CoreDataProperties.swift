@@ -21,7 +21,7 @@ extension Message {
   @NSManaged public var coreMessageId: String
   @NSManaged public var coreSentDate: Date
   @NSManaged public var coreKind: NSMessageKind
-
+  @NSManaged public var chat: Chat
 }
 
 extension Message : Identifiable {

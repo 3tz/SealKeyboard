@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		304C122126A7612F00977196 /* Message+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304C121D26A7612F00977196 /* Message+CoreDataClass.swift */; };
+		304C122226A7612F00977196 /* Message+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304C121D26A7612F00977196 /* Message+CoreDataClass.swift */; };
+		304C122326A7612F00977196 /* Message+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304C121E26A7612F00977196 /* Message+CoreDataProperties.swift */; };
+		304C122426A7612F00977196 /* Message+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304C121E26A7612F00977196 /* Message+CoreDataProperties.swift */; };
 		306589BC267554B200708E73 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306589BB267554B200708E73 /* AppDelegate.swift */; };
 		306589BE267554B200708E73 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306589BD267554B200708E73 /* SceneDelegate.swift */; };
 		306589C0267554B200708E73 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306589BF267554B200708E73 /* ViewController.swift */; };
@@ -22,8 +26,6 @@
 		30C0D6C526796024002433D7 /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C0D6C326796024002433D7 /* Keys.swift */; };
 		30C78EAD26967705008925A4 /* Seal.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 30C78EAB26967705008925A4 /* Seal.xcdatamodeld */; };
 		30C78EAE26967705008925A4 /* Seal.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 30C78EAB26967705008925A4 /* Seal.xcdatamodeld */; };
-		30C78EB226967D96008925A4 /* Message+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C78EAF26967D96008925A4 /* Message+CoreDataClass.swift */; };
-		30C78EB426967D96008925A4 /* Message+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C78EB026967D96008925A4 /* Message+CoreDataProperties.swift */; };
 		30C78EB626967E6B008925A4 /* NSMessageSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C78EB526967E6B008925A4 /* NSMessageSender.swift */; };
 		30C78EB726967E6B008925A4 /* NSMessageSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C78EB526967E6B008925A4 /* NSMessageSender.swift */; };
 		30C78EB926979C2D008925A4 /* NSMessageKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30C78EB826979C2D008925A4 /* NSMessageKind.swift */; };
@@ -40,6 +42,10 @@
 		30DF7A182687B58400990C1A /* KeyboardButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30DF7A172687B58400990C1A /* KeyboardButton.swift */; };
 		30E14778269174B600004D61 /* MessageKit in Frameworks */ = {isa = PBXBuildFile; productRef = 30E14777269174B600004D61 /* MessageKit */; };
 		30E2426026A6020100A1D831 /* ChatSelectionPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E2425F26A6020100A1D831 /* ChatSelectionPopoverViewController.swift */; };
+		30E6C2B226A75F4C005126C8 /* Chat+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E6C2AE26A75F4C005126C8 /* Chat+CoreDataClass.swift */; };
+		30E6C2B326A75F4C005126C8 /* Chat+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E6C2AE26A75F4C005126C8 /* Chat+CoreDataClass.swift */; };
+		30E6C2B426A75F4C005126C8 /* Chat+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E6C2AF26A75F4C005126C8 /* Chat+CoreDataProperties.swift */; };
+		30E6C2B526A75F4C005126C8 /* Chat+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E6C2AF26A75F4C005126C8 /* Chat+CoreDataProperties.swift */; };
 		30EFC19B267B278F00EF65E8 /* KeyStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC196267B278F00EF65E8 /* KeyStoreError.swift */; };
 		30EFC19C267B278F00EF65E8 /* KeyStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC196267B278F00EF65E8 /* KeyStoreError.swift */; };
 		30EFC19D267B278F00EF65E8 /* GenericPasswordStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC197267B278F00EF65E8 /* GenericPasswordStore.swift */; };
@@ -99,6 +105,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		304C121D26A7612F00977196 /* Message+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Message+CoreDataClass.swift"; sourceTree = "<group>"; };
+		304C121E26A7612F00977196 /* Message+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Message+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		306589B8267554B200708E73 /* Seal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Seal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		306589BB267554B200708E73 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		306589BD267554B200708E73 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -113,8 +121,6 @@
 		30B72B7E269022AC003B4256 /* Seal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Seal.swift; sourceTree = "<group>"; };
 		30C0D6C326796024002433D7 /* Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
 		30C78EAC26967705008925A4 /* Seal.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Seal.xcdatamodel; sourceTree = "<group>"; };
-		30C78EAF26967D96008925A4 /* Message+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Message+CoreDataClass.swift"; sourceTree = "<group>"; };
-		30C78EB026967D96008925A4 /* Message+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Message+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		30C78EB526967E6B008925A4 /* NSMessageSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSMessageSender.swift; sourceTree = "<group>"; };
 		30C78EB826979C2D008925A4 /* NSMessageKind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSMessageKind.swift; sourceTree = "<group>"; };
 		30C78EBB2697A700008925A4 /* MessageKindTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageKindTransformer.swift; sourceTree = "<group>"; };
@@ -125,6 +131,8 @@
 		30DE015B2693AD6B0093EC65 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		30DF7A172687B58400990C1A /* KeyboardButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardButton.swift; sourceTree = "<group>"; };
 		30E2425F26A6020100A1D831 /* ChatSelectionPopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatSelectionPopoverViewController.swift; sourceTree = "<group>"; };
+		30E6C2AE26A75F4C005126C8 /* Chat+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Chat+CoreDataClass.swift"; sourceTree = "<group>"; };
+		30E6C2AF26A75F4C005126C8 /* Chat+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Chat+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		30EFC196267B278F00EF65E8 /* KeyStoreError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyStoreError.swift; sourceTree = "<group>"; };
 		30EFC197267B278F00EF65E8 /* GenericPasswordStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericPasswordStore.swift; sourceTree = "<group>"; };
 		30EFC198267B278F00EF65E8 /* GenericPasswordConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericPasswordConvertible.swift; sourceTree = "<group>"; };
@@ -220,8 +228,10 @@
 		30C78EC12697B75D008925A4 /* Messages */ = {
 			isa = PBXGroup;
 			children = (
-				30C78EAF26967D96008925A4 /* Message+CoreDataClass.swift */,
-				30C78EB026967D96008925A4 /* Message+CoreDataProperties.swift */,
+				30E6C2AE26A75F4C005126C8 /* Chat+CoreDataClass.swift */,
+				30E6C2AF26A75F4C005126C8 /* Chat+CoreDataProperties.swift */,
+				304C121D26A7612F00977196 /* Message+CoreDataClass.swift */,
+				304C121E26A7612F00977196 /* Message+CoreDataProperties.swift */,
 				30C78EB526967E6B008925A4 /* NSMessageSender.swift */,
 				30C78EB826979C2D008925A4 /* NSMessageKind.swift */,
 				30C78EBB2697A700008925A4 /* MessageKindTransformer.swift */,
@@ -400,14 +410,18 @@
 				30C0D6C426796024002433D7 /* Keys.swift in Sources */,
 				30C78EB626967E6B008925A4 /* NSMessageSender.swift in Sources */,
 				30EFC1A1267B278F00EF65E8 /* SecKeyConvertible.swift in Sources */,
+				30E6C2B226A75F4C005126C8 /* Chat+CoreDataClass.swift in Sources */,
 				306589BE267554B200708E73 /* SceneDelegate.swift in Sources */,
+				304C122126A7612F00977196 /* Message+CoreDataClass.swift in Sources */,
 				30C78EB926979C2D008925A4 /* NSMessageKind.swift in Sources */,
 				30EFC19D267B278F00EF65E8 /* GenericPasswordStore.swift in Sources */,
 				30EFC19F267B278F00EF65E8 /* GenericPasswordConvertible.swift in Sources */,
+				30E6C2B426A75F4C005126C8 /* Chat+CoreDataProperties.swift in Sources */,
 				30EFC1A3267B278F00EF65E8 /* SecKeyStore.swift in Sources */,
 				30C78EBF2697B6CE008925A4 /* MessageSenderTransformer.swift in Sources */,
 				30B72B81269023CE003B4256 /* Seal.swift in Sources */,
 				30EFC19B267B278F00EF65E8 /* KeyStoreError.swift in Sources */,
+				304C122326A7612F00977196 /* Message+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -416,6 +430,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				30C78EC02697B6CE008925A4 /* MessageSenderTransformer.swift in Sources */,
+				30E6C2B326A75F4C005126C8 /* Chat+CoreDataClass.swift in Sources */,
 				30C0D6C526796024002433D7 /* Keys.swift in Sources */,
 				30B72B80269022AC003B4256 /* Seal.swift in Sources */,
 				30C78EAE26967705008925A4 /* Seal.xcdatamodeld in Sources */,
@@ -426,16 +441,17 @@
 				30EFC19E267B278F00EF65E8 /* GenericPasswordStore.swift in Sources */,
 				306589D62675556400708E73 /* KeyboardViewController.swift in Sources */,
 				30EFC1A4267B278F00EF65E8 /* SecKeyStore.swift in Sources */,
-				30C78EB426967D96008925A4 /* Message+CoreDataProperties.swift in Sources */,
+				304C122426A7612F00977196 /* Message+CoreDataProperties.swift in Sources */,
 				30EFC1A2267B278F00EF65E8 /* SecKeyConvertible.swift in Sources */,
 				30E2426026A6020100A1D831 /* ChatSelectionPopoverViewController.swift in Sources */,
+				304C122226A7612F00977196 /* Message+CoreDataClass.swift in Sources */,
 				30DF7A182687B58400990C1A /* KeyboardButton.swift in Sources */,
+				30E6C2B526A75F4C005126C8 /* Chat+CoreDataProperties.swift in Sources */,
 				30DE015C2693AD6B0093EC65 /* DetailViewController.swift in Sources */,
 				30C78EBD2697A700008925A4 /* MessageKindTransformer.swift in Sources */,
 				30DE015A269385750093EC65 /* ChatViewController.swift in Sources */,
 				30CDACEE2682C5B2005070D1 /* Constants.swift in Sources */,
 				30C78EBA26979C2D008925A4 /* NSMessageKind.swift in Sources */,
-				30C78EB226967D96008925A4 /* Message+CoreDataClass.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
