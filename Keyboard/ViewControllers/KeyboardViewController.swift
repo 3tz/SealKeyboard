@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import CoreData
 
 enum KeyboardLayout {
   case typingView
@@ -24,16 +23,6 @@ class KeyboardViewController: UIInputViewController {
   var typingViewController: TypingViewController!
   var detailViewController: DetailViewController!
   var bottomBarView: UIStackView!
-
-  var chatObjects: [Chat]!
-  var chatTitleLookup: [String:String]!
-  var selectedChatIndex: Int!
-  var selectedChatDigest: String {
-    return chatObjects[selectedChatIndex].symmetricDigest
-  }
-  var selectedChatObject: Chat {
-    return chatObjects[selectedChatIndex]
-  }
 
   var stageToSendText = false
 
@@ -57,7 +46,7 @@ class KeyboardViewController: UIInputViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    loadChats()
+
     loadTopBarView()
 
     switch currentLayout {
@@ -131,59 +120,7 @@ class KeyboardViewController: UIInputViewController {
 
   }
 
-  // MARK: view & data loading methods
-
-  func fetchChatsFromCoreData() -> (lookup: [String:String], orderedChatObjects: [Chat]) {
-    let context = CoreDataContainer.shared.persistentContainer.viewContext
-    let request: NSFetchRequest<Chat> = Chat.fetchRequest()
-    request.sortDescriptors = [NSSortDescriptor(key: "lastEditTime", ascending: false)]
-    request.includesPendingChanges = false
-    // fetch results in descending order according to last edit time
-    let orderedChatObjects = try! context.fetch(request)
-    let symmetricKeyDigests = orderedChatObjects.compactMap {$0.symmetricDigest},
-        displayTitles = orderedChatObjects.compactMap {$0.displayTitle}
-    return (
-      lookup: Dictionary(uniqueKeysWithValues: zip(symmetricKeyDigests, displayTitles)),
-      orderedChatObjects: orderedChatObjects
-    )
-  }
-
-  func loadChats() {
-    // First get the symmetric digests
-    let keyChainSymmetricKeyDigests = EncryptionKeys.default.symmetricKeyDigests
-
-    // Fetch Chats from core data
-    let context = CoreDataContainer.shared.persistentContainer.viewContext
-    (chatTitleLookup, chatObjects) = fetchChatsFromCoreData()
-
-    // If there's a key in keychain that doesn't exist in core data yet, create a Chat
-    //   object and save it to core data.
-    // This can happen upon the first time app is used or after delete all chats.
-    for keyDigest in keyChainSymmetricKeyDigests {
-      guard let _ = chatTitleLookup[keyDigest] else {
-        let chat = Chat(context: context)
-        chat.lastEditTime = Date.init()
-        chat.displayTitle = "chat \(chatTitleLookup.count + 1)" // TODO: add index
-        chat.symmetricDigest = keyDigest
-        CoreDataContainer.shared.saveContext()
-        (chatTitleLookup, chatObjects) = fetchChatsFromCoreData()
-        NSLog("Key w/ digest \(keyDigest) is added to core data w/ name \(chat.displayTitle)")
-        continue
-      }
-    }
-
-    // TODO: On the other hand, if there's a chat that relies on a non-existing key, ???
-    for (keyDigest, displayTitle) in chatTitleLookup {
-      if !keyChainSymmetricKeyDigests.contains(keyDigest) {
-        fatalError("""
-          Cannot find symmetric key for the following chat:
-          displayTitle: \(displayTitle)
-          digest: \(keyDigest)
-          """)
-      }
-    }
-    selectedChatIndex = 0
-  }
+  // MARK: view loading methods
 
   func loadTypingView() {
     typingViewController = TypingViewController(parentController: self)
@@ -314,7 +251,7 @@ class KeyboardViewController: UIInputViewController {
           let message: String
 
           do {
-            message = try Seal.seal(string: textInput, with: self.selectedChatDigest)
+            message = try Seal.seal(string: textInput)
           } catch {
             NSLog("sealMessageBox error caught:\n\(error)")
             self.textView.text = StatusText.sealFailureSymmetricAlgo
@@ -346,7 +283,7 @@ class KeyboardViewController: UIInputViewController {
     let messageType: SealMessageType, message: String?
 
     do {
-      (messageType, message) = try Seal.unseal(string: copiedText, with: selectedChatDigest)
+      (messageType, message) = try Seal.unseal(string: copiedText)
     } catch DecryptionErrors.parsingError {
       textView.text = StatusText.unsealFailureParsingError
       return
@@ -458,7 +395,8 @@ class KeyboardViewController: UIInputViewController {
   }
 
   func updateCurrentChatTitle() {
-    let currentChatTitle = "▼ " + chatTitleLookup[selectedChatDigest]!
+
+    let currentChatTitle = "▼ " + ChatManager.shared.currentChat.displayTitle
     chatSelectionButton.setTitle(currentChatTitle, for: .normal)
     // Switch Chat
 

@@ -13,7 +13,7 @@ class ChatManager {
 
   var chats: [Chat]!
   var titleLookup: [String:String]!
-  var currentIndex: Int!
+  private(set) var currentIndex: Int!
 
   var selectedDigest: String {
     return chats[currentIndex].symmetricDigest
@@ -66,7 +66,7 @@ class ChatManager {
 
   // MARK: Helper methods.
 
-  func fetchChatsFromCoreData() -> (lookup: [String:String], orderedChatObjects: [Chat]) {
+  private func fetchChatsFromCoreData() -> (lookup: [String:String], orderedChatObjects: [Chat]) {
     let context = CoreDataContainer.shared.persistentContainer.viewContext
     let request: NSFetchRequest<Chat> = Chat.fetchRequest()
     request.sortDescriptors = [NSSortDescriptor(key: "lastEditTime", ascending: false)]
@@ -81,6 +81,12 @@ class ChatManager {
     )
   }
 
+  // MARK: property modification methods
+
+  func setCurrentIndex(_ newIndex: Int) {
+    // TODO: maybe need to do other things like checking index range
+    currentIndex = newIndex
+  }
 
 }
 

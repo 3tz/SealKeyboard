@@ -43,13 +43,13 @@ class ChatSelectionPopoverViewController: UITableViewController, NSFetchedResult
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
     cell.textLabel?.text = fetchedResultsController.fetchedObjects![indexPath.row].displayTitle
-    cell.accessoryType = (indexPath.row == controller.selectedChatIndex) ? .checkmark : .none
+    cell.accessoryType = (indexPath.row == ChatManager.shared.currentIndex) ? .checkmark : .none
 
     return cell
   }
 
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    controller.selectedChatIndex = indexPath.row
+    ChatManager.shared.setCurrentIndex(indexPath.row)
     reloadChats()
     controller.updateCurrentChatTitle()
   }

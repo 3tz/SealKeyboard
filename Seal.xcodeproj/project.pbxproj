@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3045FC3926A8E5080043502B /* ChatManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3045FC3826A8E5080043502B /* ChatManager.swift */; };
+		3045FC3A26A8E5080043502B /* ChatManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3045FC3826A8E5080043502B /* ChatManager.swift */; };
+		3045FC3B26A8E6A00043502B /* CoreDataContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307384B626A8D91B00EF1FC1 /* CoreDataContainer.swift */; };
 		304C122126A7612F00977196 /* Message+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304C121D26A7612F00977196 /* Message+CoreDataClass.swift */; };
 		304C122226A7612F00977196 /* Message+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304C121D26A7612F00977196 /* Message+CoreDataClass.swift */; };
 		304C122326A7612F00977196 /* Message+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304C121E26A7612F00977196 /* Message+CoreDataProperties.swift */; };
@@ -20,7 +23,6 @@
 		306589D62675556400708E73 /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306589D52675556400708E73 /* KeyboardViewController.swift */; };
 		306589DA2675556400708E73 /* Keyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 306589D32675556400708E73 /* Keyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		307384B726A8D91B00EF1FC1 /* CoreDataContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307384B626A8D91B00EF1FC1 /* CoreDataContainer.swift */; };
-		307384B926A8DBED00EF1FC1 /* ChatManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307384B826A8DBED00EF1FC1 /* ChatManager.swift */; };
 		30B1075F267DAB13002868E3 /* MessageKit in Frameworks */ = {isa = PBXBuildFile; productRef = 30B1075E267DAB13002868E3 /* MessageKit */; };
 		30B72B80269022AC003B4256 /* Seal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B72B7E269022AC003B4256 /* Seal.swift */; };
 		30B72B81269023CE003B4256 /* Seal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B72B7E269022AC003B4256 /* Seal.swift */; };
@@ -107,6 +109,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3045FC3826A8E5080043502B /* ChatManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatManager.swift; sourceTree = "<group>"; };
 		304C121D26A7612F00977196 /* Message+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Message+CoreDataClass.swift"; sourceTree = "<group>"; };
 		304C121E26A7612F00977196 /* Message+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Message+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		306589B8267554B200708E73 /* Seal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Seal.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -121,7 +124,6 @@
 		306589D52675556400708E73 /* KeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewController.swift; sourceTree = "<group>"; };
 		306589D72675556400708E73 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		307384B626A8D91B00EF1FC1 /* CoreDataContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataContainer.swift; sourceTree = "<group>"; };
-		307384B826A8DBED00EF1FC1 /* ChatManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatManager.swift; sourceTree = "<group>"; };
 		30B72B7E269022AC003B4256 /* Seal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Seal.swift; sourceTree = "<group>"; };
 		30C0D6C326796024002433D7 /* Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
 		30C78EAC26967705008925A4 /* Seal.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Seal.xcdatamodel; sourceTree = "<group>"; };
@@ -232,6 +234,7 @@
 		30C78EC12697B75D008925A4 /* Messages */ = {
 			isa = PBXGroup;
 			children = (
+				3045FC3826A8E5080043502B /* ChatManager.swift */,
 				307384B626A8D91B00EF1FC1 /* CoreDataContainer.swift */,
 				30E6C2AE26A75F4C005126C8 /* Chat+CoreDataClass.swift */,
 				30E6C2AF26A75F4C005126C8 /* Chat+CoreDataProperties.swift */,
@@ -241,7 +244,6 @@
 				30C78EB826979C2D008925A4 /* NSMessageKind.swift */,
 				30C78EBB2697A700008925A4 /* MessageKindTransformer.swift */,
 				30C78EBE2697B6CE008925A4 /* MessageSenderTransformer.swift */,
-				307384B826A8DBED00EF1FC1 /* ChatManager.swift */,
 			);
 			path = Messages;
 			sourceTree = "<group>";
@@ -420,10 +422,12 @@
 				306589BE267554B200708E73 /* SceneDelegate.swift in Sources */,
 				304C122126A7612F00977196 /* Message+CoreDataClass.swift in Sources */,
 				30C78EB926979C2D008925A4 /* NSMessageKind.swift in Sources */,
+				3045FC3B26A8E6A00043502B /* CoreDataContainer.swift in Sources */,
 				30EFC19D267B278F00EF65E8 /* GenericPasswordStore.swift in Sources */,
 				30EFC19F267B278F00EF65E8 /* GenericPasswordConvertible.swift in Sources */,
 				30E6C2B426A75F4C005126C8 /* Chat+CoreDataProperties.swift in Sources */,
 				30EFC1A3267B278F00EF65E8 /* SecKeyStore.swift in Sources */,
+				3045FC3926A8E5080043502B /* ChatManager.swift in Sources */,
 				30C78EBF2697B6CE008925A4 /* MessageSenderTransformer.swift in Sources */,
 				30B72B81269023CE003B4256 /* Seal.swift in Sources */,
 				30EFC19B267B278F00EF65E8 /* KeyStoreError.swift in Sources */,
@@ -435,7 +439,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				307384B926A8DBED00EF1FC1 /* ChatManager.swift in Sources */,
+				3045FC3A26A8E5080043502B /* ChatManager.swift in Sources */,
 				30C78EC02697B6CE008925A4 /* MessageSenderTransformer.swift in Sources */,
 				30E6C2B326A75F4C005126C8 /* Chat+CoreDataClass.swift in Sources */,
 				30C0D6C526796024002433D7 /* Keys.swift in Sources */,

@@ -25,7 +25,7 @@ class Seal {
    ].joined(separator: "|")
   }
 
-  static func unseal(string: String, with digest: String) throws -> (SealMessageType, String?) {
+  static func unseal(string: String) throws -> (SealMessageType, String?) {
     let tokens = string.components(separatedBy: "|")
     var msg: String? = nil
 
@@ -67,7 +67,7 @@ class Seal {
       msg = try EncryptionKeys.default.decrypt(
         (tokens[1], tokens[2]),
         from: tokens[3],
-        with: digest
+        with: ChatManager.shared.currentChat.symmetricDigest
       )
 
     default:
@@ -77,9 +77,11 @@ class Seal {
     return (SealMessageType(rawValue: tokens[0])!, msg)
   }
 
-  static func seal(string: String, with digest: String) throws -> String {
+  static func seal(string: String) throws -> String {
     var ciphertextString, signatureString, signingPublicKeyString: String!
-    (ciphertextString, signatureString, signingPublicKeyString) = try EncryptionKeys.default.encrypt(string, with: digest)
+    (ciphertextString, signatureString, signingPublicKeyString) =
+      try EncryptionKeys.default.encrypt(
+        string, with: ChatManager.shared.currentChat.symmetricDigest)
 
     return [
       SealMessageType.ciphertext.rawValue,
