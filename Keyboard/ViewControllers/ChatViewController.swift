@@ -50,7 +50,7 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
 
       fetchedResultsController = NSFetchedResultsController(
         fetchRequest: request,
-        managedObjectContext: controller.persistentContainer.viewContext,
+        managedObjectContext: CoreDataContainer.shared.persistentContainer.viewContext,
         sectionNameKeyPath: nil,
         cacheName: "ChatViewController.fetchedResultsController"
       )
@@ -73,13 +73,14 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
   }
 
   func appendStringMessage(_ string: String, sender: NSMessageSender) {
-    let message = Message(context: controller.persistentContainer.viewContext)
+    let message = Message(context: CoreDataContainer.shared.persistentContainer.viewContext)
 
     message.coreSentDate = Date.init()
     message.coreMessageId = "\(String(messageCount))"
     message.coreKind = NSMessageKind(message: MessageKind.text(string))
     message.coreSender = sender
-    controller.saveContext()
+//    message.chat
+    CoreDataContainer.shared.saveContext()
 
     reloadMessages()
     reloadMessagesCollectionViewLastSection()
@@ -101,9 +102,9 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
   }
 
   func deleteAllChat() {
-    let context = controller.persistentContainer.viewContext
+    let context = CoreDataContainer.shared.persistentContainer.viewContext
     try! context.execute(NSBatchDeleteRequest(fetchRequest: Message.fetchRequest()))
-    controller.saveContext()
+    CoreDataContainer.shared.saveContext()
     reloadMessages()
   }
 

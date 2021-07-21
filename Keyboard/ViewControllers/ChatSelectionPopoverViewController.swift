@@ -63,7 +63,7 @@ class ChatSelectionPopoverViewController: UITableViewController, NSFetchedResult
 
       fetchedResultsController = NSFetchedResultsController(
         fetchRequest: request,
-        managedObjectContext: controller.persistentContainer.viewContext,
+        managedObjectContext: CoreDataContainer.shared.persistentContainer.viewContext,
         sectionNameKeyPath: nil,
         cacheName: "ChatSelectionPopupViewController.fetchedResultsController"
       )

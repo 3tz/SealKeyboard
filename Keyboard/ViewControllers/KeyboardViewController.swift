@@ -25,12 +25,14 @@ class KeyboardViewController: UIInputViewController {
   var detailViewController: DetailViewController!
   var bottomBarView: UIStackView!
 
-  // TODO: placeholder
+  var chatObjects: [Chat]!
   var chatTitleLookup: [String:String]!
-  var chatSymmetricKeyDigests: [String]!
   var selectedChatIndex: Int!
   var selectedChatDigest: String {
-    return chatSymmetricKeyDigests[selectedChatIndex]
+    return chatObjects[selectedChatIndex].symmetricDigest
+  }
+  var selectedChatObject: Chat {
+    return chatObjects[selectedChatIndex]
   }
 
   var stageToSendText = false
@@ -38,49 +40,6 @@ class KeyboardViewController: UIInputViewController {
   var pasteboardChangeCountTimer: Timer!
 
   var taskRunning = false
-
-  // MARK: - Core Data methods copied from xcode init
-
-  lazy var persistentContainer: NSPersistentContainer = {
-    /*
-     The persistent container for the application. This implementation
-     creates and returns a container, having loaded the store for the
-     application to it. This property is optional since there are legitimate
-     error conditions that could cause the creation of the store to fail.
-    */
-    let container = NSPersistentContainer(name: "Seal")
-    container.loadPersistentStores(completionHandler: { (storeDescription, error) in
-      if let error = error as NSError? {
-        // Replace this implementation with code to handle the error appropriately.
-        // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-
-        /*
-         Typical reasons for an error here include:
-         * The parent directory does not exist, cannot be created, or disallows writing.
-         * The persistent store is not accessible, due to permissions or data protection when the device is locked.
-         * The device is out of space.
-         * The store could not be migrated to the current model version.
-         Check the error message to determine what the actual problem was.
-         */
-        fatalError("Unresolved error \(error), \(error.userInfo)")
-      }
-    })
-    return container
-  }()
-
-  func saveContext () {
-    let context = persistentContainer.viewContext
-    if context.hasChanges {
-      do {
-        try context.save()
-      } catch {
-        // Replace this implementation with code to handle the error appropriately.
-        // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-        let nserror = error as NSError
-        fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
-      }
-    }
-  }
 
   // MARK: view overrides
 
@@ -174,17 +133,18 @@ class KeyboardViewController: UIInputViewController {
 
   // MARK: view & data loading methods
 
-  func fetchChatsFromCoreData() -> (lookup: [String:String], orderedDigests: [String]) {
-    let context = persistentContainer.viewContext
+  func fetchChatsFromCoreData() -> (lookup: [String:String], orderedChatObjects: [Chat]) {
+    let context = CoreDataContainer.shared.persistentContainer.viewContext
     let request: NSFetchRequest<Chat> = Chat.fetchRequest()
     request.sortDescriptors = [NSSortDescriptor(key: "lastEditTime", ascending: false)]
     request.includesPendingChanges = false
-    let result = try! context.fetch(request)
-    let symmetricKeyDigests = result.compactMap {$0.symmetricDigest},
-        displayTitles = result.compactMap {$0.displayTitle}
+    // fetch results in descending order according to last edit time
+    let orderedChatObjects = try! context.fetch(request)
+    let symmetricKeyDigests = orderedChatObjects.compactMap {$0.symmetricDigest},
+        displayTitles = orderedChatObjects.compactMap {$0.displayTitle}
     return (
       lookup: Dictionary(uniqueKeysWithValues: zip(symmetricKeyDigests, displayTitles)),
-      orderedDigests: symmetricKeyDigests
+      orderedChatObjects: orderedChatObjects
     )
   }
 
@@ -193,8 +153,8 @@ class KeyboardViewController: UIInputViewController {
     let keyChainSymmetricKeyDigests = EncryptionKeys.default.symmetricKeyDigests
 
     // Fetch Chats from core data
-    let context = persistentContainer.viewContext
-    (chatTitleLookup, chatSymmetricKeyDigests) = fetchChatsFromCoreData()
+    let context = CoreDataContainer.shared.persistentContainer.viewContext
+    (chatTitleLookup, chatObjects) = fetchChatsFromCoreData()
 
     // If there's a key in keychain that doesn't exist in core data yet, create a Chat
     //   object and save it to core data.
@@ -205,8 +165,8 @@ class KeyboardViewController: UIInputViewController {
         chat.lastEditTime = Date.init()
         chat.displayTitle = "chat \(chatTitleLookup.count + 1)" // TODO: add index
         chat.symmetricDigest = keyDigest
-        saveContext()
-        (chatTitleLookup, chatSymmetricKeyDigests) = fetchChatsFromCoreData()
+        CoreDataContainer.shared.saveContext()
+        (chatTitleLookup, chatObjects) = fetchChatsFromCoreData()
         NSLog("Key w/ digest \(keyDigest) is added to core data w/ name \(chat.displayTitle)")
         continue
       }
@@ -500,6 +460,8 @@ class KeyboardViewController: UIInputViewController {
   func updateCurrentChatTitle() {
     let currentChatTitle = "▼ " + chatTitleLookup[selectedChatDigest]!
     chatSelectionButton.setTitle(currentChatTitle, for: .normal)
+    // Switch Chat
+
   }
 }
 

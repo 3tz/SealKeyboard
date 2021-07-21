@@ -19,6 +19,7 @@
 		306589C8267554B300708E73 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 306589C6267554B300708E73 /* LaunchScreen.storyboard */; };
 		306589D62675556400708E73 /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306589D52675556400708E73 /* KeyboardViewController.swift */; };
 		306589DA2675556400708E73 /* Keyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 306589D32675556400708E73 /* Keyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		307384B726A8D91B00EF1FC1 /* CoreDataContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307384B626A8D91B00EF1FC1 /* CoreDataContainer.swift */; };
 		30B1075F267DAB13002868E3 /* MessageKit in Frameworks */ = {isa = PBXBuildFile; productRef = 30B1075E267DAB13002868E3 /* MessageKit */; };
 		30B72B80269022AC003B4256 /* Seal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B72B7E269022AC003B4256 /* Seal.swift */; };
 		30B72B81269023CE003B4256 /* Seal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B72B7E269022AC003B4256 /* Seal.swift */; };
@@ -118,6 +119,7 @@
 		306589D32675556400708E73 /* Keyboard.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = Keyboard.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		306589D52675556400708E73 /* KeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewController.swift; sourceTree = "<group>"; };
 		306589D72675556400708E73 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		307384B626A8D91B00EF1FC1 /* CoreDataContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataContainer.swift; sourceTree = "<group>"; };
 		30B72B7E269022AC003B4256 /* Seal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Seal.swift; sourceTree = "<group>"; };
 		30C0D6C326796024002433D7 /* Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
 		30C78EAC26967705008925A4 /* Seal.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Seal.xcdatamodel; sourceTree = "<group>"; };
@@ -218,6 +220,7 @@
 			isa = PBXGroup;
 			children = (
 				30CDACED2682C5B2005070D1 /* Constants.swift */,
+				307384B626A8D91B00EF1FC1 /* CoreDataContainer.swift */,
 				30EFC1A9267C023300EF65E8 /* Cryptography */,
 				30EFC195267B278F00EF65E8 /* KeychainStorage */,
 				30C78EC12697B75D008925A4 /* Messages */,
@@ -437,6 +440,7 @@
 				30DE0158269385610093EC65 /* TypingViewController.swift in Sources */,
 				30C78EB726967E6B008925A4 /* NSMessageSender.swift in Sources */,
 				30EFC19C267B278F00EF65E8 /* KeyStoreError.swift in Sources */,
+				307384B726A8D91B00EF1FC1 /* CoreDataContainer.swift in Sources */,
 				30EFC1A0267B278F00EF65E8 /* GenericPasswordConvertible.swift in Sources */,
 				30EFC19E267B278F00EF65E8 /* GenericPasswordStore.swift in Sources */,
 				306589D62675556400708E73 /* KeyboardViewController.swift in Sources */,
