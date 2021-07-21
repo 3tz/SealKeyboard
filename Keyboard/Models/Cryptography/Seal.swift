@@ -25,7 +25,7 @@ class Seal {
    ].joined(separator: "|")
   }
 
-  static func unseal(string: String) throws -> (SealMessageType, String?) {
+  static func unseal(string: String, with digest: String) throws -> (SealMessageType, String?) {
     let tokens = string.components(separatedBy: "|")
     var msg: String? = nil
 
@@ -64,7 +64,11 @@ class Seal {
     case .ciphertext:
       // Ciphertext received. Verify signature and decrypt using symmetric key.
       if tokens.count != 4 { throw DecryptionErrors.parsingError }
-      msg = try EncryptionKeys.default.decrypt((tokens[1], tokens[2]), from: tokens[3])
+      msg = try EncryptionKeys.default.decrypt(
+        (tokens[1], tokens[2]),
+        from: tokens[3],
+        with: digest
+      )
 
     default:
       throw DecryptionErrors.parsingError
@@ -73,9 +77,9 @@ class Seal {
     return (SealMessageType(rawValue: tokens[0])!, msg)
   }
 
-  static func seal(string: String) throws -> String {
+  static func seal(string: String, with digest: String) throws -> String {
     var ciphertextString, signatureString, signingPublicKeyString: String!
-    (ciphertextString, signatureString, signingPublicKeyString) = try EncryptionKeys.default.encrypt(string)
+    (ciphertextString, signatureString, signingPublicKeyString) = try EncryptionKeys.default.encrypt(string, with: digest)
 
     return [
       SealMessageType.ciphertext.rawValue,

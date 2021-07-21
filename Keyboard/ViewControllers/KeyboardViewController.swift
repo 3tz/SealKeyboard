@@ -215,7 +215,11 @@ class KeyboardViewController: UIInputViewController {
     // TODO: On the other hand, if there's a chat that relies on a non-existing key, ???
     for (keyDigest, displayTitle) in chatTitleLookup {
       if !keyChainSymmetricKeyDigests.contains(keyDigest) {
-        fatalError("Cannot find symmetric key for chat named \"\(displayTitle)\".")
+        fatalError("""
+          Cannot find symmetric key for the following chat:
+          displayTitle: \(displayTitle)
+          digest: \(keyDigest)
+          """)
       }
     }
     selectedChatIndex = 0
@@ -350,7 +354,7 @@ class KeyboardViewController: UIInputViewController {
           let message: String
 
           do {
-            message = try Seal.seal(string: textInput)
+            message = try Seal.seal(string: textInput, with: self.selectedChatDigest)
           } catch {
             NSLog("sealMessageBox error caught:\n\(error)")
             self.textView.text = StatusText.sealFailureSymmetricAlgo
@@ -382,7 +386,7 @@ class KeyboardViewController: UIInputViewController {
     let messageType: SealMessageType, message: String?
 
     do {
-      (messageType, message) = try Seal.unseal(string: copiedText)
+      (messageType, message) = try Seal.unseal(string: copiedText, with: selectedChatDigest)
     } catch DecryptionErrors.parsingError {
       textView.text = StatusText.unsealFailureParsingError
       return

@@ -21,13 +21,10 @@ final class EncryptionKeys {
   // Private vars for secret & symmetric keys
   private var signingSecretKey: Curve25519.Signing.PrivateKey!
   private var encryptionSecretKey: Curve25519.KeyAgreement.PrivateKey!
-
   private var symmetricKeys: [String:SymmetricKey]!
 
   private let keyChain = GenericPasswordStore()
 
-  // TODO: remove this after finishing symmetricKeys
-  private var symmetricKey: SymmetricKey! = SymmetricKey(size: .bits256)
   // TODO: placeholder. use random salt for each msg
   private let protocolSalt = "CryptoKit Playgrounds Putting It Together".data(using: .utf8)!
 
@@ -86,7 +83,8 @@ final class EncryptionKeys {
 
   // MARK: - Asymmetric key exchange (symmetric key generation) methods
 
-  /// Generates an ephemeral key agreement key and performs key agreement to  derive the symmetric encryption key.
+  /// Generates an ephemeral key agreement key and performs key agreement to  derive the symmetric encryption key and
+  ///    save the symmetric encryption key to keychain.
   /// Modified from: developer.apple.com/documentation/cryptokit/performing_common_cryptographic_operations
   /// - Parameters:
   ///   - theirEncryptionPublicKeyString: Encryption public key of the recipient.
@@ -118,7 +116,7 @@ final class EncryptionKeys {
       with: theirEncryptionPublicKey
     )
 
-    symmetricKey = sharedSecret.hkdfDerivedSymmetricKey(
+    let newSymmetricKey = sharedSecret.hkdfDerivedSymmetricKey(
       using: SHA256.self,
       salt: protocolSalt,
       sharedInfo: ephemeralPublicKey.rawRepresentation +
@@ -127,14 +125,14 @@ final class EncryptionKeys {
       outputByteCount: 32
     )
 
-    // TODO: add sym key instead of replacing
-    try keyChain.updateKey(
-      newKey: symmetricKey, account: KeyChainAccount.symmetricKeys.rawValue
+    // Save new symmetric key to memory & keychain
+    symmetricKeys[newSymmetricKey.digest] = newSymmetricKey
+    try keyChain.storeKey(newSymmetricKey,
+      account: KeyChainAccount.symmetricKeys.rawValue,
+      service: newSymmetricKey.digest
     )
 
-
-    let symmetricKeyHash = SHA256.hash(data: symmetricKey.rawRepresentation).string
-    NSLog("New symmetricKey saved to KeyChain. Digest: \(symmetricKeyHash)")
+    NSLog("New symmetricKey saved to KeyChain. Digest: \(newSymmetricKey.digest)")
 
     let signature = try signingSecretKey.signature(
       for: ephemeralPublicKey.rawRepresentation + theirEncryptionPublicKey.rawRepresentation
@@ -188,7 +186,7 @@ final class EncryptionKeys {
     let sharedSecret = try encryptionSecretKey.sharedSecretFromKeyAgreement(
       with: ephemeralPublicKey
     )
-    symmetricKey = sharedSecret.hkdfDerivedSymmetricKey(
+    let receivedSymmetricKey = sharedSecret.hkdfDerivedSymmetricKey(
       using: SHA256.self,
       salt: protocolSalt,
       sharedInfo: ephemeralPublicKey.rawRepresentation +
@@ -197,31 +195,44 @@ final class EncryptionKeys {
       outputByteCount: 32
     )
 
-    // TODO: add sym key instead of replacing
-    try keyChain.updateKey(
-      newKey: symmetricKey, account: KeyChainAccount.symmetricKeys.rawValue
-    )
-
-    let symmetricKeyHash = SHA256.hash(data: symmetricKey.rawRepresentation).string
-    NSLog("New symmetricKey saved to KeyChain. Digest: \(symmetricKeyHash)")
+    // If received symmetric key already exists, do nothing.
+    if let _ = symmetricKeys[receivedSymmetricKey.digest] {
+      NSLog("""
+        Following symmetric key received already exists. Digest: \(receivedSymmetricKey.digest)
+        """)
+    } else {
+      // Save new symmetric key to memory & keychain
+      symmetricKeys[receivedSymmetricKey.digest] = receivedSymmetricKey
+      try keyChain.storeKey(receivedSymmetricKey,
+        account: KeyChainAccount.symmetricKeys.rawValue,
+        service: receivedSymmetricKey.digest
+      )
+      NSLog("New symmetricKey saved to KeyChain. Digest: \(receivedSymmetricKey.digest)")
+    }
   }
 
   // MARK: - Symmetric encryption and decryption methods
 
   /// Encrypt via symmetric encryption with current symmetric key.
-  /// - Parameter msg: Message to encrypt with current symmetric key
+  /// - Parameters:
+  ///   - msg: Message to encrypt with current symmetric key
+  ///   - with: Digest of the symmetric key to use to encrypt.
   /// - Throws:
   ///   - Errors from CryptoKit operation failures.
   /// - Returns:
   ///   - ciphertextString: Ciphertext of the encrypted message.
   ///   - signatureString: Signature signed with signing secret key.
   ///   - signingPublicKeyString: Public key of the secret key used for signing the signature.
-  func encrypt(_ msg: String) throws -> (
+  func encrypt(_ msg: String, with digest: String) throws -> (
     ciphertextString: String,
     signatureString: String,
     signingPublicKeyString: String
   ){
     let data = msg.data(using: .utf8)!
+
+    guard let symmetricKey = symmetricKeys[digest] else {
+      throw DecryptionErrors.nonexistentSymmetricDigestError
+    }
 
     let ciphertext = try ChaChaPoly.seal(data, using: symmetricKey).combined
     let signature = try signingSecretKey.signature(for: ciphertext)
@@ -237,6 +248,7 @@ final class EncryptionKeys {
   ///       - ciphertextString: The ciphertext received.
   ///       - signatureString: Signature along the message.
   ///   - theirSigningPublicKeyString: Public key of the secret key used for signing the signature.
+  ///   - with: Digest of the symmetric key to use to decrypt.
   /// - Throws:
   ///   - .parsingError if unable to convert input key strings into PublicKey objects
   ///   - authenticationError if unable to parse or match signature.
@@ -244,10 +256,9 @@ final class EncryptionKeys {
   /// - Returns: Decrypted message.
   func decrypt(
     _ sealedMessage: (ciphertextString: String, signatureString: String),
-    from theirSigningPublicKeyString: String
+    from theirSigningPublicKeyString: String,
+    with digest: String
   ) throws -> String {
-
-
 
     guard let ciphertext = asData(sealedMessage.ciphertextString),
           let signature = asData(sealedMessage.signatureString),
@@ -262,6 +273,10 @@ final class EncryptionKeys {
       throw DecryptionErrors.authenticationError
     }
 
+    guard let symmetricKey = symmetricKeys[digest] else {
+      throw DecryptionErrors.nonexistentSymmetricDigestError
+    }
+
     let sealedBox = try ChaChaPoly.SealedBox(combined: ciphertext)
     let msg = try ChaChaPoly.open(sealedBox, using: symmetricKey)
 
@@ -272,6 +287,7 @@ final class EncryptionKeys {
 enum DecryptionErrors: Error {
   case authenticationError
   case parsingError
+  case nonexistentSymmetricDigestError
 }
 
 enum KeyChainAccount: String {
