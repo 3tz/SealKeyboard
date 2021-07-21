@@ -15,13 +15,14 @@ final class EncryptionKeys {
   private(set) var signingPublicKey: Curve25519.Signing.PublicKey!
   private(set) var encryptionPublicKey: Curve25519.KeyAgreement.PublicKey!
   var symmetricKeyDigests: [String] {
-    return symmetricKeys.compactMap { SHA256.hash(data: $0.rawRepresentation).string }
+    return Array(symmetricKeys.keys)
   }
 
   // Private vars for secret & symmetric keys
   private var signingSecretKey: Curve25519.Signing.PrivateKey!
   private var encryptionSecretKey: Curve25519.KeyAgreement.PrivateKey!
-  private var symmetricKeys: [SymmetricKey]!
+
+  private var symmetricKeys: [String:SymmetricKey]!
 
   private let keyChain = GenericPasswordStore()
 
@@ -58,12 +59,17 @@ final class EncryptionKeys {
     // Symmetric Keys
     account = KeyChainAccount.symmetricKeys.rawValue
     if let storedKeys: [SymmetricKey] = try? keyChain.readKeys(account: account) {
-      symmetricKeys = storedKeys
+      symmetricKeys = Dictionary(uniqueKeysWithValues: zip(
+        storedKeys.compactMap {$0.digest},
+        storedKeys
+      ))
       NSLog("\(account) restored from KeyChain.")
     } else {
-      symmetricKeys = [SymmetricKey(size: .bits256)]
-      let service = SHA256.hash(data: symmetricKeys[0].rawRepresentation).string
-      try! keyChain.storeKey(symmetricKeys[0], account: account, service: service)
+      let newSymmetricKey = SymmetricKey(size: .bits256)
+      symmetricKeys = [:]
+      symmetricKeys[newSymmetricKey.digest] = newSymmetricKey
+      let service = newSymmetricKey.digest
+      try! keyChain.storeKey(newSymmetricKey, account: account, service: service)
       NSLog("\(account) created and saved to KeyChain.")
     }
 
@@ -72,8 +78,8 @@ final class EncryptionKeys {
 
     NSLog("signingPublicKey: \(asString(signingPublicKey.rawRepresentation))")
     NSLog("encryptionPublicKey: \(asString(encryptionPublicKey.rawRepresentation))")
-    for (index, key) in symmetricKeyDigests.enumerated() {
-      NSLog("symmetricKey #\(index) digest: \(key)")
+    for key in symmetricKeyDigests {
+      NSLog("symmetric key digest: \(key)")
     }
     NSLog("Keys instance initialized.")
   }
@@ -272,6 +278,12 @@ enum KeyChainAccount: String {
   case encryptionSecretKey
   case signingSecretKey
   case symmetricKeys
+}
+
+extension SymmetricKey {
+  var digest: String {
+    SHA256.hash(data: self.rawRepresentation).string
+  }
 }
 
 extension SHA256.Digest {
