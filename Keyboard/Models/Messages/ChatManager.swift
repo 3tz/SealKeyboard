@@ -88,5 +88,26 @@ class ChatManager {
     currentIndex = newIndex
   }
 
+  func appendMessageToCurrentChat(
+    coreMessageId: String,
+    coreSentDate: Date,
+    coreSender: NSMessageSender,
+    coreKind: NSMessageKind
+  ) {
+    // Add the message to Message entity
+    let message = Message(context: CoreDataContainer.shared.persistentContainer.viewContext)
+    message.coreMessageId = coreMessageId
+    message.coreSentDate = coreSentDate
+    message.coreSender = coreSender
+    message.coreKind = coreKind
+    message.chat = currentChat
+    // Add the message to current Chat's NSSet
+    currentChat.addToMessages(message)
+    currentChat.lastEditTime = Date()
+
+    CoreDataContainer.shared.saveContext()
+    reloadChats()
+  }
+
 }
 
