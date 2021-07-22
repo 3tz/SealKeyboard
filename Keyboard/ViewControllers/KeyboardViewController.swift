@@ -308,9 +308,12 @@ class KeyboardViewController: UIInputViewController {
       case .ECDH0:
         clearInputText()
         textDocumentProxy.insertText(message!)
-        // TODO: placeholder
+        ChatManager.shared.reloadChats()
+        updateCurrentChatTitle()
         textView.text = StatusText.unsealSuccessReceivedECDH0
       case .ECDH1:
+        ChatManager.shared.reloadChats()
+        updateCurrentChatTitle()
         textView.text = StatusText.unsealSuccessReceivedECDH1
       case .ciphertext:
         let statusText: String!
