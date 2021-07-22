@@ -53,10 +53,10 @@ struct KeyboardSpecs {
   static let backspaceHeldDeleteInterval = 0.1
 
   static let superViewSpacing = 0 as CGFloat,
+    cryptoButtonsViewHeight = 50 as CGFloat,
+    keyboardButtonsViewHeight = 230 as CGFloat,
+    superViewHeight = cryptoButtonsViewHeight + keyboardButtonsViewHeight + superViewSpacing,
 
-    superViewHeight = 270 as CGFloat, // 330 as CGFloat,
-    keyboardButtonsViewHeight = 220 as CGFloat,
-    cryptoButtonsViewHeight = superViewHeight - keyboardButtonsViewHeight - superViewSpacing,
     verticalSpacing = 14 as CGFloat,
     horizontalSpacing = 6 as CGFloat,
     buttonCornerRadius = 7 as CGFloat,
