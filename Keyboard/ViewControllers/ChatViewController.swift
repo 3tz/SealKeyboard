@@ -47,7 +47,7 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
     if fetchedResultsController == nil || currentChat != ChatManager.shared.currentChat {
       currentChat = ChatManager.shared.currentChat
       let request: NSFetchRequest<Message> = Message.fetchRequest()
-      request.sortDescriptors = [NSSortDescriptor(key: "coreMessageId", ascending: true)]
+      request.sortDescriptors = [NSSortDescriptor(key: "coreSentDate", ascending: true)]
       request.fetchBatchSize = 10
       request.includesPendingChanges = false
       request.predicate = NSPredicate(format: "chat = %@", ChatManager.shared.currentChat)
@@ -79,7 +79,7 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
 
   func appendStringMessage(_ string: String, sender: NSMessageSender) {
     ChatManager.shared.appendMessageToCurrentChat(
-      coreMessageId: "\(String(messageCount))",
+      coreMessageId: UUID().uuidString,
       coreSentDate: Date.init(),
       coreSender: sender,
       coreKind: NSMessageKind(message: MessageKind.text(string))
