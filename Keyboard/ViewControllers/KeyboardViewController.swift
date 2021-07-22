@@ -20,8 +20,8 @@ class KeyboardViewController: UIInputViewController {
 
   var chatSelectionButton: UIButton!
   var topBarView: UIStackView!
-  var typingViewController: TypingViewController! = nil
-  var detailViewController: DetailViewController! = nil
+  var typingViewController: TypingViewController!
+  var detailViewController: DetailViewController!
   var bottomBarView: UIStackView!
 
   var stageToSendText = false
@@ -51,12 +51,15 @@ class KeyboardViewController: UIInputViewController {
     currentLayout = KeyboardLayout(rawValue: storedLayoutInt)
 
     loadTopBarView()
+    loadTypingViewControllerWithViewHidden()
+    loadChatViewControllerWithViewHidden()
 
+    // Unhide the view for current layout
     switch currentLayout {
       case .typingView:
-        loadTypingView()
+        typingViewController.view.isHidden = false
       case .detailView:
-        loadChatView()
+        detailViewController.view.isHidden = false
       default:
         fatalError()
     }
@@ -125,26 +128,19 @@ class KeyboardViewController: UIInputViewController {
 
   // MARK: view loading methods
 
-  func loadTypingView() {
-    if typingViewController == nil {
-      typingViewController = TypingViewController(parentController: self)
-      addChild(typingViewController)
-      (view as! UIStackView).addArrangedSubview(typingViewController.view)
-    } else {
-      typingViewController.view.isHidden = false
-    }
-
+  func loadTypingViewControllerWithViewHidden() {
+    typingViewController = TypingViewController(parentController: self)
+    addChild(typingViewController)
+    (view as! UIStackView).addArrangedSubview(typingViewController.view)
+    typingViewController.view.isHidden = true
   }
 
-  func loadChatView() {
-    if detailViewController == nil {
-      detailViewController = DetailViewController(keyboardViewController: self)
-      addChild(detailViewController)
-      (view as! UIStackView).addArrangedSubview(detailViewController.view)
-      (view as! UIStackView).sendSubviewToBack(detailViewController.view)
-    } else {
-      detailViewController.view.isHidden = false
-    }
+  func loadChatViewControllerWithViewHidden() {
+    detailViewController = DetailViewController(keyboardViewController: self)
+    addChild(detailViewController)
+    (view as! UIStackView).addArrangedSubview(detailViewController.view)
+    (view as! UIStackView).sendSubviewToBack(detailViewController.view)
+    detailViewController.view.isHidden = true
   }
 
   func loadTopBarView() {
@@ -197,13 +193,13 @@ class KeyboardViewController: UIInputViewController {
     switch currentLayout {
       case .detailView:
         detailViewController.view.isHidden = true
-        loadTypingView()
+        typingViewController.view.isHidden = false
         currentLayout = .typingView
         (topBarView.arrangedSubviews[0] as! UIButton).setImage(
           UIImage(systemName: "message.fill"), for: .normal)
       case .typingView:
         typingViewController.view.isHidden = true
-        loadChatView()
+        detailViewController.view.isHidden = false
         currentLayout = .detailView
         (topBarView.arrangedSubviews[0] as! UIButton).setImage(
           UIImage(systemName: "keyboard"), for: .normal)

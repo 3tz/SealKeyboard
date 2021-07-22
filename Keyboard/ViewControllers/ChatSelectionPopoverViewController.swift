@@ -53,9 +53,7 @@ class ChatSelectionPopoverViewController: UITableViewController, NSFetchedResult
     reloadChats()
     controller.updateCurrentChatTitle()
     // refresh chatviewcontroller to load the messages in the newly switched chat
-    if let detailViewController = controller.detailViewController {
-      detailViewController.chatViewController.reloadMessages()
-    }
+    controller.detailViewController.chatViewController.reloadMessages()
   }
 
   // MARK: Data loading
