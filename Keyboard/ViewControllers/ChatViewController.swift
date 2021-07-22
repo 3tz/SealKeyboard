@@ -15,6 +15,7 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
 
   unowned var controller: KeyboardViewController!
   var fetchedResultsController: NSFetchedResultsController<Message>!
+  unowned var currentChat: Chat! = nil
 
   var messageCount: Int {
     return fetchedResultsController.fetchedObjects?.count ?? 0
@@ -42,11 +43,14 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
   // MARK: methods for updating messages
 
   func reloadMessages(keepOffset: Bool = false) {
-    if fetchedResultsController == nil {
+    // Initialize if it's the first time or reinitialize if chat has switched
+    if fetchedResultsController == nil || currentChat != ChatManager.shared.currentChat {
+      currentChat = ChatManager.shared.currentChat
       let request: NSFetchRequest<Message> = Message.fetchRequest()
       request.sortDescriptors = [NSSortDescriptor(key: "coreMessageId", ascending: true)]
       request.fetchBatchSize = 10
       request.includesPendingChanges = false
+      request.predicate = NSPredicate(format: "chat = %@", ChatManager.shared.currentChat)
 
       fetchedResultsController = NSFetchedResultsController(
         fetchRequest: request,
@@ -69,19 +73,17 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
       self.messagesCollectionView.reloadDataAndKeepOffset()
     } else {
       messagesCollectionView.reloadData()
+      messagesCollectionView.scrollToLastItem(at: .bottom, animated: false)
     }
   }
 
   func appendStringMessage(_ string: String, sender: NSMessageSender) {
-    let message = Message(context: CoreDataContainer.shared.persistentContainer.viewContext)
-
-    message.coreSentDate = Date.init()
-    message.coreMessageId = "\(String(messageCount))"
-    message.coreKind = NSMessageKind(message: MessageKind.text(string))
-    message.coreSender = sender
-//    message.chat
-    CoreDataContainer.shared.saveContext()
-
+    ChatManager.shared.appendMessageToCurrentChat(
+      coreMessageId: "\(String(messageCount))",
+      coreSentDate: Date.init(),
+      coreSender: sender,
+      coreKind: NSMessageKind(message: MessageKind.text(string))
+    )
     reloadMessages()
     reloadMessagesCollectionViewLastSection()
   }
