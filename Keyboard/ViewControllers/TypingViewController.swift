@@ -150,17 +150,13 @@ class TypingViewController : UIViewController {
       }
     }
 
-    // Update button colors
-    for rowStackView in (view as! UIStackView).arrangedSubviews {
-      for subView in (rowStackView as! UIStackView).arrangedSubviews {
-        guard let button = subView as? KeyboardButton else {
-          // It's a spacer UIView
-          continue
-        }
-        button.setDarkModeState(darkMode)
-      }
-    }
+    updateButtonColors()
     updateReturnKey()
+  }
+
+  override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+    super.traitCollectionDidChange(previousTraitCollection)
+    updateButtonColors()
   }
 
   // MARK: private methods for loading subviews
@@ -299,6 +295,21 @@ class TypingViewController : UIViewController {
           default:
             break
         }
+      }
+    }
+  }
+
+  private func updateButtonColors() {
+    // Sync darkMode with system
+    darkMode = traitCollection.userInterfaceStyle == .dark
+    // Update button colors
+    for rowStackView in (view as! UIStackView).arrangedSubviews {
+      for subView in (rowStackView as! UIStackView).arrangedSubviews {
+        guard let button = subView as? KeyboardButton else {
+          // It's a spacer UIView
+          continue
+        }
+        button.setDarkModeState(darkMode)
       }
     }
   }
