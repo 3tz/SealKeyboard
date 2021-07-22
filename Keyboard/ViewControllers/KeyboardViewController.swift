@@ -7,14 +7,14 @@
 
 import UIKit
 
-enum KeyboardLayout {
+enum KeyboardLayout: Int {
   case typingView
   case detailView
 }
 
 class KeyboardViewController: UIInputViewController {
   // TODO: placeholder
-  var currentLayout: KeyboardLayout! = .detailView // .typingView
+  var currentLayout: KeyboardLayout!
 
   var textView: UITextView!
 
@@ -46,6 +46,9 @@ class KeyboardViewController: UIInputViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+    // Use the layout from last time
+    let storedLayoutInt = UserDefaults.standard.integer(forKey: DefaultKeys.currentLayout.rawValue)
+    currentLayout = KeyboardLayout(rawValue: storedLayoutInt)
 
     loadTopBarView()
 
@@ -207,6 +210,9 @@ class KeyboardViewController: UIInputViewController {
       default:
         fatalError()
     }
+    // Store current layout, so it's used the next time the keyboard is opened
+    UserDefaults.standard.setValue(
+      currentLayout.rawValue, forKey: DefaultKeys.currentLayout.rawValue)
   }
 
   @objc func chatSelectionButtonPressed(_ sender: UIButton) {

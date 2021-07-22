@@ -105,7 +105,7 @@ struct KeyboardSpecs {
 
 enum DefaultKeys: String {
   case previousPasteboardChangeCount
-  case messageDigests
+  case currentLayout
 }
 
 struct StatusText {
