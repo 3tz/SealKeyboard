@@ -296,6 +296,9 @@ class KeyboardViewController: UIInputViewController {
     } catch DecryptionErrors.authenticationError {
       textView.text = StatusText.unsealFailureAuthenticationError
       return
+    } catch DecryptionErrors.newSymmetricKeyAlreadyExistsError {
+      textView.text = StatusText.unsealFailureNewSymmetricKeyAlreadyExists
+      return
     } catch {
       textView.text = StatusText.unsealFailureOtherError
       return

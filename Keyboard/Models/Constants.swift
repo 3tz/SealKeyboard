@@ -118,6 +118,7 @@ struct StatusText {
     unsealFailureEmpty = "No copied text found.",
     unsealFailureParsingError = "Unknown type of message copied.",
     unsealFailureAuthenticationError = "Message signature verification failed.",
+    unsealFailureNewSymmetricKeyAlreadyExists = "Cannot create a chat that already exists!",
     unsealFailureOtherError = "Unable to unseal. Unknown key or others.",
 
     unsealSuccessReceivedECDH0 = "Request to generate symmetric key received.",

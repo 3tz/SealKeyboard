@@ -195,11 +195,12 @@ final class EncryptionKeys {
       outputByteCount: 32
     )
 
-    // If received symmetric key already exists, do nothing.
+    // If received symmetric key already exists, give error
     if let _ = symmetricKeys[receivedSymmetricKey.digest] {
       NSLog("""
         Following symmetric key received already exists. Digest: \(receivedSymmetricKey.digest)
         """)
+      throw DecryptionErrors.newSymmetricKeyAlreadyExistsError
     } else {
       // Save new symmetric key to memory & keychain
       symmetricKeys[receivedSymmetricKey.digest] = receivedSymmetricKey
@@ -288,6 +289,7 @@ enum DecryptionErrors: Error {
   case authenticationError
   case parsingError
   case nonexistentSymmetricDigestError
+  case newSymmetricKeyAlreadyExistsError
 }
 
 enum KeyChainAccount: String {
