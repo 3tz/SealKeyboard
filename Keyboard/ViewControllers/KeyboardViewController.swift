@@ -16,6 +16,7 @@ class KeyboardViewController: UIInputViewController {
   // TODO: placeholder
   var currentLayout: KeyboardLayout!
 
+  var layoutButton: UIButton!
   var textView: UITextView!
 
   var chatSelectionButton: UIButton!
@@ -109,6 +110,13 @@ class KeyboardViewController: UIInputViewController {
 
   }
 
+  override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+    super.traitCollectionDidChange(previousTraitCollection)
+    let darkMode = traitCollection.userInterfaceStyle == .dark
+    let titleColor = darkMode ? UIColor.white : UIColor.black
+    chatSelectionButton.setTitleColor(titleColor, for: .normal)
+  }
+
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
     stopPasteboardChangeCountMonitor()
@@ -147,7 +155,7 @@ class KeyboardViewController: UIInputViewController {
     let mainStackView = view as! UIStackView
 
     // create the layout switch button
-    let layoutButton = UIButton()
+    layoutButton = UIButton()
     layoutButton.translatesAutoresizingMaskIntoConstraints = false
     let imageSystemName = currentLayout == .typingView ? "message.fill" : "keyboard"
     layoutButton.setImage(UIImage(systemName: imageSystemName), for: .normal)
@@ -168,18 +176,27 @@ class KeyboardViewController: UIInputViewController {
     chatSelectionButton = UIButton()
     // TODO: placeholder
     updateCurrentChatTitle()
+    let darkMode = traitCollection.userInterfaceStyle == .dark
+    let titleColor = darkMode ? UIColor.white : UIColor.black
+    chatSelectionButton.setTitleColor(titleColor, for: .normal)
     chatSelectionButton.addTarget(
       self, action: #selector(chatSelectionButtonPressed), for: .touchUpInside)
 
     // add above views to a hori stackview
-    topBarView = UIStackView(arrangedSubviews: [layoutButton, textView, chatSelectionButton])
+    let spacerView = UIView()
+    topBarView = UIStackView(arrangedSubviews: [spacerView, layoutButton, textView, chatSelectionButton])
     topBarView.axis = .horizontal
     topBarView.spacing = KeyboardSpecs.horizontalSpacing
     topBarView.backgroundColor = KeyboardSpecs.topBarViewBackgroundColor
+    topBarView.alignment = .center
+    topBarView.distribution = .fill
 
     NSLayoutConstraint.activate([
-      layoutButton.widthAnchor.constraint(equalToConstant: KeyboardSpecs.cryptoButtonsViewHeight),
-      layoutButton.heightAnchor.constraint(equalTo: layoutButton.widthAnchor),
+      spacerView.widthAnchor.constraint(equalToConstant: 0),
+      layoutButton.heightAnchor.constraint(
+        equalToConstant: KeyboardSpecs.bottomBarViewHeight - KeyboardSpecs.verticalSpacing),
+      layoutButton.widthAnchor.constraint(equalTo: layoutButton.heightAnchor),
+      textView.heightAnchor.constraint(equalTo: topBarView.heightAnchor),
       chatSelectionButton.heightAnchor.constraint(equalTo: topBarView.heightAnchor),
       chatSelectionButton.widthAnchor.constraint(equalToConstant: KeyboardSpecs.cryptoButtonsViewHeight * 2),
     ])
@@ -195,13 +212,13 @@ class KeyboardViewController: UIInputViewController {
         detailViewController.view.isHidden = true
         typingViewController.view.isHidden = false
         currentLayout = .typingView
-        (topBarView.arrangedSubviews[0] as! UIButton).setImage(
+        layoutButton.setImage(
           UIImage(systemName: "message.fill"), for: .normal)
       case .typingView:
         typingViewController.view.isHidden = true
         detailViewController.view.isHidden = false
         currentLayout = .detailView
-        (topBarView.arrangedSubviews[0] as! UIButton).setImage(
+        layoutButton.setImage(
           UIImage(systemName: "keyboard"), for: .normal)
       default:
         fatalError()

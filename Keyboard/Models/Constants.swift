@@ -53,8 +53,8 @@ struct KeyboardSpecs {
   static let backspaceHeldDeleteInterval = 0.1
 
   static let superViewSpacing = 0 as CGFloat,
-    cryptoButtonsViewHeight = 50 as CGFloat,
     keyboardButtonsViewHeight = 230 as CGFloat,
+    cryptoButtonsViewHeight = keyboardButtonsViewHeight / 4,
     superViewHeight = cryptoButtonsViewHeight + keyboardButtonsViewHeight + superViewSpacing,
 
     verticalSpacing = 14 as CGFloat,
@@ -64,7 +64,7 @@ struct KeyboardSpecs {
     standardFontSize = 25 as CGFloat,
     specialFontSize = 16 as CGFloat,
 
-    bottomBarViewHeight = (keyboardButtonsViewHeight - 3 * verticalSpacing) / 4,
+    bottomBarViewHeight = keyboardButtonsViewHeight / 4,
     chatViewHeight = keyboardButtonsViewHeight - bottomBarViewHeight
 
   static private let _specialFontSize: [String: CGFloat] = [
@@ -97,9 +97,9 @@ struct KeyboardSpecs {
     return _specialFontSize[keyname, default: standardFontSize]
   }
 
-  static let topBarViewBackgroundColor = UIColor.systemGray3,
+  static let topBarViewBackgroundColor = UIColor.systemGray5,
     chatViewBackgroundColor = UIColor.systemBackground,
-    bottomBarViewBackgroundColor = UIColor.systemBackground
+    bottomBarViewBackgroundColor = UIColor.systemGray5
 
 }
 

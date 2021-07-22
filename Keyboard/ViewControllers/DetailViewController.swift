@@ -43,13 +43,19 @@ class DetailViewController: UIViewController {
 
   override func updateViewConstraints() {
     super.updateViewConstraints()
-    NSLayoutConstraint.activate([
-      bottomBarView.heightAnchor.constraint(
-        equalToConstant:  KeyboardSpecs.bottomBarViewHeight),
-      chatViewController.view.heightAnchor.constraint(equalToConstant: KeyboardSpecs.chatViewHeight),
-      bottomBarView.widthAnchor.constraint(equalTo: view.widthAnchor),
-      chatViewController.view.widthAnchor.constraint(equalTo: view.widthAnchor),
+    let bottomBarButtonHeight = KeyboardSpecs.bottomBarViewHeight - KeyboardSpecs.verticalSpacing
 
+    NSLayoutConstraint.activate([
+      bottomBarView.heightAnchor.constraint(equalToConstant:  KeyboardSpecs.bottomBarViewHeight),
+      bottomBarView.widthAnchor.constraint(equalTo: view.widthAnchor),
+      chatViewController.view.heightAnchor.constraint(equalToConstant: KeyboardSpecs.chatViewHeight),
+      chatViewController.view.widthAnchor.constraint(equalTo: view.widthAnchor),
+      buttonLookup["globeButton"]!.widthAnchor.constraint(equalTo: buttonLookup["globeButton"]!.heightAnchor),
+      buttonLookup["globeButton"]!.heightAnchor.constraint(equalToConstant: bottomBarButtonHeight),
+      buttonLookup["deleteChatButton"]!.heightAnchor.constraint(equalToConstant: bottomBarButtonHeight),
+      buttonLookup["request"]!.heightAnchor.constraint(equalToConstant: bottomBarButtonHeight),
+      buttonLookup["seal"]!.heightAnchor.constraint(equalToConstant: bottomBarButtonHeight),
+      buttonLookup["return"]!.heightAnchor.constraint(equalToConstant: bottomBarButtonHeight),
     ])
 
   }
@@ -66,7 +72,6 @@ class DetailViewController: UIViewController {
       action: #selector(controller.handleInputModeList(from:with:)),
       for: .allTouchEvents
     )
-    globeButton.widthAnchor.constraint(equalTo: globeButton.heightAnchor).isActive = true
 
     let deleteChatButton = UIButton(type: .system)
     deleteChatButton.setTitle("delete all chat", for: .normal)
@@ -104,18 +109,25 @@ class DetailViewController: UIViewController {
     returnButton.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
     returnButton.addTarget(self, action: #selector(returnButtonPressed(_:)), for: .touchUpInside)
 
+    buttonLookup["globeButton"] = globeButton
+    buttonLookup["deleteChatButton"] = deleteChatButton
     buttonLookup["request"] = requestButton
     buttonLookup["seal"] = sealButton
     buttonLookup["return"] = returnButton
 
 
     // Add them to a horizontal stackview
+    let spacerView1 = UIView(),
+        spacerView2 = UIView()
+    spacerView1.widthAnchor.constraint(equalToConstant: 0).isActive = true
+    spacerView2.widthAnchor.constraint(equalToConstant: 0).isActive = true
     bottomBarView = UIStackView(
-      arrangedSubviews: [globeButton, deleteChatButton, requestButton, sealButton, returnButton]
+      arrangedSubviews: [spacerView1, globeButton, deleteChatButton, requestButton, sealButton, returnButton, spacerView2]
     )
     bottomBarView.axis = .horizontal
     bottomBarView.spacing = KeyboardSpecs.horizontalSpacing
     bottomBarView.distribution = .fillProportionally
+    bottomBarView.alignment = .center
     bottomBarView.backgroundColor = KeyboardSpecs.bottomBarViewBackgroundColor
     (view as! UIStackView).addArrangedSubview(bottomBarView)
   }
