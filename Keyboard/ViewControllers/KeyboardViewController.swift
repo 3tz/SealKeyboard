@@ -20,8 +20,8 @@ class KeyboardViewController: UIInputViewController {
 
   var chatSelectionButton: UIButton!
   var topBarView: UIStackView!
-  var typingViewController: TypingViewController!
-  var detailViewController: DetailViewController!
+  var typingViewController: TypingViewController! = nil
+  var detailViewController: DetailViewController! = nil
   var bottomBarView: UIStackView!
 
   var stageToSendText = false
@@ -123,17 +123,25 @@ class KeyboardViewController: UIInputViewController {
   // MARK: view loading methods
 
   func loadTypingView() {
-    typingViewController = TypingViewController(parentController: self)
-    addChild(typingViewController)
-    (view as! UIStackView).addArrangedSubview(typingViewController.view)
+    if typingViewController == nil {
+      typingViewController = TypingViewController(parentController: self)
+      addChild(typingViewController)
+      (view as! UIStackView).addArrangedSubview(typingViewController.view)
+    } else {
+      typingViewController.view.isHidden = false
+    }
 
   }
 
   func loadChatView() {
-    detailViewController = DetailViewController(keyboardViewController: self)
-    addChild(detailViewController)
-    (view as! UIStackView).addArrangedSubview(detailViewController.view)
-    (view as! UIStackView).sendSubviewToBack(detailViewController.view)
+    if detailViewController == nil {
+      detailViewController = DetailViewController(keyboardViewController: self)
+      addChild(detailViewController)
+      (view as! UIStackView).addArrangedSubview(detailViewController.view)
+      (view as! UIStackView).sendSubviewToBack(detailViewController.view)
+    } else {
+      detailViewController.view.isHidden = false
+    }
   }
 
   func loadTopBarView() {
@@ -185,15 +193,13 @@ class KeyboardViewController: UIInputViewController {
   @objc func layoutButtonPressed(_ sender: UIButton) {
     switch currentLayout {
       case .detailView:
-        detailViewController.view.removeFromSuperview()
-        detailViewController.removeFromParent()
+        detailViewController.view.isHidden = true
         loadTypingView()
         currentLayout = .typingView
         (topBarView.arrangedSubviews[0] as! UIButton).setImage(
           UIImage(systemName: "message.fill"), for: .normal)
       case .typingView:
-        typingViewController.view.removeFromSuperview()
-        typingViewController.removeFromParent()
+        typingViewController.view.isHidden = true
         loadChatView()
         currentLayout = .detailView
         (topBarView.arrangedSubviews[0] as! UIButton).setImage(
@@ -312,6 +318,7 @@ class KeyboardViewController: UIInputViewController {
               message!,
               sender: NSMessageSender(senderId: "placeholder", displayName: "placeholder"))
           case .typingView:
+            // TODO: also append to coredata
              statusText = "\(StatusText.unsealSuccessReceivedCiphertext):\n\(message!)"
           default:
             fatalError()
