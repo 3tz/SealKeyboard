@@ -17,9 +17,9 @@ extension Message {
     return NSFetchRequest<Message>(entityName: "Message")
   }
 
-  @NSManaged public var coreSender: NSMessageSender
   @NSManaged public var coreMessageId: String
   @NSManaged public var coreSentDate: Date
+  @NSManaged public var coreSender: NSMessageSender
   @NSManaged public var coreKind: NSMessageKind
   @NSManaged public var chat: Chat
 }
