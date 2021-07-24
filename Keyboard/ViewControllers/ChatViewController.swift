@@ -40,6 +40,30 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
     messagesCollectionView.scrollToLastItem(at: .bottom, animated: false)
   }
 
+  override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    // Override to add a long press gesture recognizer for menu
+    let cell = super.collectionView(collectionView, cellForItemAt: indexPath)
+
+    guard let view = (cell as? TextMessageCell)?.messageContainerView else {
+      NSLog("Non-TextMessageCell. No need to add long press gesture recognizer.")
+      return cell
+    }
+
+
+    // If a long press gesture recognizer already exists, return cell immediately.
+    for recognizer in view.gestureRecognizers ?? [] {
+      if let _ = recognizer as? UILongPressGestureRecognizer {
+        return cell
+      }
+    }
+    // And add one if not
+    view.isUserInteractionEnabled = true
+    view.addGestureRecognizer(
+      UILongPressGestureRecognizer(target: self, action: #selector(textCellLongPressed(sender:)))
+    )
+    return cell
+  }
+
   // MARK: methods for updating messages
 
   func reloadMessages(keepOffset: Bool = false) {
@@ -131,6 +155,21 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
         self.refreshControl.endRefreshing()
       }
     }
+  }
+
+  @objc func textCellLongPressed(sender: UILongPressGestureRecognizer) {
+    if sender.state != .began {
+      return
+    }
+
+    guard let label = sender.view?.subviews[0] as? MessageLabel else {
+      NSLog("Non-MessageLabel long pressed.")
+      NSLog("\(sender)")
+      return
+    }
+    // TODO: placeholder
+    print(label.text)
+
   }
 
   // MARK: view setup
