@@ -168,8 +168,8 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
       return
     }
 
+    let coordinate = sender.location(in: label)
     let popover = MessageCellLongPressMenuViewController()
-
     popover.modalPresentationStyle = .popover
     popover.preferredContentSize = CGSize(
       width: KeyboardSpecs.messageCellPopoverMenuWidth,
@@ -177,9 +177,9 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
     popover.popoverPresentationController?.delegate = self
     popover.popoverPresentationController?.sourceView = label
     popover.popoverPresentationController?.sourceRect = CGRect(
-      x: label.bounds.midX, y: label.bounds.minY, width: 0, height: 0)
+      x: coordinate.x, y: coordinate.y, width: 0, height: 0)
     popover.popoverPresentationController?.backgroundColor = .darkGray
-    popover.popoverPresentationController?.permittedArrowDirections = .down
+    popover.popoverPresentationController?.permittedArrowDirections = .any
     present(popover, animated: true, completion: nil)
   }
 
