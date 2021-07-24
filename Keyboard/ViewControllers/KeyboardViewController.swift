@@ -31,6 +31,8 @@ class KeyboardViewController: UIInputViewController {
 
   var taskRunning = false
 
+  var pasteboardLock = NSLock()
+
   // MARK: view overrides
 
   override func loadView() {
@@ -405,25 +407,37 @@ class KeyboardViewController: UIInputViewController {
   /// Check if pasteboard has changed every 1 second, and unseal if it has.
   func startPasteboardChangeCountMonitor() {
     pasteboardChangeCountTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) {
-      timer in
+      [unowned self] _ in
       if self.pasteboardChanged() { self.unsealCopiedText() }
-//      NSLog("Pasteboard counter checked")
     }
   }
 
   func stopPasteboardChangeCountMonitor() {
     pasteboardChangeCountTimer?.invalidate()
+    pasteboardLock.unlock()
   }
 
   func pasteboardChanged() -> Bool {
+    pasteboardLock.lock()
     let oldChangeCount = UserDefaults.standard.integer(
       forKey: DefaultKeys.previousPasteboardChangeCount.rawValue)
     let currentChangeCount = UIPasteboard.general.changeCount
     UserDefaults.standard.setValue(
       currentChangeCount, forKey: DefaultKeys.previousPasteboardChangeCount.rawValue)
+    pasteboardLock.unlock()
     if oldChangeCount == currentChangeCount { return false }
 
     return true
+  }
+
+  func writeToPasteboardAndIncrementPasteboardChangeCount(_ string: String) {
+    pasteboardLock.lock()
+    UIPasteboard.general.string = string
+    UserDefaults.standard.setValue(
+      UIPasteboard.general.changeCount,
+      forKey: DefaultKeys.previousPasteboardChangeCount.rawValue
+    )
+    pasteboardLock.unlock()
   }
 
   func updateCurrentChatTitle() {

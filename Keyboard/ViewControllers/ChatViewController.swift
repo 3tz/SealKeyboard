@@ -169,7 +169,8 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
     }
 
     let coordinate = sender.location(in: label)
-    let popover = MessageCellLongPressMenuViewController()
+    let popover = MessageCellLongPressMenuViewController(
+      parentController: controller, pressedLabel: label)
     popover.modalPresentationStyle = .popover
     popover.preferredContentSize = CGSize(
       width: KeyboardSpecs.messageCellPopoverMenuWidth,

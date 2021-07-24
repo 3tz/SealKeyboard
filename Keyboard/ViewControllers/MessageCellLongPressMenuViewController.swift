@@ -10,6 +10,15 @@ import UIKit
 
 class MessageCellLongPressMenuViewController: UIViewController {
   var stackView: UIStackView!
+  var copyButton: UIButton!
+  var controller: KeyboardViewController!
+  var pressedLabel: UILabel!
+
+  convenience init(parentController: KeyboardViewController, pressedLabel: UILabel) {
+    self.init()
+    self.controller = parentController
+    self.pressedLabel = pressedLabel
+  }
 
   override func loadView() {
     super.loadView()
@@ -21,12 +30,13 @@ class MessageCellLongPressMenuViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    let copyButton = UIButton(type: .system)
+    copyButton = UIButton(type: .system)
     copyButton.setTitle("Copy", for: .normal)
     copyButton.sizeToFit()
     copyButton.setTitleColor(.white, for: .normal)
     copyButton.backgroundColor = .clear
     copyButton.translatesAutoresizingMaskIntoConstraints = false
+    copyButton.addTarget(self, action: #selector(copyButtonPressed), for: .touchUpInside)
 
     stackView = UIStackView()
     stackView.axis = .horizontal
@@ -58,6 +68,13 @@ class MessageCellLongPressMenuViewController: UIViewController {
     super.traitCollectionDidChange(previousTraitCollection)
     let darkMode = traitCollection.userInterfaceStyle == .dark
     view.backgroundColor = darkMode ? UIColor.darkGray : UIColor.black
+  }
+
+  @objc func copyButtonPressed() {
+    controller.writeToPasteboardAndIncrementPasteboardChangeCount(pressedLabel.text ?? "")
+    controller.textView.text = StatusText.messageCopied
+    popoverPresentationController?.presentingViewController.dismiss(
+      animated: true, completion: nil)
   }
 
 }

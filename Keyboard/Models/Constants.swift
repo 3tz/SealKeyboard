@@ -126,7 +126,9 @@ struct StatusText {
 
     unsealSuccessReceivedECDH0 = "Request to generate symmetric key received.",
     unsealSuccessReceivedECDH1 = "Symmetric key generated.",
-    unsealSuccessReceivedCiphertext = "Message Decrypted"
+    unsealSuccessReceivedCiphertext = "Message Decrypted",
+
+    messageCopied = "Message Copied."
 }
 
 // todo: placeholder
