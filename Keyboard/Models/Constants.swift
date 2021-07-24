@@ -65,7 +65,10 @@ struct KeyboardSpecs {
     specialFontSize = 16 as CGFloat,
 
     bottomBarViewHeight = keyboardButtonsViewHeight / 4,
-    chatViewHeight = keyboardButtonsViewHeight - bottomBarViewHeight
+    chatViewHeight = keyboardButtonsViewHeight - bottomBarViewHeight,
+
+    messageCellPopoverMenuHeight = 40 as CGFloat,
+    messageCellPopoverMenuWidth = 60 as CGFloat
 
   static private let _specialFontSize: [String: CGFloat] = [
     "123": specialFontSize,

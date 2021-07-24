@@ -167,9 +167,20 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
       NSLog("\(sender)")
       return
     }
-    // TODO: placeholder
-    print(label.text)
 
+    let popover = MessageCellLongPressMenuViewController()
+
+    popover.modalPresentationStyle = .popover
+    popover.preferredContentSize = CGSize(
+      width: KeyboardSpecs.messageCellPopoverMenuWidth,
+      height: KeyboardSpecs.messageCellPopoverMenuHeight)
+    popover.popoverPresentationController?.delegate = self
+    popover.popoverPresentationController?.sourceView = label
+    popover.popoverPresentationController?.sourceRect = CGRect(
+      x: label.bounds.midX, y: label.bounds.minY, width: 0, height: 0)
+    popover.popoverPresentationController?.backgroundColor = .darkGray
+    popover.popoverPresentationController?.permittedArrowDirections = .down
+    present(popover, animated: true, completion: nil)
   }
 
   // MARK: view setup
@@ -246,3 +257,9 @@ extension ChatViewController: MessagesDisplayDelegate {
 }
 
 extension ChatViewController: MessagesLayoutDelegate {}
+
+extension ChatViewController: UIPopoverPresentationControllerDelegate {
+  func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+    return .none
+  }
+}
