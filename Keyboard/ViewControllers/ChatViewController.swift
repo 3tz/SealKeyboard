@@ -85,6 +85,8 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
       fetchedResultsController.delegate = self
 
       // Fetch first to get the number of total messages, so offset can be calculated.
+      NSFetchedResultsController<Message>.deleteCache(
+        withName: "ChatViewController.fetchedResultsController")
       try! fetchedResultsController.performFetch()
       fetchOffset = max(messageCount - numberOfNewMessagesToLoad, 0)
     }
