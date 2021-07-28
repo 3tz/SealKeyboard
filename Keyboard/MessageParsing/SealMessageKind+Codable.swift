@@ -53,15 +53,15 @@ extension SealMessageKind: Codable {
     var container = encoder.container(keyedBy: CodingKeys.self)
 
     switch self {
-      case .ECDH0(encryptionPublicKey: let encryptionPublicKey):
+      case .ECDH0(let encryptionPublicKey):
         try container.encode(encryptionPublicKey, forKey: .encryptionPublicKey)
         try container.encode(MessageTypeString.ECDH0, forKey: .type)
-      case .ECDH1(ephemeralPublicKey: let ephemeralPublicKey, signature: let signature, signingPublicKey: let signingPublicKey):
+      case .ECDH1(let ephemeralPublicKey, let signature, let signingPublicKey):
         try container.encode(ephemeralPublicKey, forKey: .ephemeralPublicKey)
         try container.encode(signature, forKey: .signature)
         try container.encode(signingPublicKey, forKey: .signingPublicKey)
         try container.encode(MessageTypeString.ECDH1, forKey: .type)
-      case .ciphertext(ciphertext: let ciphertext, signature: let signature, signingPublicKey: let signingPublicKey):
+      case .ciphertext(let ciphertext, let signature, let signingPublicKey):
         try container.encode(ciphertext, forKey: .ciphertext)
         try container.encode(signature, forKey: .signature)
         try container.encode(signingPublicKey, forKey: .signingPublicKey)

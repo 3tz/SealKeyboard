@@ -10,4 +10,8 @@ import Foundation
 struct SealMessage: Codable {
   var kind: SealMessageKind
   var name: String
+
+  func asJSONString() -> String {
+    return String(data: try! JSONEncoder().encode(self), encoding: .utf8)!
+  }
 }
