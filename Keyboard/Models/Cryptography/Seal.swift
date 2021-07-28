@@ -7,74 +7,64 @@
 
 import Foundation
 
-
-enum SealMessageType: String {
-  case ECDH0
-  case ECDH1
-  case ciphertext
-}
-
 class Seal {
   private init() {}
 
   /// Return a string that indicates a MessageType.ECDH0 event
   static func initiateECDHRequest() -> String {
-    return [
-      SealMessageType.ECDH0.rawValue,
-      asString(EncryptionKeys.default.encryptionPublicKey.rawRepresentation)
-   ].joined(separator: "|")
+    let encryptionPublicKeyString = asString(
+      EncryptionKeys.default.encryptionPublicKey.rawRepresentation
+    )
+    let message = SealMessage(
+      kind: .ECDH0(encryptionPublicKey: encryptionPublicKeyString),
+      name: Placeholder.name
+    )
+
+    return message.asJSONString()
   }
 
-  static func unseal(string: String) throws -> (SealMessageType, String?) {
-    let tokens = string.components(separatedBy: "|")
-    var msg: String? = nil
+  static func unseal(string: String) throws -> (SealMessage, String?) {
 
-    switch SealMessageType(rawValue: tokens[0]){
-    case .ECDH0:
+    let receivedMessage = try parse(string)
+    var outgoingMessageString: String? = nil
+
+    switch receivedMessage.kind{
+      case .ECDH0(let encryptionPublicKey):
       // Request to initiate ECDH, i.e., to generate a symmetric key.
       // Generate a symmetric key and send it over.
-      // Expected format: "{.ECDH0}|{sender's public key}"
-      if tokens.count != 2 { throw DecryptionErrors.parsingError }
-
-      let theirEncryptionPublicKeyString = tokens[1]
-
       // Start ECDH, store the symmetric key, and send them the public key
       let (ephemeralPublicKeyString, signatureString, signingPublicKeyString) =
-        try EncryptionKeys.default.ECDHKeyExchange(with: theirEncryptionPublicKeyString)
+        try EncryptionKeys.default.ECDHKeyExchange(with: encryptionPublicKey)
 
-      msg = [
-        SealMessageType.ECDH1.rawValue,
-        ephemeralPublicKeyString,
-        signatureString,
-        signingPublicKeyString
-      ].joined(separator: "|")
+      outgoingMessageString = SealMessage(
+        kind: .ECDH1(
+          ephemeralPublicKey: ephemeralPublicKeyString,
+          signature: signatureString,
+          signingPublicKey: signingPublicKeyString),
+        name: Placeholder.name
+      ).asJSONString()
 
-    case .ECDH1:
+      case .ECDH1(let ephemeralPublicKey, let signature, let signingPublicKey):
       // Reposne to request to ECDH. Expect to receive ephemeral public key.
       // Verify signature, compute and save symmetric key.
-      // Expected format: "{.ECDH1}|{ephemeralPublicKey}|{signature}|{signingPublicKey}"
-      if tokens.count != 4 { throw DecryptionErrors.parsingError }
 
       try EncryptionKeys.default.verifyECDHKeyExchangeResponse(
-        ephemeralPublicKeyString: tokens[1],
-        signatureString: tokens[2],
-        theirSigningPublicKeyString: tokens[3]
+        ephemeralPublicKeyString: ephemeralPublicKey,
+        signatureString: signature,
+        theirSigningPublicKeyString: signingPublicKey
       )
 
-    case .ciphertext:
+      case .ciphertext(let ciphertext, let signature, let signingPublicKey):
       // Ciphertext received. Verify signature and decrypt using symmetric key.
-      if tokens.count != 4 { throw DecryptionErrors.parsingError }
-      msg = try EncryptionKeys.default.decrypt(
-        (tokens[1], tokens[2]),
-        from: tokens[3],
+      outgoingMessageString = try EncryptionKeys.default.decrypt(
+        (ciphertext, signature),
+        from: signingPublicKey,
         with: ChatManager.shared.currentChat.symmetricDigest
       )
 
-    default:
-      throw DecryptionErrors.parsingError
     }
 
-    return (SealMessageType(rawValue: tokens[0])!, msg)
+    return (receivedMessage, outgoingMessageString)
   }
 
   static func seal(string: String) throws -> String {
@@ -83,11 +73,23 @@ class Seal {
       try EncryptionKeys.default.encrypt(
         string, with: ChatManager.shared.currentChat.symmetricDigest)
 
-    return [
-      SealMessageType.ciphertext.rawValue,
-      ciphertextString,
-      signatureString,
-      signingPublicKeyString
-    ].joined(separator: "|")
+    let outgoingMessage = SealMessage(
+      kind: .ciphertext(
+        ciphertext: ciphertextString,
+        signature: signatureString,
+        signingPublicKey: signingPublicKeyString),
+      name: Placeholder.name
+    )
+
+    return outgoingMessage.asJSONString()
+  }
+
+  static private func parse(_ string: String) throws -> SealMessage {
+    do {
+      let data = string.data(using: .utf8)!
+      return try JSONDecoder().decode(SealMessage.self, from: data)
+    } catch {
+      throw DecryptionErrors.parsingError
+    }
   }
 }

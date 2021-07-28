@@ -307,10 +307,10 @@ class KeyboardViewController: UIInputViewController {
       return
     }
 
-    let messageType: SealMessageType, message: String?
+    let receivedMessage: SealMessage, outgoingMessageString: String?
 
     do {
-      (messageType, message) = try Seal.unseal(string: copiedText)
+      (receivedMessage, outgoingMessageString) = try Seal.unseal(string: copiedText)
     } catch DecryptionErrors.parsingError {
       textView.text = StatusText.unsealFailureParsingError
       return
@@ -325,10 +325,10 @@ class KeyboardViewController: UIInputViewController {
       return
     }
 
-    switch messageType {
+    switch receivedMessage.kind {
       case .ECDH0:
         clearInputText()
-        textDocumentProxy.insertText(message!)
+        textDocumentProxy.insertText(outgoingMessageString!)
         ChatManager.shared.reloadChats()
         updateCurrentChatTitle()
         textView.text = StatusText.unsealSuccessReceivedECDH0
@@ -336,17 +336,19 @@ class KeyboardViewController: UIInputViewController {
         ChatManager.shared.reloadChats()
         updateCurrentChatTitle()
         textView.text = StatusText.unsealSuccessReceivedECDH1
-      case .ciphertext:
+      case .ciphertext(_, _, signingPublicKey: let theirSigningPublicKey):
         let statusText: String!
         switch currentLayout {
           case .detailView:
             statusText = "\(StatusText.unsealSuccessReceivedCiphertext). See below."
             detailViewController.appendStringMessageToChatView(
-              message!,
-              sender: NSMessageSender(senderId: "placeholder", displayName: "placeholder"))
+              outgoingMessageString!,
+              sender: NSMessageSender(
+                senderId: theirSigningPublicKey, displayName: theirSigningPublicKey)
+            )
           case .typingView:
             // TODO: also append to coredata
-             statusText = "\(StatusText.unsealSuccessReceivedCiphertext):\n\(message!)"
+             statusText = "\(StatusText.unsealSuccessReceivedCiphertext):\n\(outgoingMessageString!)"
           default:
             fatalError()
         }
