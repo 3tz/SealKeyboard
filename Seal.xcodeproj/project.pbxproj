@@ -225,7 +225,6 @@
 			isa = PBXGroup;
 			children = (
 				30C78EA826967339008925A4 /* Models */,
-				30DD501E26AF937500B0B16F /* MessageParsing */,
 				30DBD8BA2694E8DE00D8637D /* ViewControllers */,
 				30DBD8B92694E8C400D8637D /* Views */,
 				306589D72675556400708E73 /* Info.plist */,
@@ -247,6 +246,7 @@
 				30EFC1A9267C023300EF65E8 /* Cryptography */,
 				30EFC195267B278F00EF65E8 /* KeychainStorage */,
 				30C78EC12697B75D008925A4 /* Messages */,
+				30DD501E26AF937500B0B16F /* MessageParsing */,
 			);
 			path = Models;
 			sourceTree = "<group>";
