@@ -283,6 +283,13 @@ final class EncryptionKeys {
 
     return String(decoding: msg, as: UTF8.self)
   }
+
+
+  /// Delete symmetric key with digest @with from keychain.
+  func deleteSymmetricKey(with digest: String) throws {
+    let account = KeyChainAccount.symmetricKeys.rawValue
+    try keyChain.deleteKey(account: account, service: digest)
+  }
 }
 
 enum DecryptionErrors: Error {

@@ -91,10 +91,15 @@ struct GenericPasswordStore {
     }
     
     /// Removes any existing key with the given account.
-    func deleteKey(account: String) throws {
-        let query = [kSecClass: kSecClassGenericPassword,
+    func deleteKey(account: String, service: String? = nil) throws {
+        var query = [kSecClass: kSecClassGenericPassword,
                      kSecUseDataProtectionKeychain: true,
                      kSecAttrAccount: account] as [String: Any]
+
+        if service != nil {
+            query[kSecAttrService as String] = service!
+        }
+
         switch SecItemDelete(query as CFDictionary) {
         case errSecItemNotFound, errSecSuccess: break // Okay to ignore
         case let status:
