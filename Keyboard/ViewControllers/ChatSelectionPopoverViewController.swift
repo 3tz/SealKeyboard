@@ -56,6 +56,14 @@ class ChatSelectionPopoverViewController: UITableViewController, NSFetchedResult
     controller.detailViewController.chatViewController.reloadMessages()
   }
 
+  override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+    if editingStyle == .delete {
+      ChatManager.shared.deleteChat(at: indexPath.row)
+      try! fetchedResultsController.performFetch()
+      tableView.deleteRows(at: [indexPath], with: .fade)
+    }
+  }
+
   // MARK: Data loading
   func reloadChats() {
     if fetchedResultsController == nil {

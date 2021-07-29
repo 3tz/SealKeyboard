@@ -88,6 +88,15 @@ class ChatManager {
     currentIndex = newIndex
   }
 
+  func deleteChat(at index: Int) {
+    let context = CoreDataContainer.shared.persistentContainer.viewContext
+    let symmetricDigest = chats[index].symmetricDigest
+    context.delete(chats[index])
+    chats.remove(at: index)
+    CoreDataContainer.shared.saveContext()
+    try! EncryptionKeys.default.deleteSymmetricKey(with: symmetricDigest)
+  }
+
   func appendMessageToCurrentChat(
     coreMessageId: String,
     coreSentDate: Date,
