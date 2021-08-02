@@ -37,7 +37,8 @@ class ChatManager {
 
     // If there's a key in keychain that doesn't exist in core data yet, create a Chat
     //   object and save it to core data.
-    // This can happen upon the first time app is used or after delete all chats.
+    // TODO: currently, this is how a new chat is added: KeyChain adds a new symmetric key,
+    //   and this for-loop creates new chat for these symmetric keys.
     for keyDigest in keyChainSymmetricKeyDigests {
       guard let _ = titleLookup[keyDigest] else {
         let chat = Chat(context: context)
@@ -95,6 +96,7 @@ class ChatManager {
     chats.remove(at: index)
     CoreDataContainer.shared.saveContext()
     try! EncryptionKeys.default.deleteSymmetricKey(with: symmetricDigest)
+    currentIndex = max(0, currentIndex-1)
   }
 
   func appendMessageToCurrentChat(

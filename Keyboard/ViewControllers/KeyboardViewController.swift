@@ -335,16 +335,19 @@ class KeyboardViewController: UIInputViewController {
       return
     }
 
+    // Message unsealed successfully. Now perform operations according to message kind.
     switch receivedMessage.kind {
       case .ECDH0:
         clearInputText()
         textDocumentProxy.insertText(outgoingMessageString!)
         ChatManager.shared.reloadChats()
         updateCurrentChatTitle()
+        detailViewController.chatViewController.reloadMessages()
         textView.text = StatusText.unsealSuccessReceivedECDH0
       case .ECDH1:
         ChatManager.shared.reloadChats()
         updateCurrentChatTitle()
+        detailViewController.chatViewController.reloadMessages()
         textView.text = StatusText.unsealSuccessReceivedECDH1
       case .ciphertext(_, _, signingPublicKey: let theirSigningPublicKey):
         let statusText: String!

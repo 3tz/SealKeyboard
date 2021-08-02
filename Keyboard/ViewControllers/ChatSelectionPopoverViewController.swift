@@ -60,7 +60,10 @@ class ChatSelectionPopoverViewController: UITableViewController, NSFetchedResult
     if editingStyle == .delete {
       ChatManager.shared.deleteChat(at: indexPath.row)
       try! fetchedResultsController.performFetch()
+      controller.updateCurrentChatTitle()
+      controller.detailViewController.chatViewController.reloadMessages()
       tableView.deleteRows(at: [indexPath], with: .fade)
+      tableView.reloadData()
     }
   }
 
