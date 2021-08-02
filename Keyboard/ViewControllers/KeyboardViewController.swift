@@ -256,6 +256,10 @@ class KeyboardViewController: UIInputViewController {
 
   func sealMessageBox(andSend: Bool = false) {
     if !taskRunning {
+      guard let _ = ChatManager.shared.currentChat else {
+        self.textView.text = StatusText.sealFailureNoCurrentChatExists
+        return
+      }
       taskRunning = true
       DispatchQueue.global(qos: .userInitiated).async { [weak self] in
         guard let self = self else { return }
@@ -279,6 +283,9 @@ class KeyboardViewController: UIInputViewController {
 
           do {
             message = try Seal.seal(string: textInput)
+          } catch DecryptionErrors.noCurrentChatExistsError {
+            self.textView.text = StatusText.sealFailureNoCurrentChatExists
+            return
           } catch {
             NSLog("sealMessageBox error caught:\n\(error)")
             self.textView.text = StatusText.sealFailureSymmetricAlgo
@@ -319,6 +326,9 @@ class KeyboardViewController: UIInputViewController {
       return
     } catch DecryptionErrors.newSymmetricKeyAlreadyExistsError {
       textView.text = StatusText.unsealFailureNewSymmetricKeyAlreadyExists
+      return
+    } catch DecryptionErrors.noCurrentChatExistsError {
+      textView.text = StatusText.unsealFailureNoCurrentChatExists
       return
     } catch {
       textView.text = StatusText.unsealFailureOtherError
@@ -444,7 +454,7 @@ class KeyboardViewController: UIInputViewController {
 
   func updateCurrentChatTitle() {
 
-    let currentChatTitle = "▼ " + ChatManager.shared.currentChat.displayTitle
+    let currentChatTitle = "▼ " + (ChatManager.shared.currentChat?.displayTitle ?? "<Empty>")
     chatSelectionButton.setTitle(currentChatTitle, for: .normal)
     // Switch Chat
 

@@ -15,11 +15,11 @@ class ChatManager {
   var titleLookup: [String:String]!
   private(set) var currentIndex: Int!
 
-  var selectedDigest: String {
+  var selectedDigest: String? {
     return chats[currentIndex].symmetricDigest
   }
-  var currentChat: Chat {
-    return chats[currentIndex]
+  var currentChat: Chat? {
+    return chats.isEmpty ? nil : chats[currentIndex]
   }
 
 
@@ -103,6 +103,9 @@ class ChatManager {
     coreSender: NSMessageSender,
     coreKind: NSMessageKind
   ) {
+    guard let currentChat = self.currentChat else {
+      fatalError("No currentChat available")
+    }
     // Add the message to Message entity
     let message = Message(context: CoreDataContainer.shared.persistentContainer.viewContext)
     message.coreMessageId = coreMessageId

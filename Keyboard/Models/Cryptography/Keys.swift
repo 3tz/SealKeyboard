@@ -62,12 +62,8 @@ final class EncryptionKeys {
       ))
       NSLog("\(account) restored from KeyChain.")
     } else {
-      let newSymmetricKey = SymmetricKey(size: .bits256)
       symmetricKeys = [:]
-      symmetricKeys[newSymmetricKey.digest] = newSymmetricKey
-      let service = newSymmetricKey.digest
-      try! keyChain.storeKey(newSymmetricKey, account: account, service: service)
-      NSLog("\(account) created and saved to KeyChain.")
+      NSLog("\(account) initialized to be empty.")
     }
 
     signingPublicKey = signingSecretKey.publicKey
@@ -297,6 +293,7 @@ enum DecryptionErrors: Error {
   case parsingError
   case nonexistentSymmetricDigestError
   case newSymmetricKeyAlreadyExistsError
+  case noCurrentChatExistsError
 }
 
 enum KeyChainAccount: String {

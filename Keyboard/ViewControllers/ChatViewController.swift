@@ -14,11 +14,11 @@ import CoreData
 class ChatViewController: MessagesViewController, NSFetchedResultsControllerDelegate {
 
   unowned var controller: KeyboardViewController!
-  var fetchedResultsController: NSFetchedResultsController<Message>!
+  var fetchedResultsController: NSFetchedResultsController<Message>?
   unowned var currentChat: Chat! = nil
 
   var messageCount: Int {
-    return fetchedResultsController.fetchedObjects?.count ?? 0
+    return fetchedResultsController?.fetchedObjects?.count ?? 0
   }
 
   var fetchOffset: Int!
@@ -67,14 +67,19 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
   // MARK: methods for updating messages
 
   func reloadMessages(keepOffset: Bool = false) {
+    guard let chatManagerCurrentChat = ChatManager.shared.currentChat else {
+      return
+//      fatalError("No currentChat available")
+    }
+
     // Initialize if it's the first time or reinitialize if chat has switched
-    if fetchedResultsController == nil || currentChat != ChatManager.shared.currentChat {
+    if fetchedResultsController == nil || currentChat != chatManagerCurrentChat {
       currentChat = ChatManager.shared.currentChat
       let request: NSFetchRequest<Message> = Message.fetchRequest()
       request.sortDescriptors = [NSSortDescriptor(key: "coreSentDate", ascending: true)]
       request.fetchBatchSize = 10
       request.includesPendingChanges = false
-      request.predicate = NSPredicate(format: "chat = %@", ChatManager.shared.currentChat)
+      request.predicate = NSPredicate(format: "chat = %@", chatManagerCurrentChat)
 
       fetchedResultsController = NSFetchedResultsController(
         fetchRequest: request,
@@ -82,19 +87,19 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
         sectionNameKeyPath: nil,
         cacheName: "ChatViewController.fetchedResultsController"
       )
-      fetchedResultsController.delegate = self
+      fetchedResultsController!.delegate = self
 
       // Fetch first to get the number of total messages, so offset can be calculated.
       NSFetchedResultsController<Message>.deleteCache(
         withName: "ChatViewController.fetchedResultsController")
-      try! fetchedResultsController.performFetch()
+      try! fetchedResultsController!.performFetch()
       fetchOffset = max(messageCount - numberOfNewMessagesToLoad, 0)
     }
 
-    fetchedResultsController.fetchRequest.fetchOffset = fetchOffset
+    fetchedResultsController!.fetchRequest.fetchOffset = fetchOffset
     NSFetchedResultsController<Message>.deleteCache(
       withName: "ChatViewController.fetchedResultsController")
-    try! fetchedResultsController.performFetch()
+    try! fetchedResultsController!.performFetch()
     if keepOffset {
       self.messagesCollectionView.reloadDataAndKeepOffset()
     } else {
@@ -143,6 +148,10 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
   }()
 
   @objc func loadMoreMessages() {
+    guard let _ = ChatManager.shared.currentChat else {
+      self.refreshControl.endRefreshing()
+      return
+    }
     DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 1) {
       DispatchQueue.main.async {
         // reduce the fetch offset and load from there
@@ -246,7 +255,7 @@ extension ChatViewController: MessagesDataSource {
   }
 
   func messageForItem(at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageType {
-    return fetchedResultsController.fetchedObjects![indexPath.section]
+    return fetchedResultsController!.fetchedObjects![indexPath.section]
   }
 }
 

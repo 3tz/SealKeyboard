@@ -56,10 +56,13 @@ class Seal {
 
       case .ciphertext(let ciphertext, let signature, let signingPublicKey):
       // Ciphertext received. Verify signature and decrypt using symmetric key.
+      guard let currentChat = ChatManager.shared.currentChat else {
+        throw DecryptionErrors.noCurrentChatExistsError
+      }
       outgoingMessageString = try EncryptionKeys.default.decrypt(
         (ciphertext, signature),
         from: signingPublicKey,
-        with: ChatManager.shared.currentChat.symmetricDigest
+        with: currentChat.symmetricDigest
       )
 
     }
@@ -68,10 +71,13 @@ class Seal {
   }
 
   static func seal(string: String) throws -> String {
+    guard let currentChat = ChatManager.shared.currentChat else {
+      throw DecryptionErrors.noCurrentChatExistsError
+    }
     var ciphertextString, signatureString, signingPublicKeyString: String!
     (ciphertextString, signatureString, signingPublicKeyString) =
       try EncryptionKeys.default.encrypt(
-        string, with: ChatManager.shared.currentChat.symmetricDigest)
+        string, with: currentChat.symmetricDigest)
 
     let outgoingMessage = SealMessage(
       kind: .ciphertext(

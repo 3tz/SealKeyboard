@@ -117,12 +117,14 @@ struct StatusText {
     sealSuccessButNotSent = "Textfield sealed. Ready to send.",
     sealFailureEmpty =  "Unable to seal message because input text field is empty.",
     sealFailureSymmetricAlgo = "Something went wrong. Unable to encrypt. Try again later.",
+    sealFailureNoCurrentChatExists = "Cannot seal. No chat exists.",
 
     unsealFailureEmpty = "No copied text found.",
     unsealFailureParsingError = "Unknown type of message copied.",
     unsealFailureAuthenticationError = "Message signature verification failed.",
     unsealFailureNewSymmetricKeyAlreadyExists = "Cannot create a chat that already exists!",
     unsealFailureOtherError = "Unable to unseal. Unknown key or others.",
+    unsealFailureNoCurrentChatExists = "Cannot unseal. No chat exists.",
 
     unsealSuccessReceivedECDH0 = "Request to generate symmetric key received.",
     unsealSuccessReceivedECDH1 = "Symmetric key generated.",
