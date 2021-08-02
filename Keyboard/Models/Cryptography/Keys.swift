@@ -285,6 +285,7 @@ final class EncryptionKeys {
   func deleteSymmetricKey(with digest: String) throws {
     let account = KeyChainAccount.symmetricKeys.rawValue
     try keyChain.deleteKey(account: account, service: digest)
+    symmetricKeys[digest] = nil
   }
 }
 
