@@ -14,6 +14,10 @@ final class EncryptionKeys {
   // Internal get vars for public keys & computed var for symmetric key digests
   private(set) var signingPublicKey: Curve25519.Signing.PublicKey!
   private(set) var encryptionPublicKey: Curve25519.KeyAgreement.PublicKey!
+
+  // Only initialized right after a new symmetric key is added to Keychain
+  private(set) var newlyAddedSymmetricKeyDigest: String? = nil
+
   var symmetricKeyDigests: [String] {
     return Array(symmetricKeys.keys)
   }
@@ -62,12 +66,12 @@ final class EncryptionKeys {
       ))
       NSLog("\(account) restored from KeyChain.")
     } else {
-      let newSymmetricKey = SymmetricKey(size: .bits256)
+//      let newSymmetricKey = SymmetricKey(size: .bits256)
       symmetricKeys = [:]
-      symmetricKeys[newSymmetricKey.digest] = newSymmetricKey
-      let service = newSymmetricKey.digest
-      try! keyChain.storeKey(newSymmetricKey, account: account, service: service)
-      NSLog("\(account) created and saved to KeyChain.")
+//      symmetricKeys[newSymmetricKey.digest] = newSymmetricKey
+//      let service = newSymmetricKey.digest
+//      try! keyChain.storeKey(newSymmetricKey, account: account, service: service)
+//      NSLog("\(account) created and saved to KeyChain.")
     }
 
     signingPublicKey = signingSecretKey.publicKey
@@ -131,7 +135,7 @@ final class EncryptionKeys {
       account: KeyChainAccount.symmetricKeys.rawValue,
       service: newSymmetricKey.digest
     )
-
+    newlyAddedSymmetricKeyDigest = newSymmetricKey.digest
     NSLog("New symmetricKey saved to KeyChain. Digest: \(newSymmetricKey.digest)")
 
     let signature = try signingSecretKey.signature(
@@ -208,6 +212,7 @@ final class EncryptionKeys {
         account: KeyChainAccount.symmetricKeys.rawValue,
         service: receivedSymmetricKey.digest
       )
+      newlyAddedSymmetricKeyDigest = receivedSymmetricKey.digest
       NSLog("New symmetricKey saved to KeyChain. Digest: \(receivedSymmetricKey.digest)")
     }
   }
@@ -289,6 +294,9 @@ final class EncryptionKeys {
   func deleteSymmetricKey(with digest: String) throws {
     let account = KeyChainAccount.symmetricKeys.rawValue
     try keyChain.deleteKey(account: account, service: digest)
+    if newlyAddedSymmetricKeyDigest == digest {
+      newlyAddedSymmetricKeyDigest = nil
+    }
   }
 }
 
@@ -297,6 +305,7 @@ enum DecryptionErrors: Error {
   case parsingError
   case nonexistentSymmetricDigestError
   case newSymmetricKeyAlreadyExistsError
+  case noCurrentChatExistsError
 }
 
 enum KeyChainAccount: String {

@@ -67,6 +67,9 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
   // MARK: methods for updating messages
 
   func reloadMessages(keepOffset: Bool = false) {
+    guard let _ = ChatManager.shared.currentChat else {
+      fatalError("Cannot reload messages because there's no current chat.")
+    }
     // Initialize if it's the first time or reinitialize if chat has switched
     if fetchedResultsController == nil || currentChat != ChatManager.shared.currentChat {
       currentChat = ChatManager.shared.currentChat
@@ -74,7 +77,7 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
       request.sortDescriptors = [NSSortDescriptor(key: "coreSentDate", ascending: true)]
       request.fetchBatchSize = 10
       request.includesPendingChanges = false
-      request.predicate = NSPredicate(format: "chat = %@", ChatManager.shared.currentChat)
+      request.predicate = NSPredicate(format: "chat = %@", ChatManager.shared.currentChat!)
 
       fetchedResultsController = NSFetchedResultsController(
         fetchRequest: request,
