@@ -176,8 +176,11 @@ class KeyboardViewController: UIInputViewController {
 
     // create chat selection button w/ a drop down list
     chatSelectionButton = UIButton()
-    // TODO: placeholder
+    chatSelectionButton.setImage(UIImage(systemName: "arrowtriangle.down.fill"), for: .normal)
+    chatSelectionButton.semanticContentAttribute = .forceRightToLeft
+    chatSelectionButton.tintColor = .black
     updateCurrentChatTitle()
+    chatSelectionButton.contentHorizontalAlignment = .right
     let darkMode = traitCollection.userInterfaceStyle == .dark
     let titleColor = darkMode ? UIColor.white : UIColor.black
     chatSelectionButton.setTitleColor(titleColor, for: .normal)
@@ -186,7 +189,8 @@ class KeyboardViewController: UIInputViewController {
 
     // add above views to a hori stackview
     let spacerView = UIView()
-    topBarView = UIStackView(arrangedSubviews: [spacerView, layoutButton, textView, chatSelectionButton])
+    let spacerView2 = UIView()
+    topBarView = UIStackView(arrangedSubviews: [spacerView, layoutButton, textView, chatSelectionButton, spacerView2])
     topBarView.axis = .horizontal
     topBarView.spacing = KeyboardSpecs.horizontalSpacing
     topBarView.backgroundColor = KeyboardSpecs.topBarViewBackgroundColor
@@ -195,6 +199,7 @@ class KeyboardViewController: UIInputViewController {
 
     NSLayoutConstraint.activate([
       spacerView.widthAnchor.constraint(equalToConstant: 0),
+      spacerView2.widthAnchor.constraint(equalToConstant: 0),
       layoutButton.heightAnchor.constraint(
         equalToConstant: KeyboardSpecs.bottomBarViewHeight - KeyboardSpecs.verticalSpacing),
       layoutButton.widthAnchor.constraint(equalTo: layoutButton.heightAnchor),
@@ -340,14 +345,24 @@ class KeyboardViewController: UIInputViewController {
       case .ECDH0:
         clearInputText()
         textDocumentProxy.insertText(outgoingMessageString!)
-        ChatManager.shared.reloadChats()
+        // Create new chat
+        let displayTitle = receivedMessage.name
+        let newDigest = EncryptionKeys.default.newlyAddedSymmetricKeyDigest!
+        ChatManager.shared.addNewChat(named: displayTitle, with: newDigest)
+        // Update chat selection button & reload chat view messages
         updateCurrentChatTitle()
         detailViewController.chatViewController.reloadMessages()
+
         textView.text = StatusText.unsealSuccessReceivedECDH0
       case .ECDH1:
-        ChatManager.shared.reloadChats()
+        // Create new chat
+        let displayTitle = receivedMessage.name
+        let newDigest = EncryptionKeys.default.newlyAddedSymmetricKeyDigest!
+        ChatManager.shared.addNewChat(named: displayTitle, with: newDigest)
+        // Update chat selection button & reload chat view messages
         updateCurrentChatTitle()
         detailViewController.chatViewController.reloadMessages()
+
         textView.text = StatusText.unsealSuccessReceivedECDH1
       case .ciphertext(_, _, signingPublicKey: let theirSigningPublicKey):
         let statusText: String!
@@ -357,7 +372,7 @@ class KeyboardViewController: UIInputViewController {
             detailViewController.appendStringMessageToChatView(
               outgoingMessageString!,
               sender: NSMessageSender(
-                senderId: theirSigningPublicKey, displayName: theirSigningPublicKey)
+                senderId: theirSigningPublicKey, displayName: receivedMessage.name)
             )
           case .typingView:
             // TODO: also append to coredata
@@ -457,7 +472,7 @@ class KeyboardViewController: UIInputViewController {
 
   func updateCurrentChatTitle() {
 
-    let currentChatTitle = "▼ " + (ChatManager.shared.currentChat?.displayTitle ?? "<Empty>")
+    let currentChatTitle = ChatManager.shared.currentChat?.displayTitle ??  "<Empty>"
     chatSelectionButton.setTitle(currentChatTitle, for: .normal)
     // Switch Chat
 

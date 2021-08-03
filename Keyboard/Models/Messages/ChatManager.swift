@@ -32,23 +32,15 @@ class ChatManager {
     let keyChainSymmetricKeyDigests = EncryptionKeys.default.symmetricKeyDigests
 
     // Fetch Chats from core data
-    let context = CoreDataContainer.shared.persistentContainer.viewContext
     (titleLookup, chats) = fetchChatsFromCoreData()
 
-    // If there's a key in keychain that doesn't exist in core data yet, create a Chat
-    //   object and save it to core data.
-    // TODO: currently, this is how a new chat is added: KeyChain adds a new symmetric key,
-    //   and this for-loop creates new chat for these symmetric keys.
+    // TODO: If there's a key in keychain that doesn't exist in core data yet, ???
     for keyDigest in keyChainSymmetricKeyDigests {
       guard let _ = titleLookup[keyDigest] else {
-        let chat = Chat(context: context)
-        chat.lastEditTime = Date.init()
-        chat.displayTitle = "chat \(titleLookup.count + 1)" // TODO: add index
-        chat.symmetricDigest = keyDigest
-        CoreDataContainer.shared.saveContext()
-        (titleLookup, chats) = fetchChatsFromCoreData()
-        NSLog("Key w/ digest \(keyDigest) is added to core data w/ name \(chat.displayTitle)")
-        continue
+        fatalError("""
+          Cannot find chat with the following symmetric key:
+          digest: \(keyDigest)
+          """)
       }
     }
 
@@ -87,6 +79,17 @@ class ChatManager {
   func setCurrentIndex(_ newIndex: Int) {
     // TODO: maybe need to do other things like checking index range
     currentIndex = newIndex
+  }
+
+  func addNewChat(named displayTitle: String, with digest: String) {
+    let context = CoreDataContainer.shared.persistentContainer.viewContext
+    let chat = Chat(context: context)
+    chat.lastEditTime = Date.init()
+    chat.displayTitle = displayTitle
+    chat.symmetricDigest = digest
+    CoreDataContainer.shared.saveContext()
+    NSLog("Key w/ digest \(digest) is added to core data w/ name \(chat.displayTitle)")
+    reloadChats()
   }
 
   func deleteChat(at index: Int) {
