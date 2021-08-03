@@ -115,8 +115,9 @@ class KeyboardViewController: UIInputViewController {
   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
     super.traitCollectionDidChange(previousTraitCollection)
     let darkMode = traitCollection.userInterfaceStyle == .dark
-    let titleColor = darkMode ? UIColor.white : UIColor.black
-    chatSelectionButton.setTitleColor(titleColor, for: .normal)
+    let color = darkMode ? UIColor.white : UIColor.black
+    chatSelectionButton.setTitleColor(color, for: .normal)
+    chatSelectionButton.tintColor = color
   }
 
   override func viewWillDisappear(_ animated: Bool) {
@@ -178,12 +179,12 @@ class KeyboardViewController: UIInputViewController {
     chatSelectionButton = UIButton()
     chatSelectionButton.setImage(UIImage(systemName: "arrowtriangle.down.fill"), for: .normal)
     chatSelectionButton.semanticContentAttribute = .forceRightToLeft
-    chatSelectionButton.tintColor = .black
     updateCurrentChatTitle()
     chatSelectionButton.contentHorizontalAlignment = .right
     let darkMode = traitCollection.userInterfaceStyle == .dark
-    let titleColor = darkMode ? UIColor.white : UIColor.black
-    chatSelectionButton.setTitleColor(titleColor, for: .normal)
+    let color = darkMode ? UIColor.white : UIColor.black
+    chatSelectionButton.setTitleColor(color, for: .normal)
+    chatSelectionButton.tintColor = color
     chatSelectionButton.addTarget(
       self, action: #selector(chatSelectionButtonPressed), for: .touchUpInside)
 
