@@ -14,6 +14,9 @@ final class EncryptionKeys {
   // Internal get vars for public keys & computed var for symmetric key digests
   private(set) var signingPublicKey: Curve25519.Signing.PublicKey!
   private(set) var encryptionPublicKey: Curve25519.KeyAgreement.PublicKey!
+  // Only initialized right after a new symmetric key is added to Keychain
+  private(set) var newlyAddedSymmetricKeyDigest: String? = nil
+
   var symmetricKeyDigests: [String] {
     return Array(symmetricKeys.keys)
   }
@@ -128,6 +131,7 @@ final class EncryptionKeys {
       service: newSymmetricKey.digest
     )
 
+    newlyAddedSymmetricKeyDigest = newSymmetricKey.digest
     NSLog("New symmetricKey saved to KeyChain. Digest: \(newSymmetricKey.digest)")
 
     let signature = try signingSecretKey.signature(
@@ -204,6 +208,7 @@ final class EncryptionKeys {
         account: KeyChainAccount.symmetricKeys.rawValue,
         service: receivedSymmetricKey.digest
       )
+      newlyAddedSymmetricKeyDigest = receivedSymmetricKey.digest
       NSLog("New symmetricKey saved to KeyChain. Digest: \(receivedSymmetricKey.digest)")
     }
   }
@@ -286,6 +291,9 @@ final class EncryptionKeys {
     let account = KeyChainAccount.symmetricKeys.rawValue
     try keyChain.deleteKey(account: account, service: digest)
     symmetricKeys[digest] = nil
+    if newlyAddedSymmetricKeyDigest == digest {
+      newlyAddedSymmetricKeyDigest = nil
+    }
   }
 }
 
