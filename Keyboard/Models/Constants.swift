@@ -53,10 +53,6 @@ struct KeyboardSpecs {
   static let backspaceHeldDeleteInterval = 0.1
 
   static let superViewSpacing = 0 as CGFloat,
-    keyboardButtonsViewHeight = 230 as CGFloat,
-    cryptoButtonsViewHeight = keyboardButtonsViewHeight / 4,
-    superViewHeight = cryptoButtonsViewHeight + keyboardButtonsViewHeight + superViewSpacing,
-
     verticalSpacing = 14 as CGFloat,
     horizontalSpacing = 6 as CGFloat,
     buttonCornerRadius = 7 as CGFloat,
@@ -69,6 +65,30 @@ struct KeyboardSpecs {
 
     messageCellPopoverMenuHeight = 40 as CGFloat,
     messageCellPopoverMenuWidth = 60 as CGFloat
+
+  static private let keyboardButtonsViewHeightPortrait = 230 as CGFloat,
+    cryptoButtonsViewHeightPortrait = keyboardButtonsViewHeightPortrait / 4,
+    superViewHeightPortrait = cryptoButtonsViewHeightPortrait + keyboardButtonsViewHeightPortrait + superViewSpacing,
+
+    keyboardButtonsViewHeightLandscape = 180 as CGFloat,
+    cryptoButtonsViewHeightLandscape = keyboardButtonsViewHeightLandscape / 4,
+    superViewHeightLandscape = cryptoButtonsViewHeightLandscape + keyboardButtonsViewHeightLandscape + superViewSpacing
+
+
+  static let maximumWidth = 694.0 as CGFloat
+
+  static var isLandscape = false
+
+  static var keyboardButtonsViewHeight: CGFloat {
+    return isLandscape ? keyboardButtonsViewHeightLandscape : keyboardButtonsViewHeightPortrait
+  }
+
+  static var cryptoButtonsViewHeight: CGFloat {
+    return isLandscape ? cryptoButtonsViewHeightLandscape : cryptoButtonsViewHeightPortrait
+  }
+  static var superViewHeight: CGFloat {
+    return isLandscape ? superViewHeightLandscape : superViewHeightPortrait
+  }
 
   static private let _specialFontSize: [String: CGFloat] = [
     "123": specialFontSize,

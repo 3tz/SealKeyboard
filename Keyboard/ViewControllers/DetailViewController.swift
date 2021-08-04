@@ -48,7 +48,7 @@ class DetailViewController: UIViewController {
     NSLayoutConstraint.activate([
       bottomBarView.heightAnchor.constraint(equalToConstant:  KeyboardSpecs.bottomBarViewHeight),
       bottomBarView.widthAnchor.constraint(equalTo: view.widthAnchor),
-      chatViewController.view.heightAnchor.constraint(equalToConstant: KeyboardSpecs.chatViewHeight),
+
       chatViewController.view.widthAnchor.constraint(equalTo: view.widthAnchor),
       buttonLookup["globeButton"]!.widthAnchor.constraint(equalTo: buttonLookup["globeButton"]!.heightAnchor),
       buttonLookup["globeButton"]!.heightAnchor.constraint(equalToConstant: bottomBarButtonHeight),

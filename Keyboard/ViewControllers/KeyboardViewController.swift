@@ -13,7 +13,6 @@ enum KeyboardLayout: Int {
 }
 
 class KeyboardViewController: UIInputViewController {
-  // TODO: placeholder
   var currentLayout: KeyboardLayout!
 
   var layoutButton: UIButton!
@@ -24,6 +23,8 @@ class KeyboardViewController: UIInputViewController {
   var typingViewController: TypingViewController!
   var detailViewController: DetailViewController!
   var bottomBarView: UIStackView!
+
+  var constraints: [NSLayoutConstraint] = []
 
   var stageToSendText = false
 
@@ -38,11 +39,9 @@ class KeyboardViewController: UIInputViewController {
   override func loadView() {
     // Use stackview as the main view
     let mainStackView = UIStackView()
-
     mainStackView.axis = .vertical
     mainStackView.spacing = KeyboardSpecs.superViewSpacing
     mainStackView.alignment = .center
-    mainStackView.translatesAutoresizingMaskIntoConstraints = false
 
     view = mainStackView
   }
@@ -85,30 +84,28 @@ class KeyboardViewController: UIInputViewController {
     guard let mainStackView = view as? UIStackView else {
       fatalError()
     }
-    NSLayoutConstraint.activate([
-      mainStackView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.size.width),
-      mainStackView.heightAnchor.constraint(equalToConstant: KeyboardSpecs.superViewHeight),
-      topBarView.widthAnchor.constraint(equalToConstant:  UIScreen.main.bounds.size.width),
-    ])
+    KeyboardSpecs.isLandscape = UIScreen.main.bounds.size.width > UIScreen.main.bounds.size.height
 
-    switch currentLayout {
-      case .typingView:
-        NSLayoutConstraint.activate([
-          typingViewController.view.heightAnchor.constraint(
-            equalToConstant:  KeyboardSpecs.keyboardButtonsViewHeight),
-          typingViewController.view.widthAnchor.constraint(
-            equalToConstant:  UIScreen.main.bounds.size.width),
-        ])
-      case .detailView:
-        NSLayoutConstraint.activate([
-          detailViewController.view.heightAnchor.constraint(
-            equalToConstant:  KeyboardSpecs.keyboardButtonsViewHeight),
-          detailViewController.view.widthAnchor.constraint(
-            equalToConstant:  UIScreen.main.bounds.size.width),
-        ])
-      default:
-        fatalError()
-    }
+    NSLayoutConstraint.deactivate(constraints)
+    let heightConstraint = mainStackView.heightAnchor.constraint(equalToConstant: KeyboardSpecs.superViewHeight)
+    heightConstraint.priority = UILayoutPriority(999)
+    constraints = [
+      heightConstraint,
+      topBarView.heightAnchor.constraint(equalToConstant:  KeyboardSpecs.cryptoButtonsViewHeight),
+      topBarView.widthAnchor.constraint(equalTo:  mainStackView.widthAnchor),
+
+      typingViewController.view.widthAnchor.constraint(equalTo:  mainStackView.widthAnchor),
+
+      detailViewController.view.widthAnchor.constraint(equalTo:  mainStackView.widthAnchor),
+
+      layoutButton.heightAnchor.constraint(equalToConstant: KeyboardSpecs.bottomBarViewHeight - KeyboardSpecs.verticalSpacing),
+      layoutButton.widthAnchor.constraint(equalTo: layoutButton.heightAnchor),
+      textView.heightAnchor.constraint(equalTo: topBarView.heightAnchor),
+      chatSelectionButton.heightAnchor.constraint(equalTo: topBarView.heightAnchor),
+      chatSelectionButton.widthAnchor.constraint(equalToConstant: KeyboardSpecs.cryptoButtonsViewHeight * 2),
+    ]
+
+    NSLayoutConstraint.activate(constraints)
 
   }
 
@@ -201,12 +198,6 @@ class KeyboardViewController: UIInputViewController {
     NSLayoutConstraint.activate([
       spacerView.widthAnchor.constraint(equalToConstant: 0),
       spacerView2.widthAnchor.constraint(equalToConstant: 0),
-      layoutButton.heightAnchor.constraint(
-        equalToConstant: KeyboardSpecs.bottomBarViewHeight - KeyboardSpecs.verticalSpacing),
-      layoutButton.widthAnchor.constraint(equalTo: layoutButton.heightAnchor),
-      textView.heightAnchor.constraint(equalTo: topBarView.heightAnchor),
-      chatSelectionButton.heightAnchor.constraint(equalTo: topBarView.heightAnchor),
-      chatSelectionButton.widthAnchor.constraint(equalToConstant: KeyboardSpecs.cryptoButtonsViewHeight * 2),
     ])
 
     mainStackView.addArrangedSubview(topBarView)
