@@ -33,7 +33,7 @@ class KeyboardButton: UIButton {
       ),
       keycapBackground.heightAnchor.constraint(
         equalTo: self.heightAnchor,
-        constant: -KeyboardSpecs.verticalSpacing
+        multiplier: 0.75
       ),
       keycapBackground.centerXAnchor.constraint(equalTo: self.centerXAnchor),
       keycapBackground.centerYAnchor.constraint(equalTo: self.centerYAnchor),
@@ -62,8 +62,8 @@ class KeyboardButton: UIButton {
     self.addSubview(imageView)
 
     NSLayoutConstraint.activate([
-      imageView.widthAnchor.constraint(equalTo: keycapBackground.widthAnchor, multiplier: 0.5),
-      imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor),
+      imageView.heightAnchor.constraint(equalTo: keycapBackground.heightAnchor, multiplier: 0.5),
+      imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor),
       imageView.centerXAnchor.constraint(equalTo: keycapBackground.centerXAnchor),
       imageView.centerYAnchor.constraint(equalTo: keycapBackground.centerYAnchor),
     ])
