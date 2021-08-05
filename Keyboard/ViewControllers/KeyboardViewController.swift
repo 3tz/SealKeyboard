@@ -118,6 +118,8 @@ class KeyboardViewController: UIInputViewController {
     let color = darkMode ? UIColor.white : UIColor.black
     chatSelectionButton.setTitleColor(color, for: .normal)
     chatSelectionButton.tintColor = color
+    layoutButton.tintColor = color
+    layoutButton.layer.borderColor = color.cgColor
   }
 
   override func viewWillDisappear(_ animated: Bool) {
@@ -155,21 +157,27 @@ class KeyboardViewController: UIInputViewController {
   }
 
   func loadTopBarView() {
+    let darkMode = traitCollection.userInterfaceStyle == .dark
+    let color = darkMode ? UIColor.white : UIColor.black
+
     // create the layout switch button
     layoutButton = UIButton()
     layoutButton.translatesAutoresizingMaskIntoConstraints = false
-    let imageSystemName = currentLayout == .typingView ? "message.fill" : "keyboard"
+    let imageSystemName = currentLayout == .typingView ? "message" : "keyboard"
     layoutButton.setImage(UIImage(systemName: imageSystemName), for: .normal)
-    layoutButton.backgroundColor = .systemBlue
-    layoutButton.tintColor = .white
-    layoutButton.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
+    layoutButton.backgroundColor = .clear
+    layoutButton.tintColor = color
+    let layoutButtonWidth = KeyboardSpecs.bottomBarViewHeight - KeyboardSpecs.verticalSpacing
+    layoutButton.layer.cornerRadius = layoutButtonWidth / 2
+    layoutButton.layer.borderWidth = 1.5
+    layoutButton.layer.borderColor = color.cgColor
     layoutButton.addTarget(self, action: #selector(layoutButtonPressed(_:)), for: .touchUpInside)
 
     // Create the status / decryption text view
     textView = UITextView()
     textView.isEditable = true
     textView.isSelectable = false
-    textView.text = "Ready!"
+    textView.text = ""
     textView.backgroundColor = .clear
     textView.translatesAutoresizingMaskIntoConstraints = false
 
@@ -179,8 +187,6 @@ class KeyboardViewController: UIInputViewController {
     chatSelectionButton.semanticContentAttribute = .forceRightToLeft
     updateCurrentChatTitle()
     chatSelectionButton.contentHorizontalAlignment = .right
-    let darkMode = traitCollection.userInterfaceStyle == .dark
-    let color = darkMode ? UIColor.white : UIColor.black
     chatSelectionButton.setTitleColor(color, for: .normal)
     chatSelectionButton.tintColor = color
     chatSelectionButton.addTarget(
@@ -213,7 +219,7 @@ class KeyboardViewController: UIInputViewController {
         typingViewController.view.isHidden = false
         currentLayout = .typingView
         layoutButton.setImage(
-          UIImage(systemName: "message.fill"), for: .normal)
+          UIImage(systemName: "message"), for: .normal)
       case .typingView:
         typingViewController.view.isHidden = true
         detailViewController.view.isHidden = false
