@@ -43,6 +43,7 @@ class ChatSelectionPopoverViewController: UITableViewController, NSFetchedResult
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
     cell.textLabel?.text = fetchedResultsController.fetchedObjects![indexPath.row].displayTitle
+    cell.textLabel?.font = cell.textLabel?.font.withSize(KeyboardSpecs.popupViewCellFontSize)
     cell.accessoryType = (indexPath.row == ChatManager.shared.currentIndex) ? .checkmark : .none
 
     return cell

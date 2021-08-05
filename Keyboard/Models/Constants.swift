@@ -61,6 +61,8 @@ struct KeyboardSpecs {
     standardFontWeight = UIFont.Weight.light,
     specialFontSize = 16 as CGFloat,
 
+    popupViewCellFontSize = 18 as CGFloat,
+
     bottomBarViewHeight = keyboardButtonsViewHeight / 4,
 
     messageCellPopoverMenuHeight = 40 as CGFloat,
