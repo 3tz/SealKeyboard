@@ -11,6 +11,7 @@ import UIKit
 
 class KeyboardButton: UIButton {
   var keycapBackground: UILabel!
+  var shadowView: UIView!
 
   convenience init(keyname: String) {
     self.init(type: .custom)
@@ -25,18 +26,26 @@ class KeyboardButton: UIButton {
 
     self.insertSubview(keycapBackground, at: 0)
 
+    shadowView = UIView()
+    shadowView.translatesAutoresizingMaskIntoConstraints = false
+    shadowView.backgroundColor = .black
+    shadowView.layer.shadowColor = UIColor.black.cgColor
+    shadowView.layer.shadowOpacity = 1
+    shadowView.layer.shadowOffset = CGSize(width: 0, height: 2)
+    shadowView.layer.masksToBounds = false
+    shadowView.isUserInteractionEnabled = false
+    self.insertSubview(shadowView, at: 0)
 
     NSLayoutConstraint.activate([
-      keycapBackground.widthAnchor.constraint(
-        equalTo: self.widthAnchor,
-        constant: -KeyboardSpecs.horizontalSpacing
-      ),
-      keycapBackground.heightAnchor.constraint(
-        equalTo: self.heightAnchor,
-        multiplier: 0.75
-      ),
+      keycapBackground.widthAnchor.constraint(equalTo: self.widthAnchor, constant: -KeyboardSpecs.horizontalSpacing),
+      keycapBackground.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.75),
       keycapBackground.centerXAnchor.constraint(equalTo: self.centerXAnchor),
       keycapBackground.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+
+      shadowView.widthAnchor.constraint(equalTo: keycapBackground.widthAnchor, constant: -KeyboardSpecs.buttonCornerRadius),
+      shadowView.heightAnchor.constraint(equalTo: keycapBackground.heightAnchor, constant: -KeyboardSpecs.buttonCornerRadius),
+      shadowView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+      shadowView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
     ])
 
     setFontSize(KeyboardSpecs.fontSize(keyname))
