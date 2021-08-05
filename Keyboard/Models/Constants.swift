@@ -58,6 +58,7 @@ struct KeyboardSpecs {
     buttonCornerRadius = 7 as CGFloat,
 
     standardFontSize = 25 as CGFloat,
+    standardFontWeight = UIFont.Weight.light,
     specialFontSize = 16 as CGFloat,
 
     bottomBarViewHeight = keyboardButtonsViewHeight / 4,
@@ -93,17 +94,20 @@ struct KeyboardSpecs {
     return keyboardButtonsViewHeight - bottomBarViewHeight
   }
 
-  static private let _specialFontSize: [String: CGFloat] = [
-    "123": specialFontSize,
-    "ABC": specialFontSize,
-    "space": specialFontSize,
-    "return": specialFontSize,
-    "switch": specialFontSize,
-    "#+=": specialFontSize,
-    "seal": specialFontSize,
-    "shift": 25,
-    "backspace": 25,
+  static private let _specialFontSizeWeight: [String: (CGFloat, UIFont.Weight)] = [
+    "123": (specialFontSize, .regular),
+    "ABC": (specialFontSize, .regular),
+    "space": (specialFontSize, .regular),
+    "return": (specialFontSize, .regular),
+    "switch": (specialFontSize, .regular),
+    "#+=":( specialFontSize, .regular),
+    "seal": (specialFontSize, .regular),
+    "shift": (25, .light),
+    "backspace": (25, .light),
   ]
+
+  static private let _inputFontWeight = UIFont.Weight.light,
+    _otherFontWeight = UIFont.Weight.regular
 
   static let specialBackgroundDark = UIColor.darkGray,
     specialTitleDark = UIColor.white,
@@ -119,8 +123,8 @@ struct KeyboardSpecs {
     pressedSpecialBackgroundLight = regularBackgroundLight,
     pressedSpecialBackgroundDark = regularBackgroundDark
 
-  static func fontSize(_ keyname: String) -> CGFloat {
-    return _specialFontSize[keyname, default: standardFontSize]
+  static func fontSizeAndWeight(_ keyname: String) -> (CGFloat, UIFont.Weight) {
+    return _specialFontSizeWeight[keyname, default: (standardFontSize, standardFontWeight)]
   }
 
   static let topBarViewBackgroundColor = UIColor.systemGray5,

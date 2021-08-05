@@ -48,8 +48,7 @@ class KeyboardButton: UIButton {
       shadowView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
     ])
 
-    setFontSize(KeyboardSpecs.fontSize(keyname))
-    sizeToFit()
+//    sizeToFit()
 
   }
 
@@ -77,6 +76,12 @@ class KeyboardButton: UIButton {
       imageView.centerYAnchor.constraint(equalTo: keycapBackground.centerYAnchor),
     ])
 
+  }
+
+  override func setTitle(_ title: String?, for state: UIControl.State) {
+    super.setTitle(title, for: state)
+    let (size, weight) = KeyboardSpecs.fontSizeAndWeight(accessibilityIdentifier!)
+    self.titleLabel!.font = UIFont.systemFont(ofSize: size, weight: weight)
   }
 
   func setFontSize(_ fontSize: CGFloat) {
