@@ -220,6 +220,7 @@ class KeyboardViewController: UIInputViewController {
         currentLayout = .detailView
         layoutButton.setImage(
           UIImage(systemName: "keyboard"), for: .normal)
+        detailViewController.chatViewController.messagesCollectionView.reloadDataAndKeepOffset()
       default:
         fatalError()
     }
@@ -362,17 +363,16 @@ class KeyboardViewController: UIInputViewController {
         switch currentLayout {
           case .detailView:
             statusText = "\(StatusText.unsealSuccessReceivedCiphertext). See below."
-            detailViewController.appendStringMessageToChatView(
-              outgoingMessageString!,
-              sender: NSMessageSender(
-                senderId: theirSigningPublicKey, displayName: receivedMessage.name)
-            )
           case .typingView:
-            // TODO: also append to coredata
              statusText = "\(StatusText.unsealSuccessReceivedCiphertext):\n\(outgoingMessageString!)"
           default:
             fatalError()
         }
+        detailViewController.appendStringMessageToChatView(
+          outgoingMessageString!,
+          sender: NSMessageSender(
+            senderId: theirSigningPublicKey, displayName: receivedMessage.name)
+        )
         textView.text = statusText
     }
   }
