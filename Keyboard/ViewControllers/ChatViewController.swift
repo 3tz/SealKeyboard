@@ -68,8 +68,8 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
 
   func reloadMessages(keepOffset: Bool = false) {
     guard let chatManagerCurrentChat = ChatManager.shared.currentChat else {
+      NSLog("No currentChat available")
       return
-//      fatalError("No currentChat available")
     }
 
     // Initialize if it's the first time or reinitialize if chat has switched
@@ -150,6 +150,7 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
   @objc func loadMoreMessages() {
     guard let _ = ChatManager.shared.currentChat else {
       self.refreshControl.endRefreshing()
+      NSLog("No current chat exists.")
       return
     }
     DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 1) {
@@ -157,11 +158,6 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
         // reduce the fetch offset and load from there
         // Fetch offset of 0 means load everything from message 0 and up, i.e., all messages
         self.fetchOffset = max(0, self.fetchOffset-self.numberOfNewMessagesToLoad)
-
-        // Load linearly more for each refresh
-        if self.fetchOffset != 0 {
-          self.numberOfNewMessagesToLoad += self.numberOfNewMessagesToLoad
-        }
         self.reloadMessages(keepOffset: true)
         self.refreshControl.endRefreshing()
       }
