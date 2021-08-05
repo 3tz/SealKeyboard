@@ -18,6 +18,7 @@ class KeyboardViewController: UIInputViewController {
   var layoutButton: UIButton!
   var textView: UITextView!
 
+  var mainStackView: UIStackView!
   var chatSelectionButton: UIButton!
   var topBarView: UIStackView!
   var typingViewController: TypingViewController!
@@ -36,18 +37,16 @@ class KeyboardViewController: UIInputViewController {
 
   // MARK: view overrides
 
-  override func loadView() {
-    // Use stackview as the main view
-    let mainStackView = UIStackView()
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    // initialize the main stack view
+    mainStackView = UIStackView()
     mainStackView.axis = .vertical
     mainStackView.spacing = KeyboardSpecs.superViewSpacing
     mainStackView.alignment = .center
+    mainStackView.translatesAutoresizingMaskIntoConstraints = false
+    view.addSubview(mainStackView)
 
-    view = mainStackView
-  }
-
-  override func viewDidLoad() {
-    super.viewDidLoad()
     // Use the layout from last time
     let storedLayoutInt = UserDefaults.standard.integer(forKey: DefaultKeys.currentLayout.rawValue)
     currentLayout = KeyboardLayout(rawValue: storedLayoutInt)
@@ -81,24 +80,25 @@ class KeyboardViewController: UIInputViewController {
   override func updateViewConstraints() {
     super.updateViewConstraints()
 
-    guard let mainStackView = view as? UIStackView else {
-      fatalError()
-    }
     KeyboardSpecs.isLandscape = UIScreen.main.bounds.size.width > UIScreen.main.bounds.size.height
 
     NSLayoutConstraint.deactivate(constraints)
-    let heightConstraint = mainStackView.heightAnchor.constraint(equalToConstant: KeyboardSpecs.superViewHeight)
+
+    let heightConstraint = view.heightAnchor.constraint(equalToConstant: KeyboardSpecs.superViewHeight)
     heightConstraint.priority = UILayoutPriority(999)
     constraints = [
       heightConstraint,
+      mainStackView.heightAnchor.constraint(equalToConstant: KeyboardSpecs.superViewHeight),
+      mainStackView.widthAnchor.constraint(equalTo: view.widthAnchor),
+
       topBarView.heightAnchor.constraint(equalToConstant:  KeyboardSpecs.cryptoButtonsViewHeight),
       topBarView.widthAnchor.constraint(equalTo:  mainStackView.widthAnchor),
 
       typingViewController.view.widthAnchor.constraint(equalTo:  mainStackView.widthAnchor),
-
       detailViewController.view.widthAnchor.constraint(equalTo:  mainStackView.widthAnchor),
 
-      layoutButton.heightAnchor.constraint(equalToConstant: KeyboardSpecs.bottomBarViewHeight - KeyboardSpecs.verticalSpacing),
+      layoutButton.heightAnchor.constraint(
+        equalToConstant: KeyboardSpecs.bottomBarViewHeight - KeyboardSpecs.verticalSpacing),
       layoutButton.widthAnchor.constraint(equalTo: layoutButton.heightAnchor),
       textView.heightAnchor.constraint(equalTo: topBarView.heightAnchor),
       chatSelectionButton.heightAnchor.constraint(equalTo: topBarView.heightAnchor),
@@ -106,7 +106,10 @@ class KeyboardViewController: UIInputViewController {
     ]
 
     NSLayoutConstraint.activate(constraints)
+  }
 
+  override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    updateViewConstraints()
   }
 
   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -139,21 +142,19 @@ class KeyboardViewController: UIInputViewController {
   func loadTypingViewControllerWithViewHidden() {
     typingViewController = TypingViewController(parentController: self)
     addChild(typingViewController)
-    (view as! UIStackView).addArrangedSubview(typingViewController.view)
+    mainStackView.addArrangedSubview(typingViewController.view)
     typingViewController.view.isHidden = true
   }
 
   func loadChatViewControllerWithViewHidden() {
     detailViewController = DetailViewController(keyboardViewController: self)
     addChild(detailViewController)
-    (view as! UIStackView).addArrangedSubview(detailViewController.view)
-    (view as! UIStackView).sendSubviewToBack(detailViewController.view)
+    mainStackView.addArrangedSubview(detailViewController.view)
+    mainStackView.sendSubviewToBack(detailViewController.view)
     detailViewController.view.isHidden = true
   }
 
   func loadTopBarView() {
-    let mainStackView = view as! UIStackView
-
     // create the layout switch button
     layoutButton = UIButton()
     layoutButton.translatesAutoresizingMaskIntoConstraints = false

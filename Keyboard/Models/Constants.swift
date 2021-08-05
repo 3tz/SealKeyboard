@@ -61,7 +61,6 @@ struct KeyboardSpecs {
     specialFontSize = 16 as CGFloat,
 
     bottomBarViewHeight = keyboardButtonsViewHeight / 4,
-    chatViewHeight = keyboardButtonsViewHeight - bottomBarViewHeight,
 
     messageCellPopoverMenuHeight = 40 as CGFloat,
     messageCellPopoverMenuWidth = 60 as CGFloat
@@ -88,6 +87,10 @@ struct KeyboardSpecs {
   }
   static var superViewHeight: CGFloat {
     return isLandscape ? superViewHeightLandscape : superViewHeightPortrait
+  }
+
+  static var chatViewHeight: CGFloat {
+    return keyboardButtonsViewHeight - bottomBarViewHeight
   }
 
   static private let _specialFontSize: [String: CGFloat] = [
