@@ -101,7 +101,12 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
       withName: "ChatViewController.fetchedResultsController")
     try! fetchedResultsController!.performFetch()
     if keepOffset {
-      self.messagesCollectionView.reloadDataAndKeepOffset()
+      if isLastSectionVisible() {
+        messagesCollectionView.reloadData()
+        messagesCollectionView.scrollToLastItem(at: .bottom, animated: true)
+      } else {
+        messagesCollectionView.reloadDataAndKeepOffset()
+      }
     } else {
       messagesCollectionView.reloadData()
       messagesCollectionView.scrollToLastItem(at: .bottom, animated: false)
@@ -115,8 +120,7 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
       coreSender: sender,
       coreKind: NSMessageKind(message: MessageKind.text(string))
     )
-    reloadMessages()
-    reloadMessagesCollectionViewLastSection()
+    reloadMessages(keepOffset: true)
   }
 
   func reloadMessagesCollectionViewLastSection() {
