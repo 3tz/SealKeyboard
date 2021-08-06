@@ -66,7 +66,7 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
 
   // MARK: methods for updating messages
 
-  func reloadMessages(keepOffset: Bool = false) {
+  func reinitFetchedResultsControllerIfNeededAndFetch() {
     guard let chatManagerCurrentChat = ChatManager.shared.currentChat else {
       NSLog("No currentChat available")
       return
@@ -100,8 +100,12 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
     NSFetchedResultsController<Message>.deleteCache(
       withName: "ChatViewController.fetchedResultsController")
     try! fetchedResultsController!.performFetch()
+  }
+
+  func reloadMessages(keepOffset: Bool = false) {
+    reinitFetchedResultsControllerIfNeededAndFetch()
     if keepOffset {
-      if isLastSectionVisible() {
+      if isLastSectionVisible() ||  messageCount == 1 {
         messagesCollectionView.reloadData()
         messagesCollectionView.scrollToLastItem(at: .bottom, animated: true)
       } else {
@@ -120,11 +124,13 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
       coreSender: sender,
       coreKind: NSMessageKind(message: MessageKind.text(string))
     )
-    reloadMessages(keepOffset: true)
+    reloadMessagesCollectionViewLastSection()
   }
 
   func reloadMessagesCollectionViewLastSection() {
+    reinitFetchedResultsControllerIfNeededAndFetch()
       // Reload last section to update header/footer labels
+    messagesCollectionView.reloadData()
     messagesCollectionView.performBatchUpdates({
         if messageCount >= 2 {
           messagesCollectionView.reloadSections([messageCount - 2])
