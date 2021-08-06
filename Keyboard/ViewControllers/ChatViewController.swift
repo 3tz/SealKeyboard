@@ -139,9 +139,7 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
   }
 
   func deleteAllChat() {
-    let context = CoreDataContainer.shared.persistentContainer.viewContext
-    try! context.execute(NSBatchDeleteRequest(fetchRequest: Message.fetchRequest()))
-    CoreDataContainer.shared.saveContext()
+    ChatManager.shared.deleteAllMessagesInCurrentChat()
     reloadMessages()
   }
 

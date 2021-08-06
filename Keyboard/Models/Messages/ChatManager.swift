@@ -102,6 +102,15 @@ class ChatManager {
     currentIndex = max(0, currentIndex-1)
   }
 
+  func deleteAllMessagesInCurrentChat() {
+    let context = CoreDataContainer.shared.persistentContainer.viewContext
+    for message in currentChat?.messages ?? [] {
+      context.delete(message as! Message)
+    }
+
+    CoreDataContainer.shared.saveContext()
+  }
+
   func appendMessageToCurrentChat(
     coreMessageId: String,
     coreSentDate: Date,

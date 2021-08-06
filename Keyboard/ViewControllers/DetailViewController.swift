@@ -52,7 +52,7 @@ class DetailViewController: UIViewController {
       chatViewController.view.widthAnchor.constraint(equalTo: view.widthAnchor),
       buttonLookup["globeButton"]!.widthAnchor.constraint(equalTo: buttonLookup["globeButton"]!.heightAnchor),
       buttonLookup["globeButton"]!.heightAnchor.constraint(equalToConstant: bottomBarButtonHeight),
-      buttonLookup["deleteChatButton"]!.heightAnchor.constraint(equalToConstant: bottomBarButtonHeight),
+      buttonLookup["clearMessagesButton"]!.heightAnchor.constraint(equalToConstant: bottomBarButtonHeight),
       buttonLookup["request"]!.heightAnchor.constraint(equalToConstant: bottomBarButtonHeight),
       buttonLookup["seal"]!.heightAnchor.constraint(equalToConstant: bottomBarButtonHeight),
       buttonLookup["return"]!.heightAnchor.constraint(equalToConstant: bottomBarButtonHeight),
@@ -73,14 +73,14 @@ class DetailViewController: UIViewController {
       for: .allTouchEvents
     )
 
-    let deleteChatButton = UIButton(type: .system)
-    deleteChatButton.setTitle("delete all chat", for: .normal)
-    deleteChatButton.sizeToFit()
-    deleteChatButton.backgroundColor = .systemRed
-    deleteChatButton.setTitleColor(.white, for: [])
-    deleteChatButton.translatesAutoresizingMaskIntoConstraints = false
-    deleteChatButton.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
-    deleteChatButton.addTarget(self, action: #selector(deleteChatButtonPressed(_:)), for: .touchUpInside)
+    let clearMessagesButton = UIButton(type: .system)
+    clearMessagesButton.setTitle("clear messages", for: .normal)
+    clearMessagesButton.sizeToFit()
+    clearMessagesButton.backgroundColor = .systemRed
+    clearMessagesButton.setTitleColor(.white, for: [])
+    clearMessagesButton.translatesAutoresizingMaskIntoConstraints = false
+    clearMessagesButton.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
+    clearMessagesButton.addTarget(self, action: #selector(deleteChatButtonPressed(_:)), for: .touchUpInside)
 
     let requestButton = UIButton(type: .system)
     requestButton.setTitle("Request", for: .normal)
@@ -110,7 +110,7 @@ class DetailViewController: UIViewController {
     returnButton.addTarget(self, action: #selector(returnButtonPressed(_:)), for: .touchUpInside)
 
     buttonLookup["globeButton"] = globeButton
-    buttonLookup["deleteChatButton"] = deleteChatButton
+    buttonLookup["clearMessagesButton"] = clearMessagesButton
     buttonLookup["request"] = requestButton
     buttonLookup["seal"] = sealButton
     buttonLookup["return"] = returnButton
@@ -122,7 +122,7 @@ class DetailViewController: UIViewController {
     spacerView1.widthAnchor.constraint(equalToConstant: 0).isActive = true
     spacerView2.widthAnchor.constraint(equalToConstant: 0).isActive = true
     bottomBarView = UIStackView(
-      arrangedSubviews: [spacerView1, globeButton, deleteChatButton, requestButton, sealButton, returnButton, spacerView2]
+      arrangedSubviews: [spacerView1, globeButton, clearMessagesButton, requestButton, sealButton, returnButton, spacerView2]
     )
     bottomBarView.axis = .horizontal
     bottomBarView.spacing = KeyboardSpecs.horizontalSpacing
