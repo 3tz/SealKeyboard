@@ -74,7 +74,7 @@ class DetailViewController: UIViewController {
     )
 
     let clearMessagesButton = UIButton(type: .system)
-    clearMessagesButton.setTitle("clear messages", for: .normal)
+    clearMessagesButton.setTitle("clear", for: .normal)
     clearMessagesButton.sizeToFit()
     clearMessagesButton.backgroundColor = .systemRed
     clearMessagesButton.setTitleColor(.white, for: [])
@@ -140,8 +140,17 @@ class DetailViewController: UIViewController {
 
   // MARK: @objc #selector methods
 
-  @objc func deleteChatButtonPressed(_ sender: Any) {
-    chatViewController.deleteAllChat()
+  @objc func deleteChatButtonPressed(_ sender: UIButton) {
+    let popover = ClearMessagesPopoverViewController(parentController: controller)
+    popover.modalPresentationStyle = .popover
+    popover.preferredContentSize = CGSize(width: KeyboardSpecs.cryptoButtonsViewHeight * 3, height: KeyboardSpecs.cryptoButtonsViewHeight * 0.75)
+    let popoverController = popover.popoverPresentationController
+    popoverController?.delegate = self
+    popoverController?.sourceView = sender
+    popoverController?.sourceRect = CGRect(x: sender.bounds.midX, y: sender.bounds.midY - 15, width: 0, height: 0)
+
+    popoverController?.permittedArrowDirections = .down
+    present(popover, animated: true, completion: nil)
   }
 
   @objc func requestButtonPressed(_ sender: Any) {
@@ -161,3 +170,8 @@ class DetailViewController: UIViewController {
   }
 }
 
+extension DetailViewController: UIPopoverPresentationControllerDelegate {
+  func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
+    return .none
+  }
+}
