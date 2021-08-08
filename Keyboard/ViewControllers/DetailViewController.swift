@@ -41,6 +41,15 @@ class DetailViewController: UIViewController {
     view.sendSubviewToBack(chatViewController.view)
   }
 
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+
+    let returnType = controller.textDocumentProxy.returnKeyType ?? .default
+    if returnType == .send {
+        buttonLookup["seal"]!.setTitle("seal & send", for: .normal)
+    }
+  }
+
   override func updateViewConstraints() {
     super.updateViewConstraints()
     let bottomBarButtonHeight = KeyboardSpecs.bottomBarViewHeight - KeyboardSpecs.verticalSpacing
@@ -55,7 +64,6 @@ class DetailViewController: UIViewController {
       buttonLookup["clearMessagesButton"]!.heightAnchor.constraint(equalToConstant: bottomBarButtonHeight),
       buttonLookup["request"]!.heightAnchor.constraint(equalToConstant: bottomBarButtonHeight),
       buttonLookup["seal"]!.heightAnchor.constraint(equalToConstant: bottomBarButtonHeight),
-      buttonLookup["return"]!.heightAnchor.constraint(equalToConstant: bottomBarButtonHeight),
     ])
 
   }
@@ -100,20 +108,10 @@ class DetailViewController: UIViewController {
     sealButton.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
     sealButton.addTarget(self, action: #selector(sealButtonPressed(_:)), for: .touchUpInside)
 
-    let returnButton = UIButton(type: .system)
-    returnButton.setTitle("return", for: .normal)
-    returnButton.sizeToFit()
-    returnButton.backgroundColor = .systemBlue
-    returnButton.setTitleColor(.white, for: [])
-    returnButton.translatesAutoresizingMaskIntoConstraints = false
-    returnButton.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
-    returnButton.addTarget(self, action: #selector(returnButtonPressed(_:)), for: .touchUpInside)
-
     buttonLookup["globeButton"] = globeButton
     buttonLookup["clearMessagesButton"] = clearMessagesButton
     buttonLookup["request"] = requestButton
     buttonLookup["seal"] = sealButton
-    buttonLookup["return"] = returnButton
 
 
     // Add them to a horizontal stackview
@@ -122,7 +120,7 @@ class DetailViewController: UIViewController {
     spacerView1.widthAnchor.constraint(equalToConstant: 0).isActive = true
     spacerView2.widthAnchor.constraint(equalToConstant: 0).isActive = true
     bottomBarView = UIStackView(
-      arrangedSubviews: [spacerView1, globeButton, clearMessagesButton, requestButton, sealButton, returnButton, spacerView2]
+      arrangedSubviews: [spacerView1, globeButton, clearMessagesButton, requestButton, sealButton, spacerView2]
     )
     bottomBarView.axis = .horizontal
     bottomBarView.spacing = KeyboardSpecs.horizontalSpacing
@@ -162,12 +160,17 @@ class DetailViewController: UIViewController {
   }
 
   @objc func sealButtonPressed(_ sender: Any) {
-    controller.sealMessageBox()
+    // if .send, it's "Seal & Send" button; otherwise, it's just "Seal"
+    let returnKeyType = controller.textDocumentProxy.returnKeyType ?? .default
+    switch returnKeyType {
+      case .send:
+        if !controller.textDocumentProxy.hasText { break }
+        controller.sealMessageBox(andSend: true)
+      default:
+        controller.sealMessageBox()
+    }
   }
 
-  @objc func returnButtonPressed(_ sender: Any) {
-    controller.textDocumentProxy.insertText("\n") 
-  }
 }
 
 extension DetailViewController: UIPopoverPresentationControllerDelegate {
