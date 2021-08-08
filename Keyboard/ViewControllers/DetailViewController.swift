@@ -91,7 +91,7 @@ class DetailViewController: UIViewController {
     clearMessagesButton.addTarget(self, action: #selector(deleteChatButtonPressed(_:)), for: .touchUpInside)
 
     let requestButton = UIButton(type: .system)
-    requestButton.setTitle("Request", for: .normal)
+    requestButton.setTitle("request", for: .normal)
     requestButton.sizeToFit()
     requestButton.backgroundColor = .systemBlue
     requestButton.setTitleColor(.white, for: [])
@@ -100,7 +100,7 @@ class DetailViewController: UIViewController {
     requestButton.addTarget(self, action: #selector(requestButtonPressed(_:)), for: .touchUpInside)
 
     let sealButton = UIButton(type: .system)
-    sealButton.setTitle("Seal", for: .normal)
+    sealButton.setTitle("seal", for: .normal)
     sealButton.sizeToFit()
     sealButton.backgroundColor = .systemBlue
     sealButton.setTitleColor(.white, for: [])

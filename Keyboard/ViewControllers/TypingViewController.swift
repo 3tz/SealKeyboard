@@ -333,12 +333,12 @@ class TypingViewController : UIViewController {
         spacebarConstraints.append(constraint)
 
         buttonLookup["return"]!.removeFromSuperview()
-        buttonLookup["seal"]!.setTitle("Seal & Send", for: .normal)
+        buttonLookup["seal"]!.setTitle("seal & send", for: .normal)
       case .default:
-        buttonLookup["seal"]!.setTitle("Seal", for: .normal)
+        buttonLookup["seal"]!.setTitle("seal", for: .normal)
         buttonLookup["return"]!.setTitle("return", for: .normal)
       default:
-        buttonLookup["seal"]!.setTitle("Seal", for: .normal)
+        buttonLookup["seal"]!.setTitle("seal", for: .normal)
         buttonLookup["return"]!.setTitle(
           KeyboardSpecs.returnKeyTypeToString[returnType, default: "return"],
           for: .normal)
