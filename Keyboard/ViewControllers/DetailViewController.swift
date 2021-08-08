@@ -14,7 +14,10 @@ class DetailViewController: UIViewController {
   var chatViewController: ChatViewController!
   var bottomBarView: UIStackView!
 
-  var buttonLookup: [String: UIButton] = [:]
+  var globeButton: UIButton!
+  var clearMessagesButton: UIButton!
+  var requestButton: UIButton!
+  var sealButton: UIButton!
 
   convenience init(keyboardViewController: KeyboardViewController) {
     self.init()
@@ -46,7 +49,7 @@ class DetailViewController: UIViewController {
 
     let returnType = controller.textDocumentProxy.returnKeyType ?? .default
     if returnType == .send {
-        buttonLookup["seal"]!.setTitle("seal & send", for: .normal)
+        sealButton.setTitle("seal & send", for: .normal)
     }
   }
 
@@ -59,17 +62,36 @@ class DetailViewController: UIViewController {
       bottomBarView.widthAnchor.constraint(equalTo: view.widthAnchor),
 
       chatViewController.view.widthAnchor.constraint(equalTo: view.widthAnchor),
-      buttonLookup["globeButton"]!.widthAnchor.constraint(equalTo: buttonLookup["globeButton"]!.heightAnchor),
-      buttonLookup["globeButton"]!.heightAnchor.constraint(equalToConstant: bottomBarButtonHeight),
-      buttonLookup["clearMessagesButton"]!.heightAnchor.constraint(equalToConstant: bottomBarButtonHeight),
-      buttonLookup["request"]!.heightAnchor.constraint(equalToConstant: bottomBarButtonHeight),
-      buttonLookup["seal"]!.heightAnchor.constraint(equalToConstant: bottomBarButtonHeight),
+      globeButton.widthAnchor.constraint(equalTo: globeButton.heightAnchor),
+      globeButton.heightAnchor.constraint(equalToConstant: bottomBarButtonHeight),
+      clearMessagesButton.heightAnchor.constraint(equalToConstant: bottomBarButtonHeight),
+      requestButton.heightAnchor.constraint(equalToConstant: bottomBarButtonHeight),
+      sealButton.heightAnchor.constraint(equalToConstant: bottomBarButtonHeight),
     ])
 
+    // Update switch key color
+    let darkMode = traitCollection.userInterfaceStyle == .dark
+    let backgroundColor = darkMode ? KeyboardSpecs.specialBackgroundDark : KeyboardSpecs.specialBackgroundLight
+    let tintColor = darkMode ? KeyboardSpecs.specialTitleDark : KeyboardSpecs.specialTitleLight
+
+    globeButton.backgroundColor = backgroundColor
+    globeButton.tintColor = tintColor
+  }
+
+  override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+    super.traitCollectionDidChange(previousTraitCollection)
+
+    // Update switch key color
+    let darkMode = traitCollection.userInterfaceStyle == .dark
+    let backgroundColor = darkMode ? KeyboardSpecs.specialBackgroundDark : KeyboardSpecs.specialBackgroundLight
+    let tintColor = darkMode ? KeyboardSpecs.specialTitleDark : KeyboardSpecs.specialTitleLight
+
+    globeButton.backgroundColor = backgroundColor
+    globeButton.tintColor = tintColor
   }
 
   private func addBottomBarViewToView() {
-    let globeButton = UIButton(type: .custom)
+    globeButton = UIButton(type: .custom)
     globeButton.setImage(UIImage(systemName: "globe"), for: .normal)
     globeButton.tintColor = .white
     globeButton.backgroundColor = .systemBlue
@@ -81,7 +103,7 @@ class DetailViewController: UIViewController {
       for: .allTouchEvents
     )
 
-    let clearMessagesButton = UIButton(type: .system)
+    clearMessagesButton = UIButton(type: .system)
     clearMessagesButton.setTitle("clear", for: .normal)
     clearMessagesButton.sizeToFit()
     clearMessagesButton.backgroundColor = .systemRed
@@ -90,7 +112,7 @@ class DetailViewController: UIViewController {
     clearMessagesButton.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
     clearMessagesButton.addTarget(self, action: #selector(deleteChatButtonPressed(_:)), for: .touchUpInside)
 
-    let requestButton = UIButton(type: .system)
+    requestButton = UIButton(type: .system)
     requestButton.setTitle("request", for: .normal)
     requestButton.sizeToFit()
     requestButton.backgroundColor = .systemBlue
@@ -99,7 +121,7 @@ class DetailViewController: UIViewController {
     requestButton.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
     requestButton.addTarget(self, action: #selector(requestButtonPressed(_:)), for: .touchUpInside)
 
-    let sealButton = UIButton(type: .system)
+    sealButton = UIButton(type: .system)
     sealButton.setTitle("seal", for: .normal)
     sealButton.sizeToFit()
     sealButton.backgroundColor = .systemBlue
@@ -107,12 +129,6 @@ class DetailViewController: UIViewController {
     sealButton.translatesAutoresizingMaskIntoConstraints = false
     sealButton.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
     sealButton.addTarget(self, action: #selector(sealButtonPressed(_:)), for: .touchUpInside)
-
-    buttonLookup["globeButton"] = globeButton
-    buttonLookup["clearMessagesButton"] = clearMessagesButton
-    buttonLookup["request"] = requestButton
-    buttonLookup["seal"] = sealButton
-
 
     // Add them to a horizontal stackview
     let spacerView1 = UIView(),
