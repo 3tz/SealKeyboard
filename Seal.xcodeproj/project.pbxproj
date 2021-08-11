@@ -193,7 +193,7 @@
 			isa = PBXGroup;
 			children = (
 				30C78EAB26967705008925A4 /* Seal.xcdatamodeld */,
-				306589BA267554B200708E73 /* Seal */,
+				306589BA267554B200708E73 /* HostApp */,
 				306589D42675556400708E73 /* Keyboard */,
 				30EFC1A5267B27A100EF65E8 /* LICENSE */,
 				306589B9267554B200708E73 /* Products */,
@@ -210,7 +210,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		306589BA267554B200708E73 /* Seal */ = {
+		306589BA267554B200708E73 /* HostApp */ = {
 			isa = PBXGroup;
 			children = (
 				306589BB267554B200708E73 /* AppDelegate.swift */,
@@ -221,7 +221,7 @@
 				306589C6267554B300708E73 /* LaunchScreen.storyboard */,
 				306589C9267554B300708E73 /* Info.plist */,
 			);
-			path = Seal;
+			path = HostApp;
 			sourceTree = "<group>";
 		};
 		306589D42675556400708E73 /* Keyboard */ = {
@@ -679,7 +679,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				INFOPLIST_FILE = Seal/Info.plist;
+				INFOPLIST_FILE = HostApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -687,7 +687,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.3tz.seal;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -703,7 +703,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				INFOPLIST_FILE = Seal/Info.plist;
+				INFOPLIST_FILE = HostApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -711,7 +711,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.3tz.seal;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
