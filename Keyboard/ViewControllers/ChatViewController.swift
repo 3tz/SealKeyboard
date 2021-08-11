@@ -68,6 +68,7 @@ class ChatViewController: MessagesViewController, NSFetchedResultsControllerDele
 
   func reinitFetchedResultsControllerIfNeededAndFetch() {
     guard let chatManagerCurrentChat = ChatManager.shared.currentChat else {
+      fetchedResultsController = nil
       NSLog("No currentChat available")
       return
     }
