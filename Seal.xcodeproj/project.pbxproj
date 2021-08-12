@@ -67,6 +67,7 @@
 		30E6C2B326A75F4C005126C8 /* Chat+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E6C2AE26A75F4C005126C8 /* Chat+CoreDataClass.swift */; };
 		30E6C2B426A75F4C005126C8 /* Chat+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E6C2AF26A75F4C005126C8 /* Chat+CoreDataProperties.swift */; };
 		30E6C2B526A75F4C005126C8 /* Chat+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E6C2AF26A75F4C005126C8 /* Chat+CoreDataProperties.swift */; };
+		30EB1ED026C4A4090091040F /* NameChangeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EB1ECF26C4A4090091040F /* NameChangeViewController.swift */; };
 		30EFC19B267B278F00EF65E8 /* KeyStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC196267B278F00EF65E8 /* KeyStoreError.swift */; };
 		30EFC19C267B278F00EF65E8 /* KeyStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC196267B278F00EF65E8 /* KeyStoreError.swift */; };
 		30EFC19D267B278F00EF65E8 /* GenericPasswordStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC197267B278F00EF65E8 /* GenericPasswordStore.swift */; };
@@ -161,6 +162,7 @@
 		30E690B726BCD61D00C6F123 /* ClearMessagesPopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearMessagesPopoverViewController.swift; sourceTree = "<group>"; };
 		30E6C2AE26A75F4C005126C8 /* Chat+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Chat+CoreDataClass.swift"; sourceTree = "<group>"; };
 		30E6C2AF26A75F4C005126C8 /* Chat+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Chat+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		30EB1ECF26C4A4090091040F /* NameChangeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameChangeViewController.swift; sourceTree = "<group>"; };
 		30EFC196267B278F00EF65E8 /* KeyStoreError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyStoreError.swift; sourceTree = "<group>"; };
 		30EFC197267B278F00EF65E8 /* GenericPasswordStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericPasswordStore.swift; sourceTree = "<group>"; };
 		30EFC198267B278F00EF65E8 /* GenericPasswordConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericPasswordConvertible.swift; sourceTree = "<group>"; };
@@ -220,6 +222,7 @@
 				306589C4267554B300708E73 /* Assets.xcassets */,
 				306589C6267554B300708E73 /* LaunchScreen.storyboard */,
 				306589C9267554B300708E73 /* Info.plist */,
+				30EB1ECF26C4A4090091040F /* NameChangeViewController.swift */,
 			);
 			path = HostApp;
 			sourceTree = "<group>";
@@ -447,6 +450,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				30C78EAD26967705008925A4 /* Seal.xcdatamodeld in Sources */,
+				30EB1ED026C4A4090091040F /* NameChangeViewController.swift in Sources */,
 				30E690B926BCD7DA00C6F123 /* ClearMessagesPopoverViewController.swift in Sources */,
 				306589C0267554B200708E73 /* ViewController.swift in Sources */,
 				306589BC267554B200708E73 /* AppDelegate.swift in Sources */,

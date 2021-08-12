@@ -12,7 +12,10 @@ class ViewController: UITableViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    // Do any additional setup after loading the view.
+    title = "Seal"
+    navigationController?.navigationBar.prefersLargeTitles = true
+
+    view.backgroundColor = .systemGroupedBackground
   }
 
 
@@ -27,7 +30,14 @@ class ViewController: UITableViewController {
   }
 
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-      return
+    switch items[indexPath.row] {
+      case "Your Display Name":
+        let vc = storyboard?.instantiateViewController(withIdentifier: "NameChangeViewController") as! UITableViewController
+          navigationController?.pushViewController(vc, animated: true)
+      default:
+        return
+    }
+
   }
 }
 
