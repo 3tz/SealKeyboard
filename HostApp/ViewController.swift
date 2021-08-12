@@ -8,7 +8,10 @@
 import UIKit
 
 class ViewController: UITableViewController {
-  var items:[String] = ["Your Display Name", "Delete All Chats & Messages"]
+  var items:[[HostAppTableViewItemizable]] = [
+    [NameChange()],
+    [DeleteAll()]
+  ]
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -18,26 +21,23 @@ class ViewController: UITableViewController {
     view.backgroundColor = .systemGroupedBackground
   }
 
-
-  override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+  override func numberOfSections(in tableView: UITableView) -> Int {
     return items.count
   }
 
+  override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    return items[section].count
+  }
+
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-      let cell = tableView.dequeueReusableCell(withIdentifier: "ViewController.cellReuseID", for: indexPath)
-      cell.textLabel?.text = items[indexPath.row]
-      return cell
+    let cell = tableView.dequeueReusableCell(withIdentifier: "ViewController.cellReuseID", for: indexPath)
+    cell.textLabel?.text = items[indexPath.section][indexPath.item].displayTitle
+
+    return cell
   }
 
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    switch items[indexPath.row] {
-      case "Your Display Name":
-        let vc = storyboard?.instantiateViewController(withIdentifier: "NameChangeViewController") as! UITableViewController
-          navigationController?.pushViewController(vc, animated: true)
-      default:
-        return
-    }
-
+    items[indexPath.section][indexPath.row].performAction(controller: self)
   }
 }
 
