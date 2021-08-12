@@ -135,11 +135,6 @@ struct KeyboardSpecs {
 
 }
 
-enum DefaultKeys: String {
-  case previousPasteboardChangeCount
-  case currentLayout
-}
-
 struct StatusText {
   static let ECDHInitialized = "ECDH initiated.",
     sealSuccessAndSent = "Text encrypted and sent.",

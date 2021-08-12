@@ -71,6 +71,8 @@
 		30EB1ED326C4AB910091040F /* HostAppTableViewItemizable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EB1ED226C4AB910091040F /* HostAppTableViewItemizable.swift */; };
 		30EB1ED526C4B8880091040F /* NameChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EB1ED426C4B8880091040F /* NameChange.swift */; };
 		30EB1ED726C4B9010091040F /* DeleteAll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EB1ED626C4B9010091040F /* DeleteAll.swift */; };
+		30EB1EDC26C4C4160091040F /* UserDefaultsKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EB1EDB26C4C4160091040F /* UserDefaultsKeys.swift */; };
+		30EB1EDD26C4C4160091040F /* UserDefaultsKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EB1EDB26C4C4160091040F /* UserDefaultsKeys.swift */; };
 		30EFC19B267B278F00EF65E8 /* KeyStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC196267B278F00EF65E8 /* KeyStoreError.swift */; };
 		30EFC19C267B278F00EF65E8 /* KeyStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC196267B278F00EF65E8 /* KeyStoreError.swift */; };
 		30EFC19D267B278F00EF65E8 /* GenericPasswordStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC197267B278F00EF65E8 /* GenericPasswordStore.swift */; };
@@ -169,6 +171,11 @@
 		30EB1ED226C4AB910091040F /* HostAppTableViewItemizable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostAppTableViewItemizable.swift; sourceTree = "<group>"; };
 		30EB1ED426C4B8880091040F /* NameChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameChange.swift; sourceTree = "<group>"; };
 		30EB1ED626C4B9010091040F /* DeleteAll.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteAll.swift; sourceTree = "<group>"; };
+		30EB1ED926C4BE510091040F /* SealRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SealRelease.entitlements; sourceTree = "<group>"; };
+		30EB1EDA26C4C1510091040F /* KeyboardRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = KeyboardRelease.entitlements; sourceTree = "<group>"; };
+		30EB1EDB26C4C4160091040F /* UserDefaultsKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsKeys.swift; sourceTree = "<group>"; };
+		30EB1EDE26C4CFD10091040F /* Keyboard.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Keyboard.entitlements; sourceTree = "<group>"; };
+		30EB1EDF26C4D0300091040F /* Seal.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Seal.entitlements; sourceTree = "<group>"; };
 		30EFC196267B278F00EF65E8 /* KeyStoreError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyStoreError.swift; sourceTree = "<group>"; };
 		30EFC197267B278F00EF65E8 /* GenericPasswordStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericPasswordStore.swift; sourceTree = "<group>"; };
 		30EFC198267B278F00EF65E8 /* GenericPasswordConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericPasswordConvertible.swift; sourceTree = "<group>"; };
@@ -200,6 +207,9 @@
 		306589AF267554B200708E73 = {
 			isa = PBXGroup;
 			children = (
+				30EB1EDF26C4D0300091040F /* Seal.entitlements */,
+				30EB1EDB26C4C4160091040F /* UserDefaultsKeys.swift */,
+				30EB1ED926C4BE510091040F /* SealRelease.entitlements */,
 				30C78EAB26967705008925A4 /* Seal.xcdatamodeld */,
 				306589BA267554B200708E73 /* HostApp */,
 				306589D42675556400708E73 /* Keyboard */,
@@ -221,15 +231,14 @@
 		306589BA267554B200708E73 /* HostApp */ = {
 			isa = PBXGroup;
 			children = (
+				30EB1ED826C4BBC70091040F /* ViewControllers */,
 				30EB1ED126C4AB810091040F /* Models */,
 				306589BB267554B200708E73 /* AppDelegate.swift */,
 				306589BD267554B200708E73 /* SceneDelegate.swift */,
-				306589BF267554B200708E73 /* ViewController.swift */,
 				306589C1267554B200708E73 /* Main.storyboard */,
 				306589C4267554B300708E73 /* Assets.xcassets */,
 				306589C6267554B300708E73 /* LaunchScreen.storyboard */,
 				306589C9267554B300708E73 /* Info.plist */,
-				30EB1ECF26C4A4090091040F /* NameChangeViewController.swift */,
 			);
 			path = HostApp;
 			sourceTree = "<group>";
@@ -237,6 +246,8 @@
 		306589D42675556400708E73 /* Keyboard */ = {
 			isa = PBXGroup;
 			children = (
+				30EB1EDE26C4CFD10091040F /* Keyboard.entitlements */,
+				30EB1EDA26C4C1510091040F /* KeyboardRelease.entitlements */,
 				30C78EA826967339008925A4 /* Models */,
 				30DBD8BA2694E8DE00D8637D /* ViewControllers */,
 				30DBD8B92694E8C400D8637D /* Views */,
@@ -321,6 +332,15 @@
 				30EB1ED626C4B9010091040F /* DeleteAll.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		30EB1ED826C4BBC70091040F /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				306589BF267554B200708E73 /* ViewController.swift */,
+				30EB1ECF26C4A4090091040F /* NameChangeViewController.swift */,
+			);
+			path = ViewControllers;
 			sourceTree = "<group>";
 		};
 		30EFC195267B278F00EF65E8 /* KeychainStorage */ = {
@@ -483,6 +503,7 @@
 				3045FC3B26A8E6A00043502B /* CoreDataContainer.swift in Sources */,
 				30EB1ED526C4B8880091040F /* NameChange.swift in Sources */,
 				30EFC19D267B278F00EF65E8 /* GenericPasswordStore.swift in Sources */,
+				30EB1EDC26C4C4160091040F /* UserDefaultsKeys.swift in Sources */,
 				30DD503626B09D9200B0B16F /* KeyboardViewController.swift in Sources */,
 				30DD503226B09D8800B0B16F /* ChatSelectionPopoverViewController.swift in Sources */,
 				30EFC19F267B278F00EF65E8 /* GenericPasswordConvertible.swift in Sources */,
@@ -518,6 +539,7 @@
 				30C78EAE26967705008925A4 /* Seal.xcdatamodeld in Sources */,
 				30DE0158269385610093EC65 /* TypingViewController.swift in Sources */,
 				30C78EB726967E6B008925A4 /* NSMessageSender.swift in Sources */,
+				30EB1EDD26C4C4160091040F /* UserDefaultsKeys.swift in Sources */,
 				30EFC19C267B278F00EF65E8 /* KeyStoreError.swift in Sources */,
 				30E23BB126AB99BB006895C7 /* MessageCellLongPressMenuViewController.swift in Sources */,
 				307384B726A8D91B00EF1FC1 /* CoreDataContainer.swift in Sources */,
@@ -697,6 +719,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Seal.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = U575975HJL;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -708,7 +731,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.3tz.seal;
+				PRODUCT_BUNDLE_IDENTIFIER = com.3tz.sealboard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -721,6 +744,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = SealRelease.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = U575975HJL;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -732,7 +756,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.3tz.seal;
+				PRODUCT_BUNDLE_IDENTIFIER = com.3tz.sealboard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -742,6 +766,7 @@
 		306589DC2675556400708E73 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Keyboard/Keyboard.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = U575975HJL;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -754,17 +779,18 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.3tz.seal.keyboard;
+				PRODUCT_BUNDLE_IDENTIFIER = com.3tz.sealboard.keyboard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
 		306589DD2675556400708E73 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Keyboard/KeyboardRelease.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = U575975HJL;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -777,11 +803,11 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.3tz.seal.keyboard;
+				PRODUCT_BUNDLE_IDENTIFIER = com.3tz.sealboard.keyboard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

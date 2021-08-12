@@ -48,7 +48,7 @@ class KeyboardViewController: UIInputViewController {
     view.addSubview(mainStackView)
 
     // Use the layout from last time
-    let storedLayoutInt = UserDefaults.standard.integer(forKey: DefaultKeys.currentLayout.rawValue)
+    let storedLayoutInt = UserDefaults(suiteName: "group.com.3tz.seal")!.integer(forKey: UserDefaultsKeys.currentLayout.rawValue)
     currentLayout = KeyboardLayout(rawValue: storedLayoutInt)
 
     loadTopBarView()
@@ -231,8 +231,9 @@ class KeyboardViewController: UIInputViewController {
         fatalError()
     }
     // Store current layout, so it's used the next time the keyboard is opened
-    UserDefaults.standard.setValue(
-      currentLayout.rawValue, forKey: DefaultKeys.currentLayout.rawValue)
+    let userDefaults = UserDefaults(suiteName: "group.com.3tz.seal")!
+    userDefaults.setValue(currentLayout.rawValue, forKey: UserDefaultsKeys.currentLayout.rawValue)
+    userDefaults.synchronize()
   }
 
   @objc func chatSelectionButtonPressed(_ sender: UIButton) {
@@ -448,11 +449,13 @@ class KeyboardViewController: UIInputViewController {
 
   func pasteboardChanged() -> Bool {
     pasteboardLock.lock()
-    let oldChangeCount = UserDefaults.standard.integer(
-      forKey: DefaultKeys.previousPasteboardChangeCount.rawValue)
+    let oldChangeCount = UserDefaults(suiteName: "group.com.3tz.seal")!.integer(
+      forKey: UserDefaultsKeys.previousPasteboardChangeCount.rawValue)
     let currentChangeCount = UIPasteboard.general.changeCount
-    UserDefaults.standard.setValue(
-      currentChangeCount, forKey: DefaultKeys.previousPasteboardChangeCount.rawValue)
+    let userDefaults = UserDefaults(suiteName: "group.com.3tz.seal")!
+    userDefaults.setValue(
+      currentChangeCount, forKey: UserDefaultsKeys.previousPasteboardChangeCount.rawValue)
+    userDefaults.synchronize()
     pasteboardLock.unlock()
     if oldChangeCount == currentChangeCount { return false }
 
@@ -462,10 +465,12 @@ class KeyboardViewController: UIInputViewController {
   func writeToPasteboardAndIncrementPasteboardChangeCount(_ string: String) {
     pasteboardLock.lock()
     UIPasteboard.general.string = string
-    UserDefaults.standard.setValue(
+    let userDefaults = UserDefaults(suiteName: "group.com.3tz.seal")!
+    userDefaults.setValue(
       UIPasteboard.general.changeCount,
-      forKey: DefaultKeys.previousPasteboardChangeCount.rawValue
+      forKey: UserDefaultsKeys.previousPasteboardChangeCount.rawValue
     )
+    userDefaults.synchronize()
     pasteboardLock.unlock()
   }
 
