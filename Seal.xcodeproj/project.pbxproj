@@ -68,6 +68,9 @@
 		30E6C2B426A75F4C005126C8 /* Chat+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E6C2AF26A75F4C005126C8 /* Chat+CoreDataProperties.swift */; };
 		30E6C2B526A75F4C005126C8 /* Chat+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30E6C2AF26A75F4C005126C8 /* Chat+CoreDataProperties.swift */; };
 		30EB1ED026C4A4090091040F /* NameChangeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EB1ECF26C4A4090091040F /* NameChangeViewController.swift */; };
+		30EB1ED326C4AB910091040F /* HostAppTableViewItemizable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EB1ED226C4AB910091040F /* HostAppTableViewItemizable.swift */; };
+		30EB1ED526C4B8880091040F /* NameChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EB1ED426C4B8880091040F /* NameChange.swift */; };
+		30EB1ED726C4B9010091040F /* DeleteAll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EB1ED626C4B9010091040F /* DeleteAll.swift */; };
 		30EFC19B267B278F00EF65E8 /* KeyStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC196267B278F00EF65E8 /* KeyStoreError.swift */; };
 		30EFC19C267B278F00EF65E8 /* KeyStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC196267B278F00EF65E8 /* KeyStoreError.swift */; };
 		30EFC19D267B278F00EF65E8 /* GenericPasswordStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC197267B278F00EF65E8 /* GenericPasswordStore.swift */; };
@@ -163,6 +166,9 @@
 		30E6C2AE26A75F4C005126C8 /* Chat+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Chat+CoreDataClass.swift"; sourceTree = "<group>"; };
 		30E6C2AF26A75F4C005126C8 /* Chat+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Chat+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		30EB1ECF26C4A4090091040F /* NameChangeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameChangeViewController.swift; sourceTree = "<group>"; };
+		30EB1ED226C4AB910091040F /* HostAppTableViewItemizable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostAppTableViewItemizable.swift; sourceTree = "<group>"; };
+		30EB1ED426C4B8880091040F /* NameChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameChange.swift; sourceTree = "<group>"; };
+		30EB1ED626C4B9010091040F /* DeleteAll.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteAll.swift; sourceTree = "<group>"; };
 		30EFC196267B278F00EF65E8 /* KeyStoreError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyStoreError.swift; sourceTree = "<group>"; };
 		30EFC197267B278F00EF65E8 /* GenericPasswordStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericPasswordStore.swift; sourceTree = "<group>"; };
 		30EFC198267B278F00EF65E8 /* GenericPasswordConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericPasswordConvertible.swift; sourceTree = "<group>"; };
@@ -215,6 +221,7 @@
 		306589BA267554B200708E73 /* HostApp */ = {
 			isa = PBXGroup;
 			children = (
+				30EB1ED126C4AB810091040F /* Models */,
 				306589BB267554B200708E73 /* AppDelegate.swift */,
 				306589BD267554B200708E73 /* SceneDelegate.swift */,
 				306589BF267554B200708E73 /* ViewController.swift */,
@@ -304,6 +311,16 @@
 				30DD503B26B0E90800B0B16F /* SealMessageKind+Codable.swift */,
 			);
 			path = MessageParsing;
+			sourceTree = "<group>";
+		};
+		30EB1ED126C4AB810091040F /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				30EB1ED226C4AB910091040F /* HostAppTableViewItemizable.swift */,
+				30EB1ED426C4B8880091040F /* NameChange.swift */,
+				30EB1ED626C4B9010091040F /* DeleteAll.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		30EFC195267B278F00EF65E8 /* KeychainStorage */ = {
@@ -460,9 +477,11 @@
 				30EFC1A1267B278F00EF65E8 /* SecKeyConvertible.swift in Sources */,
 				30E6C2B226A75F4C005126C8 /* Chat+CoreDataClass.swift in Sources */,
 				306589BE267554B200708E73 /* SceneDelegate.swift in Sources */,
+				30EB1ED726C4B9010091040F /* DeleteAll.swift in Sources */,
 				304C122126A7612F00977196 /* Message+CoreDataClass.swift in Sources */,
 				30C78EB926979C2D008925A4 /* NSMessageKind.swift in Sources */,
 				3045FC3B26A8E6A00043502B /* CoreDataContainer.swift in Sources */,
+				30EB1ED526C4B8880091040F /* NameChange.swift in Sources */,
 				30EFC19D267B278F00EF65E8 /* GenericPasswordStore.swift in Sources */,
 				30DD503626B09D9200B0B16F /* KeyboardViewController.swift in Sources */,
 				30DD503226B09D8800B0B16F /* ChatSelectionPopoverViewController.swift in Sources */,
@@ -479,6 +498,7 @@
 				30EFC19B267B278F00EF65E8 /* KeyStoreError.swift in Sources */,
 				30DD503126B09D8600B0B16F /* MessageCellLongPressMenuViewController.swift in Sources */,
 				304C122326A7612F00977196 /* Message+CoreDataProperties.swift in Sources */,
+				30EB1ED326C4AB910091040F /* HostAppTableViewItemizable.swift in Sources */,
 				30DD503326B09D8B00B0B16F /* ChatViewController.swift in Sources */,
 				30DD503C26B0E90800B0B16F /* SealMessageKind+Codable.swift in Sources */,
 				30DD503726B09D9E00B0B16F /* KeyboardButton.swift in Sources */,
