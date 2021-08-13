@@ -21,6 +21,7 @@
 		306589D62675556400708E73 /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306589D52675556400708E73 /* KeyboardViewController.swift */; };
 		306589DA2675556400708E73 /* Keyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 306589D32675556400708E73 /* Keyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		307384B726A8D91B00EF1FC1 /* CoreDataContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307384B626A8D91B00EF1FC1 /* CoreDataContainer.swift */; };
+		30A9287426C7016B000EC43B /* NameChangeCustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30A9287326C7016B000EC43B /* NameChangeCustomCell.swift */; };
 		30B1075F267DAB13002868E3 /* MessageKit in Frameworks */ = {isa = PBXBuildFile; productRef = 30B1075E267DAB13002868E3 /* MessageKit */; };
 		30B72B80269022AC003B4256 /* Seal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B72B7E269022AC003B4256 /* Seal.swift */; };
 		30B72B81269023CE003B4256 /* Seal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B72B7E269022AC003B4256 /* Seal.swift */; };
@@ -144,6 +145,7 @@
 		306589D52675556400708E73 /* KeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewController.swift; sourceTree = "<group>"; };
 		306589D72675556400708E73 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		307384B626A8D91B00EF1FC1 /* CoreDataContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataContainer.swift; sourceTree = "<group>"; };
+		30A9287326C7016B000EC43B /* NameChangeCustomCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameChangeCustomCell.swift; sourceTree = "<group>"; };
 		30B72B7E269022AC003B4256 /* Seal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Seal.swift; sourceTree = "<group>"; };
 		30C0D6C326796024002433D7 /* Keys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keys.swift; sourceTree = "<group>"; };
 		30C78EAC26967705008925A4 /* Seal.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Seal.xcdatamodel; sourceTree = "<group>"; };
@@ -344,6 +346,7 @@
 			isa = PBXGroup;
 			children = (
 				30EB1EE126C5D6D80091040F /* HostAppCustomCell.swift */,
+				30A9287326C7016B000EC43B /* NameChangeCustomCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -520,6 +523,7 @@
 				3045FC3926A8E5080043502B /* ChatManager.swift in Sources */,
 				30C78EBF2697B6CE008925A4 /* MessageSenderTransformer.swift in Sources */,
 				30B72B81269023CE003B4256 /* Seal.swift in Sources */,
+				30A9287426C7016B000EC43B /* NameChangeCustomCell.swift in Sources */,
 				30EFC19B267B278F00EF65E8 /* KeyStoreError.swift in Sources */,
 				30DD503126B09D8600B0B16F /* MessageCellLongPressMenuViewController.swift in Sources */,
 				304C122326A7612F00977196 /* Message+CoreDataProperties.swift in Sources */,

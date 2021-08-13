@@ -14,7 +14,7 @@ class NameChangeViewController: UITableViewController {
     title = "Your Display Name"
     navigationItem.largeTitleDisplayMode = .never
     view.backgroundColor = .systemGroupedBackground
-    tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellReuseID)
+    tableView.register(NameChangeCustomCell.self, forCellReuseIdentifier: cellReuseID)
     tableView.rowHeight = 40
   }
 
@@ -24,9 +24,14 @@ class NameChangeViewController: UITableViewController {
   }
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-      let cell = tableView.dequeueReusableCell(withIdentifier: cellReuseID, for: indexPath)
-      cell.textLabel?.text = "<name change placeholder>"
-      return cell
+    let cell = tableView.dequeueReusableCell(withIdentifier: cellReuseID, for: indexPath) as! NameChangeCustomCell
+
+    let userDefaults = UserDefaults(suiteName: "group.com.3tz.seal")!
+    let displayName = userDefaults.string(forKey: UserDefaultsKeys.chatDisplayName.rawValue)!
+    cell.controller = self
+    cell.textField.text = displayName
+    cell.textField.becomeFirstResponder()
+    return cell
   }
 
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

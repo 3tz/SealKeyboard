@@ -30,6 +30,11 @@ class ViewController: UITableViewController {
     reloadData()
   }
 
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    reloadData()
+  }
+
   override func numberOfSections(in tableView: UITableView) -> Int {
     return items.count
   }
