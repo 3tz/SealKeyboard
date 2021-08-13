@@ -240,7 +240,7 @@ class KeyboardViewController: UIInputViewController {
     let popover = ChatSelectionPopoverViewController(parentController: self)
 
     popover.modalPresentationStyle = .popover
-    popover.preferredContentSize = CGSize(width: KeyboardSpecs.cryptoButtonsViewHeight * 2.5, height: KeyboardSpecs.cryptoButtonsViewHeight * 3)
+    popover.preferredContentSize = CGSize(width: KeyboardSpecs.cryptoButtonsViewHeight * 4, height: KeyboardSpecs.cryptoButtonsViewHeight * 3)
     let popoverController = popover.popoverPresentationController
     popoverController?.delegate = self
     popoverController?.sourceView = sender
