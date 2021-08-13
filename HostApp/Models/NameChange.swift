@@ -9,7 +9,9 @@ import Foundation
 import UIKit
 
 class NameChange: HostAppTableViewItemizable {
-  var displayTitle = "Your Display Name"
+  var leftLabelText = "Your Display Name"
+  var rightLabelText = "<Placeholder>"
+  var accessoryType: UITableViewCell.AccessoryType = .disclosureIndicator
 
   func performAction(controller: ViewController) {
     let vc = NameChangeViewController(style: .grouped)

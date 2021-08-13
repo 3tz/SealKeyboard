@@ -14,8 +14,8 @@ class NameChangeViewController: UITableViewController {
     title = "Your Display Name"
     navigationItem.largeTitleDisplayMode = .never
     view.backgroundColor = .systemGroupedBackground
-
     tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellReuseID)
+    tableView.rowHeight = 40
   }
 
 

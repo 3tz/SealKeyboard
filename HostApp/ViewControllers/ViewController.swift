@@ -19,8 +19,8 @@ class ViewController: UITableViewController {
     title = "Seal"
     navigationController?.navigationBar.prefersLargeTitles = true
     view.backgroundColor = .systemGroupedBackground
-
-    tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellReuseID)
+    tableView.register(HostAppCustomCell.self, forCellReuseIdentifier: cellReuseID)
+    tableView.rowHeight = 40
   }
 
   override func numberOfSections(in tableView: UITableView) -> Int {
@@ -32,10 +32,12 @@ class ViewController: UITableViewController {
   }
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: cellReuseID, for: indexPath)
-//    let left = cell.contentView.subviews[0] as! UILabel
-//    left.text = items[indexPath.section][indexPath.item].displayTitle
-    cell.textLabel?.text = items[indexPath.section][indexPath.item].displayTitle
+    let cell = tableView.dequeueReusableCell(withIdentifier: cellReuseID, for: indexPath) as! HostAppCustomCell
+    let selectedItem = items[indexPath.section][indexPath.item]
+    cell.leftLabel.text = selectedItem.leftLabelText
+    cell.rightLabel.text = selectedItem.rightLabelText
+    cell.accessoryType = selectedItem.accessoryType
+    cell.leftLabel.textColor = selectedItem.leftLabelTextColor
 
     return cell
   }

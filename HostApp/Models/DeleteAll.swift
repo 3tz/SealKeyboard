@@ -6,9 +6,11 @@
 //
 
 import Foundation
+import UIKit
 
 class DeleteAll: HostAppTableViewItemizable {
-  var displayTitle = "Delete All Chats & Messages"
+  var leftLabelText = "Delete All Chats & Messages"
+  var leftLabelTextColor: UIColor? = .systemRed
 
   func performAction(controller: ViewController) {
     return
