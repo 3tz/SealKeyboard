@@ -17,7 +17,7 @@ class Seal {
     )
     let message = SealMessage(
       kind: .ECDH0(encryptionPublicKey: encryptionPublicKeyString),
-      name: Placeholder.name
+      name: UserDefaults(suiteName: "group.com.3tz.seal")!.string(forKey: UserDefaultsKeys.chatDisplayName.rawValue)!
     )
 
     return message.asJSONString()
@@ -41,7 +41,7 @@ class Seal {
           ephemeralPublicKey: ephemeralPublicKeyString,
           signature: signatureString,
           signingPublicKey: signingPublicKeyString),
-        name: Placeholder.name
+        name: UserDefaults(suiteName: "group.com.3tz.seal")!.string(forKey: UserDefaultsKeys.chatDisplayName.rawValue)!
       ).asJSONString()
 
       case .ECDH1(let ephemeralPublicKey, let signature, let signingPublicKey):
@@ -84,7 +84,7 @@ class Seal {
         ciphertext: ciphertextString,
         signature: signatureString,
         signingPublicKey: signingPublicKeyString),
-      name: Placeholder.name
+      name: UserDefaults(suiteName: "group.com.3tz.seal")!.string(forKey: UserDefaultsKeys.chatDisplayName.rawValue)!
     )
 
     return outgoingMessage.asJSONString()
