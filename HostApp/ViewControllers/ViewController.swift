@@ -9,10 +9,15 @@ import UIKit
 
 class ViewController: UITableViewController {
   let cellReuseID =  "ViewController.cellReuseID"
-  var items:[[HostAppTableViewItemizable]] = [
-    [NameChange()],
-    [DeleteAll()]
-  ]
+  var items:[[HostAppTableViewItemizable]]!
+
+  func reloadData() {
+    items = [
+      [NameChange(controller: self)],
+      [DeleteAll()]
+    ]
+    tableView.reloadData()
+  }
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -21,6 +26,8 @@ class ViewController: UITableViewController {
     view.backgroundColor = .systemGroupedBackground
     tableView.register(HostAppCustomCell.self, forCellReuseIdentifier: cellReuseID)
     tableView.rowHeight = 40
+
+    reloadData()
   }
 
   override func numberOfSections(in tableView: UITableView) -> Int {
