@@ -8,6 +8,7 @@
 import UIKit
 
 class ViewController: UITableViewController {
+  let cellReuseID =  "ViewController.cellReuseID"
   var items:[[HostAppTableViewItemizable]] = [
     [NameChange()],
     [DeleteAll()]
@@ -17,8 +18,9 @@ class ViewController: UITableViewController {
     super.viewDidLoad()
     title = "Seal"
     navigationController?.navigationBar.prefersLargeTitles = true
-
     view.backgroundColor = .systemGroupedBackground
+
+    tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellReuseID)
   }
 
   override func numberOfSections(in tableView: UITableView) -> Int {
@@ -30,7 +32,9 @@ class ViewController: UITableViewController {
   }
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: "ViewController.cellReuseID", for: indexPath)
+    let cell = tableView.dequeueReusableCell(withIdentifier: cellReuseID, for: indexPath)
+//    let left = cell.contentView.subviews[0] as! UILabel
+//    left.text = items[indexPath.section][indexPath.item].displayTitle
     cell.textLabel?.text = items[indexPath.section][indexPath.item].displayTitle
 
     return cell

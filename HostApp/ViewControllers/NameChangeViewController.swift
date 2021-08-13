@@ -8,11 +8,14 @@
 import UIKit
 
 class NameChangeViewController: UITableViewController {
+  let cellReuseID =  "NameChangeViewController.cellReuseID"
   override func viewDidLoad() {
     super.viewDidLoad()
     title = "Your Display Name"
     navigationItem.largeTitleDisplayMode = .never
     view.backgroundColor = .systemGroupedBackground
+
+    tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellReuseID)
   }
 
 
@@ -21,7 +24,7 @@ class NameChangeViewController: UITableViewController {
   }
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-      let cell = tableView.dequeueReusableCell(withIdentifier: "NameChangeViewController.cellReuseID", for: indexPath)
+      let cell = tableView.dequeueReusableCell(withIdentifier: cellReuseID, for: indexPath)
       cell.textLabel?.text = "<name change placeholder>"
       return cell
   }

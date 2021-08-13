@@ -12,7 +12,7 @@ class NameChange: HostAppTableViewItemizable {
   var displayTitle = "Your Display Name"
 
   func performAction(controller: ViewController) {
-    let vc = controller.storyboard?.instantiateViewController(withIdentifier: "NameChangeViewController") as! UITableViewController
+    let vc = NameChangeViewController(style: .grouped)
     controller.navigationController?.pushViewController(vc, animated: true)
   }
 }

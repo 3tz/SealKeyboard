@@ -17,9 +17,7 @@
 		306589BC267554B200708E73 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306589BB267554B200708E73 /* AppDelegate.swift */; };
 		306589BE267554B200708E73 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306589BD267554B200708E73 /* SceneDelegate.swift */; };
 		306589C0267554B200708E73 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306589BF267554B200708E73 /* ViewController.swift */; };
-		306589C3267554B200708E73 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 306589C1267554B200708E73 /* Main.storyboard */; };
 		306589C5267554B300708E73 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 306589C4267554B300708E73 /* Assets.xcassets */; };
-		306589C8267554B300708E73 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 306589C6267554B300708E73 /* LaunchScreen.storyboard */; };
 		306589D62675556400708E73 /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306589D52675556400708E73 /* KeyboardViewController.swift */; };
 		306589DA2675556400708E73 /* Keyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 306589D32675556400708E73 /* Keyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		307384B726A8D91B00EF1FC1 /* CoreDataContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307384B626A8D91B00EF1FC1 /* CoreDataContainer.swift */; };
@@ -73,6 +71,7 @@
 		30EB1ED726C4B9010091040F /* DeleteAll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EB1ED626C4B9010091040F /* DeleteAll.swift */; };
 		30EB1EDC26C4C4160091040F /* UserDefaultsKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EB1EDB26C4C4160091040F /* UserDefaultsKeys.swift */; };
 		30EB1EDD26C4C4160091040F /* UserDefaultsKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EB1EDB26C4C4160091040F /* UserDefaultsKeys.swift */; };
+		30EB1EE226C5D6D80091040F /* HostAppCustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EB1EE126C5D6D80091040F /* HostAppCustomCell.swift */; };
 		30EFC19B267B278F00EF65E8 /* KeyStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC196267B278F00EF65E8 /* KeyStoreError.swift */; };
 		30EFC19C267B278F00EF65E8 /* KeyStoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC196267B278F00EF65E8 /* KeyStoreError.swift */; };
 		30EFC19D267B278F00EF65E8 /* GenericPasswordStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30EFC197267B278F00EF65E8 /* GenericPasswordStore.swift */; };
@@ -139,9 +138,7 @@
 		306589BB267554B200708E73 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		306589BD267554B200708E73 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		306589BF267554B200708E73 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		306589C2267554B200708E73 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		306589C4267554B300708E73 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		306589C7267554B300708E73 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		306589C9267554B300708E73 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		306589D32675556400708E73 /* Keyboard.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = Keyboard.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		306589D52675556400708E73 /* KeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewController.swift; sourceTree = "<group>"; };
@@ -176,6 +173,7 @@
 		30EB1EDB26C4C4160091040F /* UserDefaultsKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsKeys.swift; sourceTree = "<group>"; };
 		30EB1EDE26C4CFD10091040F /* Keyboard.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Keyboard.entitlements; sourceTree = "<group>"; };
 		30EB1EDF26C4D0300091040F /* Seal.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Seal.entitlements; sourceTree = "<group>"; };
+		30EB1EE126C5D6D80091040F /* HostAppCustomCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostAppCustomCell.swift; sourceTree = "<group>"; };
 		30EFC196267B278F00EF65E8 /* KeyStoreError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyStoreError.swift; sourceTree = "<group>"; };
 		30EFC197267B278F00EF65E8 /* GenericPasswordStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericPasswordStore.swift; sourceTree = "<group>"; };
 		30EFC198267B278F00EF65E8 /* GenericPasswordConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericPasswordConvertible.swift; sourceTree = "<group>"; };
@@ -233,11 +231,10 @@
 			children = (
 				30EB1ED826C4BBC70091040F /* ViewControllers */,
 				30EB1ED126C4AB810091040F /* Models */,
+				30EB1EE026C5D61C0091040F /* Views */,
 				306589BB267554B200708E73 /* AppDelegate.swift */,
 				306589BD267554B200708E73 /* SceneDelegate.swift */,
-				306589C1267554B200708E73 /* Main.storyboard */,
 				306589C4267554B300708E73 /* Assets.xcassets */,
-				306589C6267554B300708E73 /* LaunchScreen.storyboard */,
 				306589C9267554B300708E73 /* Info.plist */,
 			);
 			path = HostApp;
@@ -341,6 +338,14 @@
 				30EB1ECF26C4A4090091040F /* NameChangeViewController.swift */,
 			);
 			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		30EB1EE026C5D61C0091040F /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				30EB1EE126C5D6D80091040F /* HostAppCustomCell.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		30EFC195267B278F00EF65E8 /* KeychainStorage */ = {
@@ -464,9 +469,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				30EFC1A7267B27A100EF65E8 /* LICENSE.txt in Resources */,
-				306589C8267554B300708E73 /* LaunchScreen.storyboard in Resources */,
 				306589C5267554B300708E73 /* Assets.xcassets in Resources */,
-				306589C3267554B200708E73 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -497,6 +500,7 @@
 				30EFC1A1267B278F00EF65E8 /* SecKeyConvertible.swift in Sources */,
 				30E6C2B226A75F4C005126C8 /* Chat+CoreDataClass.swift in Sources */,
 				306589BE267554B200708E73 /* SceneDelegate.swift in Sources */,
+				30EB1EE226C5D6D80091040F /* HostAppCustomCell.swift in Sources */,
 				30EB1ED726C4B9010091040F /* DeleteAll.swift in Sources */,
 				304C122126A7612F00977196 /* Message+CoreDataClass.swift in Sources */,
 				30C78EB926979C2D008925A4 /* NSMessageKind.swift in Sources */,
@@ -574,25 +578,6 @@
 			targetProxy = 306589D82675556400708E73 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
-
-/* Begin PBXVariantGroup section */
-		306589C1267554B200708E73 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				306589C2267554B200708E73 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		306589C6267554B300708E73 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				306589C7267554B300708E73 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		306589CA267554B300708E73 /* Debug */ = {

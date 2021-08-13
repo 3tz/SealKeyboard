@@ -10,4 +10,5 @@ import Foundation
 enum UserDefaultsKeys: String {
   case previousPasteboardChangeCount
   case currentLayout
+  case chatDisplayName
 }
