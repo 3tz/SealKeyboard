@@ -14,6 +14,21 @@ class DeleteAll: HostAppTableViewItemizable {
   var leftLabelTextColor: UIColor? = .systemRed
 
   func performAction(controller: ViewController) {
+    // Display name is empty, so initialize.
+    let alertMessage = ""
+    let title = "This will delete all of your chats, messages, and associated chat keys."
+    let alert = UIAlertController(title: title, message: alertMessage, preferredStyle: .actionSheet)
+    // Save to UserDefaults and reload VC
+    let saveAction = UIAlertAction(title: "Delete All Chats & Messages", style: .destructive) { [unowned self] _ in
+      self.deleteAll()
+    }
+    let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+    alert.addAction(saveAction)
+    alert.addAction(cancelAction)
+    controller.present(alert, animated: true, completion: nil)
+  }
+
+  private func deleteAll() {
     // Delete all chats & associated messages
     let context = CoreDataContainer.shared.persistentContainer.viewContext
     try! context.execute(NSBatchDeleteRequest(fetchRequest: Chat.fetchRequest()))
