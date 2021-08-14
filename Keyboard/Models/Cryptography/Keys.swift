@@ -26,12 +26,17 @@ final class EncryptionKeys {
   private var encryptionSecretKey: Curve25519.KeyAgreement.PrivateKey!
   private var symmetricKeys: [String:SymmetricKey]!
 
-  private let keyChain = GenericPasswordStore()
+  private var keyChain: GenericPasswordStore!
 
   // TODO: placeholder. use random salt for each msg
   private let protocolSalt = "CryptoKit Playgrounds Putting It Together".data(using: .utf8)!
 
   private init() {
+    reloadKeys()
+  }
+
+  func reloadKeys() {
+    keyChain = GenericPasswordStore()
     // Try reading keys from KeyChain. If no key exists, generate new keys and save them.
     // Signing Secret Key
     var account = KeyChainAccount.signingSecretKey.rawValue
