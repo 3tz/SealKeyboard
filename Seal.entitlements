@@ -6,5 +6,9 @@
 	<array>
 		<string>group.com.3tz.seal</string>
 	</array>
+	<key>keychain-access-groups</key>
+	<array>
+		<string>$(AppIdentifierPrefix)com.3tz.sealboard</string>
+	</array>
 </dict>
 </plist>

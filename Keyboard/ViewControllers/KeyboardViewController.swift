@@ -71,6 +71,9 @@ class KeyboardViewController: UIInputViewController {
     super.viewWillAppear(animated)
     startPasteboardChangeCountMonitor()
     pasteboardChangeCountTimer.fire()
+    EncryptionKeys.default.reloadKeys()
+    ChatManager.shared.reloadChats()
+    updateCurrentChatTitle()
   }
 
   override func viewWillLayoutSubviews() {
