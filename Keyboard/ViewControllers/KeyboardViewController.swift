@@ -25,6 +25,8 @@ class KeyboardViewController: UIInputViewController {
   var detailViewController: DetailViewController!
   var bottomBarView: UIStackView!
 
+  var accessRequestStackView: UIStackView!
+
   var constraints: [NSLayoutConstraint] = []
 
   var stageToSendText = false
@@ -37,8 +39,17 @@ class KeyboardViewController: UIInputViewController {
 
   // MARK: view overrides
 
+  override func loadView() {
+    super.loadView()
+    loadAccessRequestView()
+  }
+
   override func viewDidLoad() {
     super.viewDidLoad()
+    accessRequestStackView.isHidden = hasFullAccess
+    if !hasFullAccess {
+      return
+    }
     // initialize the main stack view
     mainStackView = UIStackView()
     mainStackView.axis = .vertical
@@ -69,6 +80,9 @@ class KeyboardViewController: UIInputViewController {
 
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
+    if !hasFullAccess {
+      return
+    }
     startPasteboardChangeCountMonitor()
     pasteboardChangeCountTimer.fire()
     EncryptionKeys.default.reloadKeys()
@@ -82,6 +96,18 @@ class KeyboardViewController: UIInputViewController {
 
   override func updateViewConstraints() {
     super.updateViewConstraints()
+    if !hasFullAccess {
+      // TODO: redundant code
+      KeyboardSpecs.isLandscape = UIScreen.main.bounds.size.width > UIScreen.main.bounds.size.height
+      NSLayoutConstraint.deactivate(constraints)
+      let heightConstraint = view.heightAnchor.constraint(equalToConstant: KeyboardSpecs.superViewHeight)
+      heightConstraint.priority = UILayoutPriority(999)
+      constraints = [
+        heightConstraint
+      ]
+      NSLayoutConstraint.activate(constraints)
+      return
+    }
 
     KeyboardSpecs.isLandscape = UIScreen.main.bounds.size.width > UIScreen.main.bounds.size.height
 
@@ -117,6 +143,9 @@ class KeyboardViewController: UIInputViewController {
 
   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
     super.traitCollectionDidChange(previousTraitCollection)
+    if !hasFullAccess {
+      return
+    }
     let darkMode = traitCollection.userInterfaceStyle == .dark
     let color = darkMode ? UIColor.white : UIColor.black
     chatSelectionButton.setTitleColor(color, for: .normal)
@@ -143,6 +172,41 @@ class KeyboardViewController: UIInputViewController {
   }
 
   // MARK: view loading methods
+
+  func loadAccessRequestView() {
+    let accessRequestLabel = UILabel()
+    accessRequestLabel.numberOfLines = 0
+    accessRequestLabel.text = """
+    "Allow Full Access" must be turned on in order to use Seal.
+    Full access is required for Seal to store encryption keys and chats.
+    """
+
+    let goToSettingsButton = UIButton(type: .system)
+    goToSettingsButton.setTitle("Go to Settings", for: .normal)
+    goToSettingsButton.setTitleColor(.white, for: .normal)
+    goToSettingsButton.backgroundColor = .systemBlue
+    goToSettingsButton.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
+
+
+    accessRequestStackView = UIStackView(arrangedSubviews: [
+      accessRequestLabel,
+      goToSettingsButton,
+    ])
+    accessRequestStackView.axis = .vertical
+    accessRequestStackView.translatesAutoresizingMaskIntoConstraints = false
+    accessRequestStackView.alignment = .center
+    accessRequestStackView.distribution = .fill
+    view.addSubview(accessRequestStackView)
+
+    NSLayoutConstraint.activate([
+      accessRequestStackView.heightAnchor.constraint(equalToConstant: 200),
+      accessRequestStackView.widthAnchor.constraint(equalToConstant: 300),
+      goToSettingsButton.widthAnchor.constraint(equalToConstant: 150),
+      goToSettingsButton.heightAnchor.constraint(equalToConstant: KeyboardSpecs.cryptoButtonsViewHeight - KeyboardSpecs.verticalSpacing),
+      accessRequestStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+      accessRequestStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+    ])
+  }
 
   func loadTypingViewControllerWithViewHidden() {
     typingViewController = TypingViewController(parentController: self)
