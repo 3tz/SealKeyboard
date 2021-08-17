@@ -60,7 +60,7 @@ extension NameChangeCustomCell: UITextFieldDelegate {
 
       if inputLength == 0 {
         alertTitle =  "Cannot Be Empty"
-        alertMessage = "Display Name cannot be empty."
+        alertMessage = "Display name cannot be empty."
       } else {
         alertTitle =  "Maximum Length Exceeded"
         alertMessage = "Display name must be shorter than 16 characters."

@@ -38,6 +38,13 @@ class NameChangeViewController: UITableViewController {
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     return
   }
+
+  override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+    return """
+    Display name is UNENCRYPTED and shown on all messages.
+    Must be shorter than 16 characters.
+    """
+  }
 }
 
 
