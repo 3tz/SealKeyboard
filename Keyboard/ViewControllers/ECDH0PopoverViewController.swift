@@ -25,10 +25,14 @@ class ECDH0PopoverViewController: UIViewController {
 
     confirmButton = UIButton(type: .system)
     confirmButton.translatesAutoresizingMaskIntoConstraints = false
-    confirmButton.setTitle("send request", for: .normal)
     confirmButton.backgroundColor = .systemBlue
     confirmButton.setTitleColor(.white, for: .normal)
     confirmButton.addTarget(self, action: #selector(sendRequest), for: .touchUpInside)
+    // if .send, it's "Seal & Send" button; otherwise, it's just "Seal"
+    let returnKeyType = controller.textDocumentProxy.returnKeyType ?? .default
+    let buttonTitle = returnKeyType == .send ? "send request" : "paste to text box"
+    confirmButton.setTitle(buttonTitle, for: .normal)
+
     view.addSubview(confirmButton)
     updateViewConstraints()
   }
@@ -45,6 +49,9 @@ class ECDH0PopoverViewController: UIViewController {
 
   @objc func sendRequest() {
     controller.ECDHRequestStringToMessageBox()
-    popoverPresentationController?.presentingViewController.dismiss(animated: true, completion: nil)
+    controller.stageToSendText = true
+    popoverPresentationController?.presentingViewController.dismiss(animated: true) { [unowned controller] in
+      controller?.textDidChange(nil)
+    }
   }
 }
