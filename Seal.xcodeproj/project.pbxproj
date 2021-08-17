@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3035EF9F26CB1B5C00EFF4B0 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3035EF9E26CB1B5C00EFF4B0 /* Settings.bundle */; };
+		3035EFA026CB1B5C00EFF4B0 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3035EF9E26CB1B5C00EFF4B0 /* Settings.bundle */; };
 		3045FC3926A8E5080043502B /* ChatManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3045FC3826A8E5080043502B /* ChatManager.swift */; };
 		3045FC3A26A8E5080043502B /* ChatManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3045FC3826A8E5080043502B /* ChatManager.swift */; };
 		3045FC3B26A8E6A00043502B /* CoreDataContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307384B626A8D91B00EF1FC1 /* CoreDataContainer.swift */; };
@@ -132,6 +134,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3035EF9E26CB1B5C00EFF4B0 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		3045FC3826A8E5080043502B /* ChatManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatManager.swift; sourceTree = "<group>"; };
 		304C121D26A7612F00977196 /* Message+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Message+CoreDataClass.swift"; sourceTree = "<group>"; };
 		304C121E26A7612F00977196 /* Message+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Message+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -207,6 +210,7 @@
 		306589AF267554B200708E73 = {
 			isa = PBXGroup;
 			children = (
+				3035EF9E26CB1B5C00EFF4B0 /* Settings.bundle */,
 				30EB1EDF26C4D0300091040F /* Seal.entitlements */,
 				30EB1EDB26C4C4160091040F /* UserDefaultsKeys.swift */,
 				30EB1ED926C4BE510091040F /* SealRelease.entitlements */,
@@ -472,6 +476,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				30EFC1A7267B27A100EF65E8 /* LICENSE.txt in Resources */,
+				3035EF9F26CB1B5C00EFF4B0 /* Settings.bundle in Resources */,
 				306589C5267554B300708E73 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -481,6 +486,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				30EFC1A8267B27A100EF65E8 /* LICENSE.txt in Resources */,
+				3035EFA026CB1B5C00EFF4B0 /* Settings.bundle in Resources */,
 				30D4DF832676AA1F00CF9DE5 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

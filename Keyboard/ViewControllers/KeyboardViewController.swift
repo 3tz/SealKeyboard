@@ -186,7 +186,7 @@ class KeyboardViewController: UIInputViewController {
     goToSettingsButton.setTitleColor(.white, for: .normal)
     goToSettingsButton.backgroundColor = .systemBlue
     goToSettingsButton.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
-
+    goToSettingsButton.addTarget(self, action: #selector(goToSettingsButtonPressed), for: .touchUpInside)
 
     accessRequestStackView = UIStackView(arrangedSubviews: [
       accessRequestLabel,
@@ -278,6 +278,24 @@ class KeyboardViewController: UIInputViewController {
   }
 
   // MARK: @objc #selector methods
+
+  @objc func goToSettingsButtonPressed() {
+    // modified from https://stackoverflow.com/a/60302256/10693217
+    var responder: UIResponder? = self as UIResponder
+    let selector = #selector(openURL(_:))
+    while responder != nil {
+      if responder!.responds(to: selector) && responder != self {
+        responder!.perform(selector, with: URL(string: "sealkeyboard:")!)
+        return
+      }
+      responder = responder?.next
+    }
+  }
+
+  @objc func openURL(_ url: URL) {
+    // From https://stackoverflow.com/a/60302256/10693217
+    return
+  }
 
   @objc func layoutButtonPressed(_ sender: UIButton) {
     switch currentLayout {
