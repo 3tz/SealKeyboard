@@ -11,8 +11,6 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
   func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-
-//      let message = url.host?.removingPercentEncoding
     UIApplication.shared.open(
       URL(string: UIApplication.openSettingsURLString)!,
       options: [:],
