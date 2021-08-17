@@ -27,11 +27,18 @@ class ECDH0PopoverViewController: UIViewController {
     confirmButton.translatesAutoresizingMaskIntoConstraints = false
     confirmButton.backgroundColor = .systemBlue
     confirmButton.setTitleColor(.white, for: .normal)
-    confirmButton.addTarget(self, action: #selector(sendRequest), for: .touchUpInside)
-    // if .send, it's "Seal & Send" button; otherwise, it's just "Seal"
+    // if .send, send the ECDH0 text upon press; otherwise, just paste it in textbox
     let returnKeyType = controller.textDocumentProxy.returnKeyType ?? .default
-    let buttonTitle = returnKeyType == .send ? "send request" : "paste to text box"
-    confirmButton.setTitle(buttonTitle, for: .normal)
+    switch returnKeyType {
+      case .send:
+        confirmButton.setTitle("send request", for: .normal)
+        confirmButton.addTarget(self, action: #selector(sendRequest), for: .touchUpInside)
+      default:
+        confirmButton.setTitle("paste to text box", for: .normal)
+        confirmButton.addTarget(self, action: #selector(pasteToTextBox), for: .touchUpInside)
+    }
+
+
 
     view.addSubview(confirmButton)
     updateViewConstraints()
@@ -53,5 +60,10 @@ class ECDH0PopoverViewController: UIViewController {
     popoverPresentationController?.presentingViewController.dismiss(animated: true) { [unowned controller] in
       controller?.textDidChange(nil)
     }
+  }
+
+  @objc func pasteToTextBox() {
+    controller.ECDHRequestStringToMessageBox()
+    popoverPresentationController?.presentingViewController.dismiss(animated: true)
   }
 }
