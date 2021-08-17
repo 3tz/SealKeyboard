@@ -38,12 +38,13 @@ class NameChange: HostAppTableViewItemizable {
       """
       let alert = UIAlertController(
         title: "Set your display name", message: alertMessage, preferredStyle: .alert)
+      let controller = self.controller
       // Save to UserDefaults and reload VC
-      let saveAction = UIAlertAction(title: "save", style: .default) { [unowned self] _ in
+      let saveAction = UIAlertAction(title: "save", style: .default) { [unowned controller] _ in
         let input = alert.textFields![0].text
         userDefaults.setValue(input, forKey: UserDefaultsKeys.chatDisplayName.rawValue)
         userDefaults.synchronize()
-        self.controller.reloadData()
+        controller.reloadData()
       }
       alert.addAction(saveAction)
       // Save button is only enabled if it's within the specified length limits.
