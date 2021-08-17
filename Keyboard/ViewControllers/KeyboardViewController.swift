@@ -12,6 +12,11 @@ enum KeyboardLayout: Int {
   case detailView
 }
 
+enum SetupRequestType: String {
+  case fullAccess
+  case displayName
+}
+
 class KeyboardViewController: UIInputViewController {
   var currentLayout: KeyboardLayout!
 
@@ -25,7 +30,9 @@ class KeyboardViewController: UIInputViewController {
   var detailViewController: DetailViewController!
   var bottomBarView: UIStackView!
 
-  var accessRequestStackView: UIStackView!
+  var setupRequestStackView: UIStackView!
+  var setupRequestLabel: UILabel!
+  var goToButton: UIButton!
 
   var constraints: [NSLayoutConstraint] = []
 
@@ -37,19 +44,35 @@ class KeyboardViewController: UIInputViewController {
 
   var pasteboardLock = NSLock()
 
+  var hasDisplayName: Bool {
+    // assuming hasFullAccess == true
+    let userDefaults = UserDefaults(suiteName: "group.com.3tz.seal")!
+    if let _ = userDefaults.string(forKey: UserDefaultsKeys.chatDisplayName.rawValue) {
+      return true
+    }
+    return false
+  }
+
   // MARK: view overrides
 
   override func loadView() {
     super.loadView()
-    loadAccessRequestView()
+    loadSetupRequestView()
   }
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    accessRequestStackView.isHidden = hasFullAccess
+    setupRequestStackView.isHidden = hasFullAccess
     if !hasFullAccess {
+      displaySetupRequestText(for: .fullAccess)
       return
     }
+    setupRequestStackView.isHidden = hasDisplayName
+    if !hasDisplayName {
+      displaySetupRequestText(for: .displayName)
+      return
+    }
+
     // initialize the main stack view
     mainStackView = UIStackView()
     mainStackView.axis = .vertical
@@ -80,7 +103,7 @@ class KeyboardViewController: UIInputViewController {
 
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-    if !hasFullAccess {
+    if !hasFullAccess || !hasDisplayName {
       return
     }
     startPasteboardChangeCountMonitor()
@@ -96,7 +119,7 @@ class KeyboardViewController: UIInputViewController {
 
   override func updateViewConstraints() {
     super.updateViewConstraints()
-    if !hasFullAccess {
+    if !hasFullAccess || !hasDisplayName {
       // TODO: redundant code
       KeyboardSpecs.isLandscape = UIScreen.main.bounds.size.width > UIScreen.main.bounds.size.height
       NSLayoutConstraint.deactivate(constraints)
@@ -143,7 +166,7 @@ class KeyboardViewController: UIInputViewController {
 
   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
     super.traitCollectionDidChange(previousTraitCollection)
-    if !hasFullAccess {
+    if !hasFullAccess || !hasDisplayName {
       return
     }
     let darkMode = traitCollection.userInterfaceStyle == .dark
@@ -173,38 +196,32 @@ class KeyboardViewController: UIInputViewController {
 
   // MARK: view loading methods
 
-  func loadAccessRequestView() {
-    let accessRequestLabel = UILabel()
-    accessRequestLabel.numberOfLines = 0
-    accessRequestLabel.text = """
-    "Allow Full Access" must be turned on in order to use Seal.
-    Full access is required for Seal to store encryption keys and chats.
-    """
+  func loadSetupRequestView() {
+    setupRequestLabel = UILabel()
+    setupRequestLabel.numberOfLines = 0
 
-    let goToSettingsButton = UIButton(type: .system)
-    goToSettingsButton.setTitle("Go to Settings", for: .normal)
-    goToSettingsButton.setTitleColor(.white, for: .normal)
-    goToSettingsButton.backgroundColor = .systemBlue
-    goToSettingsButton.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
-    goToSettingsButton.addTarget(self, action: #selector(goToSettingsButtonPressed), for: .touchUpInside)
+    goToButton = UIButton(type: .system)
+    goToButton.setTitleColor(.white, for: .normal)
+    goToButton.backgroundColor = .systemBlue
+    goToButton.layer.cornerRadius = KeyboardSpecs.buttonCornerRadius
 
-    accessRequestStackView = UIStackView(arrangedSubviews: [
-      accessRequestLabel,
-      goToSettingsButton,
+    setupRequestStackView = UIStackView(arrangedSubviews: [
+      setupRequestLabel,
+      goToButton,
     ])
-    accessRequestStackView.axis = .vertical
-    accessRequestStackView.translatesAutoresizingMaskIntoConstraints = false
-    accessRequestStackView.alignment = .center
-    accessRequestStackView.distribution = .fill
-    view.addSubview(accessRequestStackView)
+    setupRequestStackView.axis = .vertical
+    setupRequestStackView.translatesAutoresizingMaskIntoConstraints = false
+    setupRequestStackView.alignment = .center
+    setupRequestStackView.distribution = .fill
+    view.addSubview(setupRequestStackView)
 
     NSLayoutConstraint.activate([
-      accessRequestStackView.heightAnchor.constraint(equalToConstant: 200),
-      accessRequestStackView.widthAnchor.constraint(equalToConstant: 300),
-      goToSettingsButton.widthAnchor.constraint(equalToConstant: 150),
-      goToSettingsButton.heightAnchor.constraint(equalToConstant: KeyboardSpecs.cryptoButtonsViewHeight - KeyboardSpecs.verticalSpacing),
-      accessRequestStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-      accessRequestStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+      setupRequestStackView.heightAnchor.constraint(equalToConstant: 200),
+      setupRequestStackView.widthAnchor.constraint(equalToConstant: 300),
+      goToButton.widthAnchor.constraint(equalToConstant: 150),
+      goToButton.heightAnchor.constraint(equalToConstant: KeyboardSpecs.cryptoButtonsViewHeight - KeyboardSpecs.verticalSpacing),
+      setupRequestStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+      setupRequestStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
     ])
   }
 
@@ -279,12 +296,15 @@ class KeyboardViewController: UIInputViewController {
 
   // MARK: @objc #selector methods
 
-  @objc func goToSettingsButtonPressed() {
+  func goToApp(for requestType: SetupRequestType) {
     // modified from https://stackoverflow.com/a/60302256/10693217
 
     var components = URLComponents()
     components.scheme = "sealkeyboard"
-    components.path = "settings"
+
+    if requestType == .fullAccess {
+      components.path = "settings"
+    }
 
     var responder: UIResponder? = self as UIResponder
     let selector = #selector(openURL(_:))
@@ -300,6 +320,14 @@ class KeyboardViewController: UIInputViewController {
   @objc func openURL(_ url: URL) {
     // From https://stackoverflow.com/a/60302256/10693217
     return
+  }
+
+  @objc func goToSettingsButtonPressed() {
+    goToApp(for: .fullAccess)
+  }
+
+  @objc func goToHostAppButtonPressed() {
+    goToApp(for: .displayName)
   }
 
   @objc func layoutButtonPressed(_ sender: UIButton) {
@@ -476,6 +504,26 @@ class KeyboardViewController: UIInputViewController {
 
 
   // MARK: helper methods
+
+  func displaySetupRequestText(for requestType: SetupRequestType) {
+    goToButton.removeTarget(nil, action: nil, for: .allEvents)
+
+    switch requestType {
+      case .fullAccess:
+        setupRequestLabel.text = """
+        "Allow Full Access" must be turned on in order to use Seal.
+        Full access is required for Seal to store encryption keys and chats.
+        """
+        goToButton.setTitle("Go to Settings", for: .normal)
+        goToButton.addTarget(self, action: #selector(goToSettingsButtonPressed), for: .touchUpInside)
+      case .displayName:
+        setupRequestLabel.text = """
+        You need to setup a display name in order to use Seal.
+        """
+        goToButton.setTitle("Go to Seal Keyboard", for: .normal)
+        goToButton.addTarget(self, action: #selector(goToHostAppButtonPressed), for: .touchUpInside)
+    }
+  }
 
   /// Modified from: https://stackoverflow.com/a/37956477/10693217
   /// Must be run on a non-main thread due to the nature of it checking while UI updating
