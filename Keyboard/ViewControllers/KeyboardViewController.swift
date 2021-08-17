@@ -281,11 +281,16 @@ class KeyboardViewController: UIInputViewController {
 
   @objc func goToSettingsButtonPressed() {
     // modified from https://stackoverflow.com/a/60302256/10693217
+
+    var components = URLComponents()
+    components.scheme = "sealkeyboard"
+    components.path = "settings"
+
     var responder: UIResponder? = self as UIResponder
     let selector = #selector(openURL(_:))
     while responder != nil {
       if responder!.responds(to: selector) && responder != self {
-        responder!.perform(selector, with: URL(string: "sealkeyboard:")!)
+        responder!.perform(selector, with: components.url!)
         return
       }
       responder = responder?.next
