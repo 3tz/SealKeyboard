@@ -167,8 +167,17 @@ class DetailViewController: UIViewController {
     present(popover, animated: true, completion: nil)
   }
 
-  @objc func requestButtonPressed(_ sender: Any) {
-    controller.ECDHRequestStringToMessageBox()
+  @objc func requestButtonPressed(_ sender: UIButton) {
+    let popover = ECDH0PopoverViewController(parentController: controller)
+    popover.modalPresentationStyle = .popover
+    popover.preferredContentSize = CGSize(width: KeyboardSpecs.cryptoButtonsViewHeight * 3, height: KeyboardSpecs.cryptoButtonsViewHeight * 0.75)
+    let popoverController = popover.popoverPresentationController
+    popoverController?.delegate = self
+    popoverController?.sourceView = sender
+    popoverController?.sourceRect = CGRect(x: sender.bounds.midX, y: sender.bounds.midY - 15, width: 0, height: 0)
+
+    popoverController?.permittedArrowDirections = .down
+    present(popover, animated: true, completion: nil)
   }
 
   @objc func unsealButtonPressed(_ sender: Any) {
