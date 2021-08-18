@@ -78,7 +78,7 @@ struct KeyboardSpecs {
 
 
   static let maximumWidth = 694.0 as CGFloat
-
+  static let maxmimumCharacterLimit = 1024
   static var isLandscape = false
 
   static var keyboardButtonsViewHeight: CGFloat {
@@ -142,6 +142,7 @@ struct StatusText {
     sealFailureEmpty =  "Unable to seal message because input text field is empty.",
     sealFailureSymmetricAlgo = "Something went wrong. Unable to encrypt. Try again later.",
     sealFailureNoCurrentChatExists = "Cannot seal. No chat exists.",
+    sealFailureCharacterLimitExceeded = "Cannot seal. Message must be shorter than 1025 characters.",
 
     sealSuccessECDH1Sent = "Symmetric key sent.",
     sealSuccessAlreadySealedMessageSent = "Sealed message sent.",
@@ -154,6 +155,7 @@ struct StatusText {
     unsealFailureOtherError = "Unable to unseal. Unknown key or others.",
     unsealFailureNoCurrentChatExists = "Cannot unseal. No chat exists.",
 
+    unsealFailureCharacterLimitExceeded = "Cannot unseal. Message must be shorter than 1025 characters.",
     unsealSuccessReceivedECDH0 = "Request to generate symmetric key received.",
     unsealSuccessReceivedECDH1 = "Symmetric key generated.",
     unsealSuccessReceivedCiphertext = "Message Decrypted",

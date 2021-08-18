@@ -378,7 +378,7 @@ class KeyboardViewController: UIInputViewController {
     DispatchQueue.global(qos: .userInitiated).async { [weak self] in
       guard let self = self else { return }
 
-      let textInput = self.getFullDocumentContextString()
+      let textInput = self.getFullDocumentContextString(ignoreCharacterLimit: true)!
 
       DispatchQueue.main.sync { [weak self] in
         guard let self = self else { return }
@@ -407,6 +407,11 @@ class KeyboardViewController: UIInputViewController {
 
         DispatchQueue.main.sync { [weak self] in
           guard let self = self else { return }
+          guard let textInput = textInput else {
+            self.textView.text = StatusText.sealFailureCharacterLimitExceeded
+            self.taskRunning = false
+            return
+          }
 
           // Delete all text
           for _ in 0..<textInput.count {
@@ -505,6 +510,11 @@ class KeyboardViewController: UIInputViewController {
 
           DispatchQueue.main.sync { [weak self] in
             guard let self = self else { return }
+            guard let textInput = textInput else {
+              self.textView.text = StatusText.unsealFailureCharacterLimitExceeded
+              self.taskRunning = false
+              return
+            }
 
             // Delete all text
             for _ in 0..<textInput.count {
@@ -578,7 +588,7 @@ class KeyboardViewController: UIInputViewController {
 
   /// Modified from: https://stackoverflow.com/a/37956477/10693217
   /// Must be run on a non-main thread due to the nature of it checking while UI updating
-  func getFullDocumentContextString() -> String {
+  func getFullDocumentContextString(ignoreCharacterLimit: Bool = false) -> String? {
     var totalOffset = 0,
         fullString = ""
     let sleepTimeInterval = 0.05
@@ -598,6 +608,10 @@ class KeyboardViewController: UIInputViewController {
       textDocumentProxy.adjustTextPosition(byCharacterOffset: -context.count)
       totalOffset += context.count
       Thread.sleep(forTimeInterval: sleepTimeInterval)
+      if !ignoreCharacterLimit && totalOffset > KeyboardSpecs.maxmimumCharacterLimit {
+        textDocumentProxy.adjustTextPosition(byCharacterOffset: totalOffset)
+        return nil
+      }
     }
 
     // Teleport cursor to the end
