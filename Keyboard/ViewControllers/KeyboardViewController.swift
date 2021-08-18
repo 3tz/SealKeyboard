@@ -400,6 +400,7 @@ class KeyboardViewController: UIInputViewController {
 
           if textInput.isEmpty {
             self.textView.text = StatusText.sealFailureEmpty
+            self.taskRunning = false
             return
           }
 
@@ -424,10 +425,12 @@ class KeyboardViewController: UIInputViewController {
               message = try Seal.seal(string: textInput)
             } catch DecryptionErrors.noCurrentChatExistsError {
               self.textView.text = StatusText.sealFailureNoCurrentChatExists
+              self.taskRunning = false
               return
             } catch {
               NSLog("sealMessageBox error caught:\n\(error)")
               self.textView.text = StatusText.sealFailureSymmetricAlgo
+              self.taskRunning = false
               return
             }
 
@@ -548,26 +551,27 @@ class KeyboardViewController: UIInputViewController {
     var totalOffset = 0,
         fullString = ""
     let sleepTimeInterval = 0.05
-
-      // Move cursor to the end of the text
-      // Note: For some reason, newlines cannot be parsed from contextAfterInput, which is
-      //   why it only moves to the end instead of reading along the way.
-      while let context = textDocumentProxy.documentContextAfterInput{
-        textDocumentProxy.adjustTextPosition(byCharacterOffset: max(context.count, 1))
-        Thread.sleep(forTimeInterval: sleepTimeInterval)
-      }
-
-      // Keep moving cursor backward until it's at the beginning & reading along the way
-      while let context = textDocumentProxy.documentContextBeforeInput, !context.isEmpty {
-        fullString = context + fullString
-        textDocumentProxy.adjustTextPosition(byCharacterOffset: -context.count)
-        totalOffset += context.count
-        Thread.sleep(forTimeInterval: sleepTimeInterval)
-      }
-
-      // Teleport cursor to the end
-      textDocumentProxy.adjustTextPosition(byCharacterOffset: totalOffset)
+    // Adjusting insertion position deselects.
+    textDocumentProxy.adjustTextPosition(byCharacterOffset: 1)
+    // Move cursor to the end of the text
+    // Note: For some reason, newlines cannot be parsed from contextAfterInput, which is
+    //   why it only moves to the end instead of reading along the way.
+    while let context = textDocumentProxy.documentContextAfterInput{
+      textDocumentProxy.adjustTextPosition(byCharacterOffset: max(context.count, 1))
       Thread.sleep(forTimeInterval: sleepTimeInterval)
+    }
+
+    // Keep moving cursor backward until it's at the beginning & reading along the way
+    while let context = textDocumentProxy.documentContextBeforeInput, !context.isEmpty {
+      fullString = context + fullString
+      textDocumentProxy.adjustTextPosition(byCharacterOffset: -context.count)
+      totalOffset += context.count
+      Thread.sleep(forTimeInterval: sleepTimeInterval)
+    }
+
+    // Teleport cursor to the end
+    textDocumentProxy.adjustTextPosition(byCharacterOffset: totalOffset)
+    Thread.sleep(forTimeInterval: sleepTimeInterval)
 
     return fullString
   }
