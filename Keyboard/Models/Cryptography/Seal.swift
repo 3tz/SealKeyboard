@@ -90,7 +90,7 @@ class Seal {
     return outgoingMessage.asJSONString()
   }
 
-  static private func parse(_ string: String) throws -> SealMessage {
+  static func parse(_ string: String) throws -> SealMessage {
     do {
       let data = string.data(using: .utf8)!
       return try JSONDecoder().decode(SealMessage.self, from: data)
