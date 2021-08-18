@@ -405,21 +405,29 @@ class KeyboardViewController: UIInputViewController {
 
           let message: String
 
-          do {
-            message = try Seal.seal(string: textInput)
-          } catch DecryptionErrors.noCurrentChatExistsError {
-            self.textView.text = StatusText.sealFailureNoCurrentChatExists
-            return
-          } catch {
-            NSLog("sealMessageBox error caught:\n\(error)")
-            self.textView.text = StatusText.sealFailureSymmetricAlgo
-            return
+          if let _ = try? Seal.parse(textInput) {
+            // if it's already sealed, do nothing.
+            NSLog("Attempted to seal a sealed string. Do nothing.")
+            self.textDocumentProxy.insertText(textInput)
+          } else {
+            do {
+              message = try Seal.seal(string: textInput)
+            } catch DecryptionErrors.noCurrentChatExistsError {
+              self.textView.text = StatusText.sealFailureNoCurrentChatExists
+              return
+            } catch {
+              NSLog("sealMessageBox error caught:\n\(error)")
+              self.textView.text = StatusText.sealFailureSymmetricAlgo
+              return
+            }
+
+            self.textDocumentProxy.insertText(message)
+            self.textView.text = StatusText.sealSuccessButNotSent
+
+            self.detailViewController.appendStringMessageToChatView(textInput, sender: ChatView.senderMe)
           }
 
-          self.textDocumentProxy.insertText(message)
-          self.textView.text = StatusText.sealSuccessButNotSent
 
-          self.detailViewController.appendStringMessageToChatView(textInput, sender: ChatView.senderMe)
           if andSend {
             self.textView.text = StatusText.sealSuccessAndSent
             // Apps with ReturnType of .send look for a single "\n" upon text change.
