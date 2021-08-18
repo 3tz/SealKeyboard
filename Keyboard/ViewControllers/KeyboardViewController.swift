@@ -405,10 +405,20 @@ class KeyboardViewController: UIInputViewController {
 
           let message: String
 
-          if let _ = try? Seal.parse(textInput) {
+          if let alreadySealedText = try? Seal.parse(textInput) {
             // if it's already sealed, do nothing.
             NSLog("Attempted to seal a sealed string. Do nothing.")
             self.textDocumentProxy.insertText(textInput)
+            self.textView.text = StatusText.sealFailureCannotSealAlreadySealed
+            if andSend {
+              switch alreadySealedText.kind {
+                case .ECDH1:
+                  self.textView.text = StatusText.sealSuccessECDH1Sent
+                default:
+                  self.textView.text = StatusText.sealSuccessAlreadySealedMessageSent
+              }
+              self.stageToSendText = true
+            }
           } else {
             do {
               message = try Seal.seal(string: textInput)
@@ -425,15 +435,14 @@ class KeyboardViewController: UIInputViewController {
             self.textView.text = StatusText.sealSuccessButNotSent
 
             self.detailViewController.appendStringMessageToChatView(textInput, sender: ChatView.senderMe)
+            if andSend {
+              self.textView.text = StatusText.sealSuccessAndSent
+              // Apps with ReturnType of .send look for a single "\n" upon text change.
+              // Thus, change the text to ciphertext first, and insert one "\n" under textDidChange.
+              self.stageToSendText = true
+            }
           }
 
-
-          if andSend {
-            self.textView.text = StatusText.sealSuccessAndSent
-            // Apps with ReturnType of .send look for a single "\n" upon text change.
-            // Thus, change the text to ciphertext first, and insert one "\n" under textDidChange.
-            self.stageToSendText = true
-          }
           self.taskRunning = false
         } // DispatchQueue.main.sync
       }

@@ -137,11 +137,15 @@ struct KeyboardSpecs {
 
 struct StatusText {
   static let ECDHInitialized = "ECDH initiated.",
-    sealSuccessAndSent = "Text encrypted and sent.",
+    sealSuccessAndSent = "Text sealed and sent.",
     sealSuccessButNotSent = "Textfield sealed. Ready to send.",
     sealFailureEmpty =  "Unable to seal message because input text field is empty.",
     sealFailureSymmetricAlgo = "Something went wrong. Unable to encrypt. Try again later.",
     sealFailureNoCurrentChatExists = "Cannot seal. No chat exists.",
+
+    sealSuccessECDH1Sent = "Symmetric key sent.",
+    sealSuccessAlreadySealedMessageSent = "Sealed message sent.",
+    sealFailureCannotSealAlreadySealed = "Cannot seal an already sealed message.",
 
     unsealFailureEmpty = "No copied text found.",
     unsealFailureParsingError = "Unknown type of message copied.",
