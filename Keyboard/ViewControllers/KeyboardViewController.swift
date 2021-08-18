@@ -374,8 +374,23 @@ class KeyboardViewController: UIInputViewController {
   func ECDHRequestStringToMessageBox() {
     textView.text =  StatusText.ECDHInitialized // TODO: placeholder
     let message = Seal.initiateECDHRequest()
-    clearInputText()
-    textDocumentProxy.insertText(message)
+    taskRunning = true
+    DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+      guard let self = self else { return }
+
+      let textInput = self.getFullDocumentContextString()
+
+      DispatchQueue.main.sync { [weak self] in
+        guard let self = self else { return }
+
+        // Delete all text
+        for _ in 0..<textInput.count {
+          self.textDocumentProxy.deleteBackward()
+        }
+        self.textDocumentProxy.insertText(message)
+        self.taskRunning = false
+      }
+    }
   }
 
   func sealMessageBox(andSend: Bool = false) {
@@ -482,17 +497,33 @@ class KeyboardViewController: UIInputViewController {
     // Message unsealed successfully. Now perform operations according to message kind.
     switch receivedMessage.kind {
       case .ECDH0:
-        clearInputText()
-        textDocumentProxy.insertText(outgoingMessageString!)
-        // Create new chat
-        let displayTitle = receivedMessage.name
-        let newDigest = EncryptionKeys.default.newlyAddedSymmetricKeyDigest!
-        ChatManager.shared.addNewChat(named: displayTitle, with: newDigest)
-        // Update chat selection button & reload chat view messages
-        updateCurrentChatTitle()
-        detailViewController.chatViewController.reloadMessages()
+        taskRunning = true
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+          guard let self = self else { return }
 
-        textView.text = StatusText.unsealSuccessReceivedECDH0
+          let textInput = self.getFullDocumentContextString()
+
+          DispatchQueue.main.sync { [weak self] in
+            guard let self = self else { return }
+
+            // Delete all text
+            for _ in 0..<textInput.count {
+              self.textDocumentProxy.deleteBackward()
+            }
+            self.textDocumentProxy.insertText(outgoingMessageString!)
+            // Create new chat
+            let displayTitle = receivedMessage.name
+            let newDigest = EncryptionKeys.default.newlyAddedSymmetricKeyDigest!
+            ChatManager.shared.addNewChat(named: displayTitle, with: newDigest)
+            // Update chat selection button & reload chat view messages
+            self.updateCurrentChatTitle()
+            self.detailViewController.chatViewController.reloadMessages()
+
+            self.textView.text = StatusText.unsealSuccessReceivedECDH0
+            self.taskRunning = false
+          }
+        }
+
       case .ECDH1:
         // Create new chat
         let displayTitle = receivedMessage.name
@@ -574,23 +605,6 @@ class KeyboardViewController: UIInputViewController {
     Thread.sleep(forTimeInterval: sleepTimeInterval)
 
     return fullString
-  }
-
-  /// Clear the input text field if it's not empty.
-  func clearInputText() {
-    if !textDocumentProxy.hasText { return }
-
-    let textBeforeInput = textDocumentProxy.documentContextBeforeInput ?? ""
-    let textAfterInput = textDocumentProxy.documentContextAfterInput ?? ""
-    let selectedText = textDocumentProxy.selectedText ?? ""
-
-    // move cursor to the end of the text input
-    textDocumentProxy.adjustTextPosition(byCharacterOffset: textAfterInput.count)
-
-    // delete backward n times where n is the length of the text
-    for _ in 0..<textAfterInput.count + textBeforeInput.count + selectedText.count {
-      textDocumentProxy.deleteBackward()
-    }
   }
 
   /// Check if pasteboard has changed every 1 second, and unseal if it has.
