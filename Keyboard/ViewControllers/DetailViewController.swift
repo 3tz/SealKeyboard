@@ -65,7 +65,9 @@ class DetailViewController: UIViewController {
       globeButton.widthAnchor.constraint(equalTo: globeButton.heightAnchor),
       globeButton.heightAnchor.constraint(equalToConstant: bottomBarButtonHeight),
       clearMessagesButton.heightAnchor.constraint(equalToConstant: bottomBarButtonHeight),
+      clearMessagesButton.widthAnchor.constraint(equalToConstant: bottomBarButtonHeight * 1.5),
       requestButton.heightAnchor.constraint(equalToConstant: bottomBarButtonHeight),
+      requestButton.widthAnchor.constraint(equalToConstant: bottomBarButtonHeight * 2),
       sealButton.heightAnchor.constraint(equalToConstant: bottomBarButtonHeight),
     ])
 
