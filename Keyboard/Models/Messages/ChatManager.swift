@@ -34,24 +34,44 @@ class ChatManager {
     // Fetch Chats from core data
     (titleLookup, chats) = fetchChatsFromCoreData()
 
-    // TODO: If there's a key in keychain that doesn't exist in core data yet, ???
+    // If there's a key in keychain that doesn't exist in core data yet, remove that key from
+    //   the keychain and log it.
     for keyDigest in keyChainSymmetricKeyDigests {
       guard let _ = titleLookup[keyDigest] else {
-        fatalError("""
-          Cannot find chat with the following symmetric key:
-          digest: \(keyDigest)
+        NSLog("""
+        Cannot find chat with the following symmetric key:
+        digest: \(keyDigest)
+        """)
+        do {
+          try EncryptionKeys.default.deleteSymmetricKey(with: keyDigest)
+        } catch {
+          NSLog("""
+          While trying to delete the symmetric key, following error encountered:
+          \(error)
           """)
+        }
+        return
       }
     }
+    let context = CoreDataContainer.shared.persistentContainer.viewContext
 
-    // TODO: On the other hand, if there's a chat that relies on a non-existing key, ???
-    for (keyDigest, displayTitle) in titleLookup {
+    // On the other hand, if there's a chat that relies on a non-existing key, remove it.
+    for (index, chat) in chats.enumerated() {
+      let keyDigest = chat.symmetricDigest
+      let displayTitle = chat.displayTitle
+
       if !keyChainSymmetricKeyDigests.contains(keyDigest) {
-        fatalError("""
+        context.delete(chat)
+        chats.remove(at: index)
+        titleLookup[keyDigest] = nil
+        CoreDataContainer.shared.saveContext()
+        NSLog("""
           Cannot find symmetric key for the following chat:
           displayTitle: \(displayTitle)
           digest: \(keyDigest)
+          Synchronized by deleting the above chat.
           """)
+
       }
     }
     currentIndex = 0
