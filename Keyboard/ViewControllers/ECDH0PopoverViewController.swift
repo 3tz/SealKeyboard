@@ -55,8 +55,7 @@ class ECDH0PopoverViewController: UIViewController {
   }
 
   @objc func sendRequest() {
-    controller.ECDHRequestStringToMessageBox()
-    controller.stageToSendText = true
+    controller.ECDHRequestStringToMessageBox(andSend: true)
     popoverPresentationController?.presentingViewController.dismiss(animated: true) { [unowned controller] in
       controller?.textDidChange(nil)
     }

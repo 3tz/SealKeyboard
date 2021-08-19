@@ -371,7 +371,7 @@ class KeyboardViewController: UIInputViewController {
 
   // MARK: Sealing/unsealing/ECDH methods
 
-  func ECDHRequestStringToMessageBox() {
+  func ECDHRequestStringToMessageBox(andSend: Bool = false) {
     textView.text =  StatusText.ECDHInitialized // TODO: placeholder
     let message = Seal.initiateECDHRequest()
     taskRunning = true
@@ -388,6 +388,9 @@ class KeyboardViewController: UIInputViewController {
           self.textDocumentProxy.deleteBackward()
         }
         self.textDocumentProxy.insertText(message)
+        if andSend {
+          self.stageToSendText = true
+        }
         self.taskRunning = false
       }
     }
