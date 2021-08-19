@@ -31,10 +31,10 @@ class ECDH0PopoverViewController: UIViewController {
     let returnKeyType = controller.textDocumentProxy.returnKeyType ?? .default
     switch returnKeyType {
       case .send:
-        confirmButton.setTitle("send request", for: .normal)
+        confirmButton.setTitle("send handshake request", for: .normal)
         confirmButton.addTarget(self, action: #selector(sendRequest), for: .touchUpInside)
       default:
-        confirmButton.setTitle("paste to text box", for: .normal)
+        confirmButton.setTitle("create handshake request", for: .normal)
         confirmButton.addTarget(self, action: #selector(pasteToTextBox), for: .touchUpInside)
     }
 

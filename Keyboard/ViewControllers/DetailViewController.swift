@@ -172,7 +172,7 @@ class DetailViewController: UIViewController {
   @objc func requestButtonPressed(_ sender: UIButton) {
     let popover = ECDH0PopoverViewController(parentController: controller)
     popover.modalPresentationStyle = .popover
-    popover.preferredContentSize = CGSize(width: KeyboardSpecs.cryptoButtonsViewHeight * 3, height: KeyboardSpecs.cryptoButtonsViewHeight * 0.75)
+    popover.preferredContentSize = CGSize(width: KeyboardSpecs.cryptoButtonsViewHeight * 4, height: KeyboardSpecs.cryptoButtonsViewHeight * 0.75)
     let popoverController = popover.popoverPresentationController
     popoverController?.delegate = self
     popoverController?.sourceView = sender

@@ -136,31 +136,31 @@ struct KeyboardSpecs {
 }
 
 struct StatusText {
-  static let ECDHInitialized = "ECDH initiated.",
+  static let ECDHInitialized = "Handshake request created.",
     sealSuccessAndSent = "Text sealed and sent.",
-    sealSuccessButNotSent = "Textfield sealed. Ready to send.",
+    sealSuccessButNotSent = "Text sealed. Ready to send.",
     sealFailureEmpty =  "Unable to seal message because input text field is empty.",
     sealFailureSymmetricAlgo = "Something went wrong. Unable to encrypt. Try again later.",
-    sealFailureNoCurrentChatExists = "Cannot seal. No chat exists.",
+    sealFailureNoCurrentChatExists = "Cannot seal. No chat exists. Need to perform a handshake first.",
     sealFailureCharacterLimitExceeded = "Cannot seal. Message must be shorter than 1025 characters.",
 
-    sealSuccessECDH1Sent = "Symmetric key sent.",
+    sealSuccessECDH1Sent = "Handshake response sent.",
     sealSuccessAlreadySealedMessageSent = "Sealed message sent.",
     sealFailureCannotSealAlreadySealed = "Cannot seal an already sealed message.",
 
     unsealFailureEmpty = "No copied text found.",
     unsealFailureParsingError = "Unknown type of message copied.",
     unsealFailureAuthenticationError = "Message signature verification failed.",
-    unsealFailureNewSymmetricKeyAlreadyExists = "Cannot create a chat that already exists!",
-    unsealFailureOtherError = "Unable to unseal. Unknown key or others.",
+    unsealFailureNewSymmetricKeyAlreadyExists = "Cannot create a chat that already exists.",
+    unsealFailureOtherError = "Unable to unseal. Wrong chat chosen.",
     unsealFailureNoCurrentChatExists = "Cannot unseal. No chat exists.",
 
     unsealFailureCharacterLimitExceeded = "Cannot unseal. Message must be shorter than 1025 characters.",
-    unsealSuccessReceivedECDH0 = "Request to generate symmetric key received.",
-    unsealSuccessReceivedECDH1 = "Symmetric key generated.",
-    unsealSuccessReceivedCiphertext = "Message Decrypted",
+    unsealSuccessReceivedECDH0 = "Handshake request received. Ready to send response.",
+    unsealSuccessReceivedECDH1 = "Handshake response received, New chat created.",
+    unsealSuccessReceivedCiphertext = "Message unsealed",
 
-    messageCopied = "Message Copied."
+    messageCopied = "Message copied to clipboard."
 }
 
 // todo: placeholder
