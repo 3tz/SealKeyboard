@@ -33,25 +33,27 @@ class Seal {
       // Request to initiate ECDH, i.e., to generate a symmetric key.
       // Generate a symmetric key and send it over.
       // Start ECDH, store the symmetric key, and send them the public key
-      let (ephemeralPublicKeyString, signatureString, signingPublicKeyString) =
+      let (ephemeralPublicKeyString, signatureString, signingPublicKeyString, saltString) =
         try EncryptionKeys.default.ECDHKeyExchange(with: encryptionPublicKey)
 
       outgoingMessageString = SealMessage(
         kind: .ECDH1(
           ephemeralPublicKey: ephemeralPublicKeyString,
           signature: signatureString,
-          signingPublicKey: signingPublicKeyString),
+          signingPublicKey: signingPublicKeyString,
+          salt: saltString),
         name: UserDefaults(suiteName: "group.com.3tz.seal")!.string(forKey: UserDefaultsKeys.chatDisplayName.rawValue)!
       ).asJSONString()
 
-      case .ECDH1(let ephemeralPublicKey, let signature, let signingPublicKey):
+      case .ECDH1(let ephemeralPublicKey, let signature, let signingPublicKey, let salt):
       // Reposne to request to ECDH. Expect to receive ephemeral public key.
       // Verify signature, compute and save symmetric key.
 
       try EncryptionKeys.default.verifyECDHKeyExchangeResponse(
         ephemeralPublicKeyString: ephemeralPublicKey,
         signatureString: signature,
-        theirSigningPublicKeyString: signingPublicKey
+        theirSigningPublicKeyString: signingPublicKey,
+        saltString: salt
       )
 
       case .ciphertext(let ciphertext, let signature, let signingPublicKey):

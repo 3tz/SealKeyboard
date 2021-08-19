@@ -9,6 +9,6 @@ import Foundation
 
 enum SealMessageKind {
   case ECDH0(encryptionPublicKey: String)
-  case ECDH1(ephemeralPublicKey: String, signature: String, signingPublicKey: String)
+  case ECDH1(ephemeralPublicKey: String, signature: String, signingPublicKey: String, salt: String)
   case ciphertext(ciphertext: String, signature: String, signingPublicKey: String)
 }

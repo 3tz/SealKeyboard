@@ -15,6 +15,7 @@ extension SealMessageKind: Codable {
     case signature
     case signingPublicKey
     case ephemeralPublicKey
+    case salt
     case ciphertext
     case type
   }
@@ -38,7 +39,8 @@ extension SealMessageKind: Codable {
         self = .ECDH1(
           ephemeralPublicKey: try container.decode(String.self, forKey: .ephemeralPublicKey),
           signature: try container.decode(String.self, forKey: .signature),
-          signingPublicKey: try container.decode(String.self, forKey: .signingPublicKey)
+          signingPublicKey: try container.decode(String.self, forKey: .signingPublicKey),
+          salt: try container.decode(String.self, forKey: .salt)
         )
       case .ciphertext:
         self = .ciphertext(
@@ -56,10 +58,11 @@ extension SealMessageKind: Codable {
       case .ECDH0(let encryptionPublicKey):
         try container.encode(encryptionPublicKey, forKey: .encryptionPublicKey)
         try container.encode(MessageTypeString.ECDH0, forKey: .type)
-      case .ECDH1(let ephemeralPublicKey, let signature, let signingPublicKey):
+      case .ECDH1(let ephemeralPublicKey, let signature, let signingPublicKey, let salt):
         try container.encode(ephemeralPublicKey, forKey: .ephemeralPublicKey)
         try container.encode(signature, forKey: .signature)
         try container.encode(signingPublicKey, forKey: .signingPublicKey)
+        try container.encode(salt, forKey: .salt)
         try container.encode(MessageTypeString.ECDH1, forKey: .type)
       case .ciphertext(let ciphertext, let signature, let signingPublicKey):
         try container.encode(ciphertext, forKey: .ciphertext)

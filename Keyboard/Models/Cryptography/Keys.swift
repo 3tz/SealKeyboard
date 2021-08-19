@@ -28,9 +28,6 @@ final class EncryptionKeys {
 
   private var keyChain: GenericPasswordStore!
 
-  // TODO: placeholder. use random salt for each msg
-  private let protocolSalt = "CryptoKit Playgrounds Putting It Together".data(using: .utf8)!
-
   private init() {
     reloadKeys()
   }
@@ -103,7 +100,8 @@ final class EncryptionKeys {
   func ECDHKeyExchange(with theirEncryptionPublicKeyString: String) throws ->(
     ephemeralPublicKeyString: String,
     signatureString: String,
-    signingPublicKeyString: String
+    signingPublicKeyString: String,
+    salt: String
   ) {
     // Convert string back to public key type
     guard let theirEncryptionPublicKeyData = asData(theirEncryptionPublicKeyString),
@@ -120,9 +118,12 @@ final class EncryptionKeys {
       with: theirEncryptionPublicKey
     )
 
+    var saltInt = UInt64.random(in: UInt64.min...UInt64.max)
+    let salt = Data(bytes: &saltInt, count: MemoryLayout.size(ofValue: saltInt))
+
     let newSymmetricKey = sharedSecret.hkdfDerivedSymmetricKey(
       using: SHA256.self,
-      salt: protocolSalt,
+      salt: salt,
       sharedInfo: ephemeralPublicKey.rawRepresentation +
         theirEncryptionPublicKey.rawRepresentation +
         signingPublicKey.rawRepresentation,
@@ -146,7 +147,8 @@ final class EncryptionKeys {
     return (
       asString(ephemeralPublicKey.rawRepresentation),
       asString(signature),
-      asString(signingPublicKey.rawRepresentation)
+      asString(signingPublicKey.rawRepresentation),
+      asString(salt)
     )
   }
 
@@ -164,7 +166,8 @@ final class EncryptionKeys {
   func verifyECDHKeyExchangeResponse(
       ephemeralPublicKeyString: String,
       signatureString: String,
-      theirSigningPublicKeyString: String
+      theirSigningPublicKeyString: String,
+      saltString: String
   ) throws {
     // Convert input strings into corresponding data types
     guard let ephemeralPublicKeyData = asData(ephemeralPublicKeyString),
@@ -193,7 +196,7 @@ final class EncryptionKeys {
     )
     let receivedSymmetricKey = sharedSecret.hkdfDerivedSymmetricKey(
       using: SHA256.self,
-      salt: protocolSalt,
+      salt: asData(saltString)!,
       sharedInfo: ephemeralPublicKey.rawRepresentation +
         encryptionPublicKey.rawRepresentation +
         theirSigningPublicKey.rawRepresentation,
