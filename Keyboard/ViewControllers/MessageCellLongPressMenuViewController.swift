@@ -40,7 +40,7 @@ class MessageCellLongPressMenuViewController: UIViewController {
 
     stackView = UIStackView()
     stackView.axis = .horizontal
-    stackView.spacing = 0 // TODO: placeholder
+    stackView.spacing = 0
     stackView.translatesAutoresizingMaskIntoConstraints = false
     stackView.alignment = .center
     stackView.distribution = .fillProportionally

@@ -372,7 +372,7 @@ class KeyboardViewController: UIInputViewController {
   // MARK: Sealing/unsealing/ECDH methods
 
   func ECDHRequestStringToMessageBox(andSend: Bool = false) {
-    textView.text =  StatusText.ECDHInitialized // TODO: placeholder
+    textView.text =  StatusText.ECDHInitialized
     let message = Seal.initiateECDHRequest()
     taskRunning = true
     DispatchQueue.global(qos: .userInitiated).async { [weak self] in
@@ -477,7 +477,7 @@ class KeyboardViewController: UIInputViewController {
 
   func unsealCopiedText() {
     guard let copiedText = UIPasteboard.general.string else {
-      textView.text = StatusText.unsealFailureEmpty // TODO: placeholder
+      textView.text = StatusText.unsealFailureEmpty
       return
     }
 
