@@ -8,8 +8,8 @@
 import UIKit
 
 enum KeyboardLayout: Int {
-  case typingView
   case detailView
+  case typingView
 }
 
 enum SetupRequestType: String {
