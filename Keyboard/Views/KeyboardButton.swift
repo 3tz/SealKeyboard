@@ -38,7 +38,7 @@ class KeyboardButton: UIButton {
 
     NSLayoutConstraint.activate([
       keycapBackground.widthAnchor.constraint(equalTo: self.widthAnchor, constant: -KeyboardSpecs.horizontalSpacing),
-      keycapBackground.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.75),
+      keycapBackground.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.80),
       keycapBackground.centerXAnchor.constraint(equalTo: self.centerXAnchor),
       keycapBackground.centerYAnchor.constraint(equalTo: self.centerYAnchor),
 
