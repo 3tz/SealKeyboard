@@ -13,6 +13,7 @@ class ViewController: UITableViewController {
 
   func reloadData() {
     items = [
+      [TutorialHostAppItem(controller: self)],
       [NameChange(controller: self)],
       [DeleteAll()]
     ]
