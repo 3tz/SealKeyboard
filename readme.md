@@ -1,3 +1,3 @@
 # Seal Keyboard
 
-![](demo01.gif)
+<img src="demo01.gif" width="50%" height="50%"/>
